@@ -106,8 +106,7 @@ class CheckoutCtrl extends Controller
       $pedido = Pedidos::where('id', $id)->first();
 
       // Efetuando pagamento com cartão
-      $dados = ConfigCheckout::first();
-      $pagarme = new PagarMe\Client($dados->api_key);
+      $pagarme = new PagarMe\Client($checkout->api_key);
       $transaction = $pagarme->transactions()->create([
         'amount' => number_format($pedido->valor_compra, 2, '', ''),
         'payment_method' => 'credit_card',

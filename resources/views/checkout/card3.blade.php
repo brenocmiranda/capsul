@@ -2,11 +2,28 @@
 <div class="tab-pane fade" id="payment" role="tabpanel" aria-labelledby="payment-tab">
 	<div class="card">
 		<div class="card-body">
-			<div class="col-12 mt-3">
-				<h6> Formas de pagamento </h6>
-				<hr class="my-1">
-			</div>
+			
+			<form class="row m-0" id="descontos">
+				<div class="col-12 mt-3">
+					<h6> Descontos </h6>
+					<hr class="mt-1">
+				</div>
+				<div class="col-12 form-group">
+                    <label class="mb-0">Cupom </label>
+                    <div class="input-group">
+                        <input type="text" class="form-control h-100 col-4" onkeyup="this.value = this.value.toUpperCase();" required>
+                        <div class="input-group-append border rounded">
+                            <a class="btn mx-2 pb-0 text-uppercase gerar">Aplicar</a>
+                        </div>
+                    </div>
+                </div>
+			</form>
+
 			<div class="row m-0" id="step3"> 
+				<div class="col-12 mt-2">
+					<h6> Formas de pagamento </h6>
+					<hr class="mt-1">
+				</div>
 				<ul class="col-12 nav nav-pills px-3" id="myTab" role="tablist">
 					<li class="nav-item w-50 p-2">
 						<a class="nav-link h-100 shadow-none border rounded" id="cart-tab" data-toggle="tab" href="#cart" role="tab" aria-controls="cart" aria-selected="true">
@@ -16,7 +33,7 @@
 								</div>
 								<div class="col-10 p-3 m-auto">
 									<span class="font-weight-bold">Cartão de Crédito</span>
-									<div class="card-brands-payment cards">
+									<div class="card-brands-payment cards text-truncate">
 										<img src="https://github.bubbstore.com/formas-de-pagamento/mastercard.svg?" height="15" alt="Mastercard" class="mr5">
 										<img src="https://github.bubbstore.com/formas-de-pagamento/visa.svg?" height="15" alt="Visa" class="mr5">
 										<img src="https://github.bubbstore.com/formas-de-pagamento/elo.svg?" height="15" alt="Elo" class="mr5">
@@ -42,14 +59,14 @@
 				</ul>
 
 				<div class="tab-content col-12" id="myTabContent">
-					<div class="tab-pane fade show active" id="cart" role="tabpanel" aria-labelledby="cart-tab">
+					<div class="tab-pane fade show" id="cart" role="tabpanel" aria-labelledby="cart-tab">
 						<form class="col-12 mt-3" id="card_credit">
 							@csrf
 							<input type="hidden" name="card_hash" id="card_hash">
 							<div class="form-group mb-2">
 								<label class="col-md-12 mb-0">Número do cartão <span class="text-danger">*</span></label>
 								<div class="col-lg-12 col-md-12">
-									<input type="text" id="card_number" class="card_number form-control creditcard" onselectstart="return false" onpaste="return false" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" autocomplete=off  maxlength="16" placeholder="4509 9535 6623 3704" requerid>
+									<input type="text" id="card_number" class="form-control creditcard" onselectstart="return false" onpaste="return false" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" autocomplete=off  maxlength="16" placeholder="4509 9535 6623 3704" requerid>
 									<div id="field_errors_number" class="pt-1 text-danger text-left">
 									</div>
 								</div>
@@ -63,17 +80,17 @@
 								</div>
 							</div>
 							<div class="row m-0">
-								<div class="form-group mb-2">
-									<label class="col-md-12 mb-0">Data Vencimento <span class="text-danger">*</span></label>
-									<div class="col-lg-8 col-md-8">
-										<input type="text" id="card_expiration" class="card_expiration form-control" maxlength="4" placeholder="00/00" onselectstart="return false" onpaste="return false" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" autocomplete=off class="form-control" requerid>
+								<div class="col-4 p-0 form-group mb-2">
+									<label class="col-lg-12 col-md-12 mb-0">Data Vencimento <span class="text-danger">*</span></label>
+									<div class="col-lg-12 col-md-12">
+										<input type="text" id="card_expiration" class=" form-control" maxlength="4" placeholder="00/00" onselectstart="return false" onpaste="return false" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" autocomplete=off class="form-control" requerid>
 										<div id="field_errors_date" class="pt-1 text-danger text-left">
 										</div>
 									</div>
 								</div>
-								<div class="form-group mb-2">
-									<label class="col-md-12 mb-0">CCV <span class="text-danger">*</span></label>
-									<div class="col-lg-6 col-md-6">
+								<div class="col-3 p-0 form-group mb-2">
+									<label class="col-lg-12 col-md-12 mb-0">CCV <span class="text-danger">*</span></label>
+									<div class="col-lg-12 col-md-12">
 										<input type="text" id="card_cvv" class="form-control" maxlength="3" placeholder="000" onselectstart="return false" onpaste="return false" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" requerid>
 										<div id="field_errors_cvv" class="pt-1 text-danger text-left">
 										</div>
@@ -81,14 +98,14 @@
 								</div>
 							</div>
 							<div class="form-group mb-2">
-								<label class="col-md-12 mb-0">CPF do titular <span class="text-danger">*</span></label>
+								<label class="col-lg-6 col-md-6 mb-0">CPF do titular <span class="text-danger">*</span></label>
 								<div class="col-lg-6 col-md-6">
-									<input type="text" id="cpf_titular" class="form-control" placeholder="000.000.000-00" onselectstart="return false" onpaste="return false" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" requerid>
+									<input type="text" class="documento_titular form-control" placeholder="000.000.000-00" onselectstart="return false" onpaste="return false" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" requerid>
 									<div id="field_errors_cpf" class="pt-1 text-danger text-left">
 									</div>
 								</div>
 							</div>
-							<div class="form-group mb-2">
+							<div class="form-group">
 								<label class="col-md-12 mb-0">Parcelamento <span class="text-danger">*</span></label>
 								<div class="col-lg-8 col-md-8">
 									<select class="form-control h-100" name="installments">
@@ -109,7 +126,7 @@
 							</div>
 							<div class="form-group">
 								<div class="row">
-									<button class="btn btn-success btn-lg btn-icon icon-right btn-block shadow-none col-5 col-lg-5 mx-auto">Realizar pedido <i class="mdi mdi-check-decagram mdi-18px"></i></button>
+									<button class="btn btn-success btn-lg btn-icon icon-right btn-block shadow-none col-12 col-lg-6 mx-auto">Pagar com cartão de crédito</button>
 								</div>
 							</div>
 						</form>
@@ -120,24 +137,43 @@
 							@csrf
 							<input type="hidden" name="formcount" value="4">
 							<div class="px-3">
-								<b><label>{{$checkout->texto_boleto}}</label></b>
+								<b><label style="line-height: 20px;">{{$checkout->texto_boleto}}</label></b>
 							</div>
 							<div class="form-group text-left col-6 p-0">
 								<label class="col-md-12 text-left mb-0">Documento <small>CPF/CNPJ</small> <span class="text-danger">*</span></label>
 								<div class="col-lg-12 col-md-12">
-									<input type="text" id="documento" class="form-control" name="documento" placeholder="000.000.000-00" minlength="14" required>
+									<input type="text" class="documento_titular form-control" name="documento_titular" placeholder="000.000.000-00" minlength="14" required>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="row">
-									<button class="btn btn-success btn-lg btn-icon icon-right btn-block shadow-none col-5 col-lg-5 mx-auto">Realizar pedido <i class="mdi mdi-check-decagram mdi-18px"></i></button>
+									<button class="btn btn-success btn-lg btn-icon icon-right btn-block shadow-none col-12 col-lg-6 mx-auto">Pagar boleto</button>
 								</div>
 							</div>
 						</form>
 					</div>
-
 				</div>
 			</div>
+
+			<div class="my-4 col-12 mx-auto text-center d-none" id="pedido-confirmation">
+				<div id="pedido-image"> 
+					<img src="../public/img/status-pagamento/aprovado.png" class="mx-auto col-4"> 
+				</div> 
+				<div class="mt-3"> 
+					<h3 id="pedido-status"></h3> 
+				</div> 
+				<h6>
+					<span>Seu número de pedido é:</span>
+					<b>{{$pedido->codigo}}</b>
+				</h6>
+				<div class="mt-5"> 
+					<h6 class="mb-0 pedido-message">
+					</h6>
+					<a href="javascript:void(0)">Acompanhamento do pedido</a> 
+				</div> 
+			</div>
+
+
 		</div>
 	</div>
 </div>

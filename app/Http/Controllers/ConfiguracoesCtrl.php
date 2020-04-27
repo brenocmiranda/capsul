@@ -224,11 +224,15 @@ class ConfiguracoesCtrl extends Controller
     }
     public function LogisticaListar(){
         return datatables()->of(ConfigLogistica::orderBy('nome')->get())
-                    ->editColumn('status', function(ConfigLogistica $dados){ 
+                    ->editColumn('cep_inicial1', function(ConfigLogistica $dados){ 
+                        return substr($dados->cep_inicial, 0, 5).'-'.substr($dados->cep_inicial, 5, 8);
+                    })->editColumn('cep_final1', function(ConfigLogistica $dados){ 
+                        return substr($dados->cep_final, 0, 5).'-'.substr($dados->cep_final, 5, 8);
+                    })->editColumn('status', function(ConfigLogistica $dados){ 
                         return ($dados->ativo == 1 ? '<div class="text-success"><i class="fas fa-circle"></i></div>' : '<div class="text-danger"><i class="fas fa-circle"></i></div>');
                     })->editColumn('acoes', function(ConfigLogistica $dados){ 
                         return '<div class="mx-2 my-auto"> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-primary shadow-none" id="editar"> Editar </a> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-danger shadow-none" id="excluir"> Excluir </a> </div>'; 
-                    })->rawColumns(['status', 'acoes'])->make(true);
+                    })->rawColumns(['status', 'acoes', 'cep_inicial1', 'cep_final1'])->make(true);
     }
     public function LogisticaAdicionar(Request $request){
         $dados = ConfigLogistica::create([
@@ -240,6 +244,8 @@ class ConfiguracoesCtrl extends Controller
             'valor' => ($request->valor != null ? str_replace(",", ".", str_replace(".", "", $request->valor)) : '0'),
             'prazo_entrega' => $request->prazo_entrega
         ]);
+        $dados->cep_inicial1 = substr($dados->cep_inicial, 0, 5).'-'.substr($dados->cep_inicial, 5, 8);
+        $dados->cep_final1 = substr($dados->cep_final1, 0, 5).'-'.substr($dados->cep_final1, 5, 8);
         $dados->status = ($dados->ativo == 1 ? '<div class="text-success"><i class="fas fa-circle"></i></div>' : '<div class="text-danger"><i class="fas fa-circle"></i></div>');
         $dados->acoes = '<div class="mx-2 my-auto d-flex"> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-primary shadow-none" id="editar"> Editar </a> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-danger shadow-none" id="excluir"> Excluir </a> </div>'; 
         return response()->json($dados);
@@ -255,6 +261,8 @@ class ConfiguracoesCtrl extends Controller
             'prazo_entrega' => $request->prazo_entrega
         ]);
         $dados = ConfigLogistica::where('id', $id)->first();
+        $dados->cep_inicial1 = substr($dados->cep_inicial, 0, 5).'-'.substr($dados->cep_inicial, 5, 8);
+        $dados->cep_final1 = substr($dados->cep_final1, 0, 5).'-'.substr($dados->cep_final1, 5, 8);
         $dados->status = ($dados->ativo == 1 ? '<div class="text-success"><i class="fas fa-circle"></i></div>' : '<div class="text-danger"><i class="fas fa-circle"></i></div>');
         $dados->acoes = '<div class="mx-2 my-auto d-flex"> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-primary shadow-none" id="editar"> Editar </a> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-danger shadow-none" id="excluir"> Excluir </a> </div>';
         return response()->json($dados); 

@@ -55,7 +55,7 @@ Carrinhos Abandonados
     $(document).ready(function (){ 
         $('#table').DataTable({
             deferRender: true,
-            order: [1, 'asc'],
+            order: [3, 'desc'],
             paging: true,
             select: true,
             searching: true,

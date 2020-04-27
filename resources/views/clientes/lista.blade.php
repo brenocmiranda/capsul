@@ -25,8 +25,8 @@ Clientes
                 <div class="col-12">
                     <div class="card">
                         @if(Auth::user()->RelationGrupo->gerenciar_clientes == 1)
-                        <div class="d-flex ml-auto col-2 mt-4 button-edit"> 
-                            <div class="">
+                        <div class="position-absolute row col-12 mt-4 px-5 button-edit"> 
+                            <div class="ml-auto">
                                 <a href="{{ route('clientes.adicionar') }}" class="btn btn-primary shadow-none"><i class="fas fa-plus"></i><b> Novo cliente</b></a>
                             </div>
                         </div>

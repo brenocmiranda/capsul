@@ -32,7 +32,7 @@
 
 				<div class="form-group mt-4">
 					<div class="ml-auto col-lg-5 col-md-5">
-						<button class="btn btn-success btn-lg btn-icon icon-right btn-block shadow-none">Continue <i class="mdi mdi-arrow-right"></i></button>
+						<button class="btn btn-success btn-lg btn-icon icon-right btn-block shadow-none" disabled>Continue <i class="mdi mdi-send"></i></button>
 					</div>
 				</div>
 			</form>

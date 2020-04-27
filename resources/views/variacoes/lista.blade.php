@@ -26,8 +26,8 @@ Variações
                 <div class="col-12">
                     <div class="card">
                         @if(Auth::user()->RelationGrupo->gerenciar_variacoes == 1)
-                        <div class="d-flex ml-auto col-2 mt-4 button-edit"> 
-                            <div class="">
+                        <div class="position-absolute row col-12 mt-4 px-5 button-edit"> 
+                            <div class="ml-auto">
                                 <a href="{{ route('variacoes.adicionar') }}" class="btn btn-primary shadow-none"><i class="fas fa-plus"></i><b> Nova variação</b></a>
                             </div>
                         </div>

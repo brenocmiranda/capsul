@@ -247,8 +247,8 @@ Configurações
             "columns": [ 
             { "data": "nome","name":"nome"},
             { "data": "status","name":"status"},
-            { "data": "cep_inicial","name":"cep_inicial"},
-            { "data": "cep_final", "name":"cep_final"},
+            { "data": "cep_inicial1","name":"cep_inicial1"},
+            { "data": "cep_final1", "name":"cep_final1"},
             { "data": "acoes", "name":"acoes"},
             ],
         });

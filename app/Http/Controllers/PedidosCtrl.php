@@ -32,7 +32,7 @@ class PedidosCtrl extends Controller
     // Lista pedidos
     public function Exibir(){
         if(Auth::user()->RelationGrupo->visualizar_pedidos == 1 || Auth::user()->RelationGrupo->gerenciar_pedidos == 1){
-            $pedidos = Pedidos::all()->count();
+            $pedidos = Pedidos::WhereNotNull('transacao_pagarme')->count();
             $status = Status::all();
             $formas = FormaPagamentos::all();
             return view('pedidos.lista')->with('formaPagamentos', $formas)->with('status', $status)->with('pedidos', $pedidos);
