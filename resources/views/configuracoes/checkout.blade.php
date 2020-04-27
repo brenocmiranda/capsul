@@ -64,8 +64,8 @@ Configurações
                   <div class="mt-4 mb-5">
                     <div class="form-group col-12 mb-0">
                       <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="customCheck3" name="endereco_cliente" {{($checkout->endereco_cliente == 1 ? ' checked' : '')}}>
-                        <label class="custom-control-label" for="customCheck3">Sempre solicitar o endereço do cliente</label>
+                        <input type="checkbox" class="custom-control-input" id="customCheck3" name="text_topo_mostrar" {{($checkout->text_topo_mostrar == 1 ? ' checked' : '')}}>
+                        <label class="custom-control-label" for="customCheck3">Mostrar texto no topo</label>
                       </div>
                     </div>
                     <div class="form-group col-12 mb-0">

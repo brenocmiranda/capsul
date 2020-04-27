@@ -27,21 +27,19 @@
 					<hr class="mt-1">
 				</div>
 				<div class="row px-3 envio">
-					<label class="col-12">Selecione um endereço acima e veja as formas de envio disponíveis.</label>
+					<label class="col-12 mt-n2">Selecione um endereço acima e veja as formas de envio disponíveis.</label>
 				</div>
 
 				<div class="form-group mt-4">
 					<div class="ml-auto col-lg-5 col-md-5">
-						<button class="btn btn-success btn-lg btn-icon icon-right btn-block shadow-none">Continue <i class="fas fa-arrow-right"></i></button>
+						<button class="btn btn-success btn-lg btn-icon icon-right btn-block shadow-none">Continue <i class="mdi mdi-arrow-right"></i></button>
 					</div>
 				</div>
 			</form>
-
-			
-			
 			
 			<form id="newEndereco" class="d-none">
 			@csrf	
+				<input type="hidden" name="acao" value="">
 				<div class="form-group row px-3 mb-3">
 					<label class="col-md-12 text-left mb-0">CEP <span class="text-danger">*</span></label>
 					<div class="col-lg-5 col-md-5">
@@ -87,14 +85,17 @@
 				</div>
 
 				<div class="form-group mt-4 row mb-2">
-					<div class="ml-auto">
-						<a href="javascript:void(0)" id="buttonVoltarEndereco" class="btn btn-primary btn-block btn-icon icon-left shadow-none">
+					<div class="ml-auto px-2">
+						<a href="javascript:void(0)" id="buttonVoltarEndereco" class="btn btn-primary btn-lg btn-icon icon-left shadow-none">
 							<i class="mdi mdi-arrow-left"></i>  
-							<span>Voltar aos endereços</span>
+							<span>Endereços</span>
 						</a>
 					</div>
-					<div class="mr-auto">
-						<button class="btn btn-success btn-block shadow-none">Salvar </button>
+					<div class="mr-auto px-2">
+						<button class="btn btn-success btn-lg btn-icon icon-left shadow-none">
+							<i class="mdi mdi-check"></i> 
+							<span>Salvar </span>
+						</button>
 					</div>
 				</div>
 			</form>

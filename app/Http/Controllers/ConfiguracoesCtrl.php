@@ -70,7 +70,7 @@ class ConfiguracoesCtrl extends Controller
         $checkout = ConfigCheckout::where('id', 1)->update([
             'api_key' => $request->api_key, 
             'api_criptografada' => $request->api_criptografada, 
-            'endereco_cliente' => (isset($request->endereco_cliente) ? 1 : 0), 
+            'text_topo_mostrar' => (isset($request->text_topo_mostrar) ? 1 : 0), 
             'prazo_entrega' => (isset($request->prazo_entrega) ? 1 : 0), 
             'calculo_frete' => (isset($request->calculo_frete) ? 1 : 0),
             'cupom_desconto' => (isset($request->cupom_desconto) ? 1 : 0), 

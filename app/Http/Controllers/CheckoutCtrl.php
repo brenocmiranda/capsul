@@ -244,23 +244,51 @@ class CheckoutCtrl extends Controller
       }
   }
 
-  // Cadastrando novo endereço do usuário
-  public function NovoEndereco(Request $request, $id){
-      $pedido = Pedidos::where('id', $id)->first();
-      Enderecos::where('id_cliente', $pedido->id_cliente)->update(['status' => 0]);
+  // Cadastrando ou atualizar endereço do usuário
+  public function UpdateEndereco(Request $request, $id){
+    $pedido = Pedidos::where('id', $id)->first();
+      if(empty($request->acao)){
+        Enderecos::where('id_cliente', $pedido->id_cliente)->update(['status' => 0]);
+        $endereco = Enderecos::create([
+          'endereco' => $request->endereco, 
+          'bairro' => $request->bairro, 
+          'numero' => $request->numero, 
+          'complemento' => $request->complemento, 
+          'cep' => str_replace("-", "",$request->cep),
+          'destinatario' => $request->destinatario, 
+          'cidade' => $request->cidade, 
+          'estado' => $request->estado, 
+          'status' => 1,
+          'id_cliente' => $pedido->id_cliente
+        ]);
+      }else{
+        Enderecos::find($request->acao)->update([
+          'endereco' => $request->endereco, 
+          'bairro' => $request->bairro, 
+          'numero' => $request->numero, 
+          'complemento' => $request->complemento, 
+          'cep' => str_replace("-", "",$request->cep),
+          'destinatario' => $request->destinatario, 
+          'cidade' => $request->cidade, 
+          'estado' => $request->estado, 
+          'id_cliente' => $pedido->id_cliente
+        ]);
+        $endereco = Enderecos::find($request->acao);
+      }
+      return response()->json($endereco);
+  }
 
-      $endereco = Enderecos::create([
-        'endereco' => $request->endereco, 
-        'bairro' => $request->bairro, 
-        'numero' => $request->numero, 
-        'complemento' => $request->complemento, 
-        'cep' => str_replace("-", "",$request->cep),
-        'destinatario' => $request->destinatario, 
-        'cidade' => $request->cidade, 
-        'estado' => $request->estado, 
-        'status' => 1,
-        'id_cliente' => $pedido->id_cliente
-      ]);
+  // Cadastrando ou atualizar endereço do usuário
+  public function UpdateQuantidade($id, $quantidade){
+    $pedido = Pedidos::find($id);
+    $total = Pedidos::where('id', $id)->update(['valor_compra' => ($pedido->RelationProduto->preco_venda * $quantidade)]);
+    $dados = Pedidos::find($id);
+    return response()->json($dados->valor_compra);
+  }
+
+  // Cadastrando retornando dados do endereço do usuário
+  public function DetalhesEndereco($id){
+      $endereco = Enderecos::find($id);
       return response()->json($endereco);
   }
 

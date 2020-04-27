@@ -18,7 +18,7 @@ class CreateConfigCheckout extends Migration
             $table->bigIncrements('id');
             $table->string('api_key');
             $table->string('api_criptografada');
-            $table->boolean('endereco_cliente');
+            $table->boolean('text_topo_mostrar');
             $table->boolean('prazo_entrega');
             $table->boolean('calculo_frete');
             $table->boolean('cupom_desconto');

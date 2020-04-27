@@ -23,8 +23,10 @@ Route::group(['prefix' => ''], function(){
         Route::post('form2/{id}', 'CheckoutCtrl@Form2')->name('checkout.form2');
         Route::post('form3/{id}', 'CheckoutCtrl@Form3')->name('checkout.form3');
         Route::get('detalhes/{documento}', 'CheckoutCtrl@DetalhesCliente')->name('checkout.clientes.detalhes');
-        Route::post('endereco/{id}', 'CheckoutCtrl@NovoEndereco')->name('checkout.endereco');
+        Route::post('endereco/{id}', 'CheckoutCtrl@UpdateEndereco')->name('checkout.endereco');
+        Route::get('endereco/detalhes/{id}', 'CheckoutCtrl@DetalhesEndereco')->name('checkout.endereco.detalhes');
         Route::get('frete/{id}', 'CheckoutCtrl@CalculoFrete')->name('checkout.frete');
+        Route::get('quantidade/{id}/{quantidade}', 'CheckoutCtrl@UpdateQuantidade')->name('checkout.quantidade');
     });
 });
 

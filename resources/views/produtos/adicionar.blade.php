@@ -139,7 +139,7 @@ Adicionar produto
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="d-flex">
+                        <div class="row m-0">
                             <div class="col-6 form-group">
                                 <label>Selecione as categorias <i class="text-danger">*</i></label>
                                 <div class="col-12 p-0">
@@ -151,7 +151,7 @@ Adicionar produto
                                     </select>
                                 </div>
                                 <div class="col-12 p-0 mt-3 rounded">
-                                    <button type="button" class="btn btn-outline-secondary shadow-none d-flex" title="Inserir na tabela" id="addCategoria">
+                                    <button type="button" class="btn btn-outline-secondary shadow-none row m-0" title="Inserir na tabela" id="addCategoria">
                                         <i class="mdi mdi-table-column-plus-after"></i> 
                                         <b class="px-2">Inserir</b>
                                     </button>
@@ -186,7 +186,7 @@ Adicionar produto
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="d-flex">
+                        <div class="row m-0">
                             <div class="col-6 form-group">
                                 <label>Selecione as variações <i class="text-danger">*</i></label>
                                 <div class="col-12 p-0">
@@ -198,7 +198,7 @@ Adicionar produto
                                     </select>
                                 </div>
                                 <div class="col-12 p-0 mt-3 rounded">
-                                    <button type="button" class="btn btn-outline-secondary shadow-none d-flex" title="Inserir na tabela" id="addVariacoes">
+                                    <button type="button" class="btn btn-outline-secondary shadow-none row m-0" title="Inserir na tabela" id="addVariacoes">
                                         <i class="mdi mdi-table-column-plus-after"></i> 
                                         <b class="px-2">Inserir</b>
                                     </button>
@@ -263,12 +263,18 @@ Adicionar produto
                             <input type="text" class="cod_ean form-control" name="cod_ean" maxlength="13">
                         </div>
 
-                        <div class="col-3 form-group px-5 mb-5">
-                            <label>Quantidade <i class="text-danger">*</i></label>
-                            <input type="number" class="form-control" name="quantidade">
+                        <div class="row m-0">
+                            <div class="col-3 form-group px-5 mb-5">
+                                <label>Quantidade <i class="text-danger">*</i></label>
+                                <input type="number" class="form-control" name="quantidade" required>
+                            </div>
+                            <div class="col-3 form-group mb-5">
+                                <label>Quantidade mínima <i class="text-danger">*</i></label>
+                                <input type="number" class="form-control" name="quantidade_minima" required>
+                            </div>
                         </div>
 
-                        <div class="d-flex bg-light p-3">
+                        <div class="row m-0 bg-light p-3">
                             <div class="form-group col-4">
                                 <label>Preço de custo</label>
                                 <div class="input-group">
@@ -385,7 +391,7 @@ Adicionar produto
                             <h6 class="col-12 row mb-0">Selecione as demais imagens</h6>
                             <small>Formatos de imagem aceitos: .png, .jpg ou .svg</small>
                             <div class="row col-12 mt-3 preview">
-                                <div class="border m-2 rounded col-2 d-flex" style="height: 180px;">
+                                <div class="border m-2 rounded col-2 row m-0" style="height: 180px;">
                                     <i class="mdi mdi-plus mdi-36px m-auto"></i>
                                     <input type="file" class="px-0 col-12 position-absolute mx-auto h-100 pointer" style="opacity: 0; top: 0%; left: 0%" accept=".png, .jpg, .jpeg" id="addFotoGaleria" accept="image/*" title="Selecione mais imagens do produto" multiple>
                                 </div>
@@ -489,7 +495,7 @@ Adicionar produto
                     contentType: false,
                     success: function(data){ 
                         for (i = 0; i < data.length; i++) {
-                            $('div.preview').append('<div class="border m-2 rounded col-2 d-flex" id="PreviewImage'+data[i].id+'"> <input type="hidden" name="imagens[]" value="'+data[i].id+'"> <img class="p-3 w-100" src="{{asset("storage/app")}}/'+data[i].caminho+'" style="height: 180px;"><a href="javascript:void(0)" onclick="removeImagem('+data[i].id+')" class="btn btn-light rounded-circle m-n2 border" style="height: 36px;">x</a> </div>');
+                            $('div.preview').append('<div class="border m-2 rounded col-2 row m-0" id="PreviewImage'+data[i].id+'"> <input type="hidden" name="imagens[]" value="'+data[i].id+'"> <img class="p-3 w-100" src="{{asset("storage/app")}}/'+data[i].caminho+'" style="height: 180px;"><a href="javascript:void(0)" onclick="removeImagem('+data[i].id+')" class="btn btn-light rounded-circle m-n2 border" style="height: 36px;">x</a> </div>');
                         } 
                         $('#addFotoGaleria').val('');   
                     }

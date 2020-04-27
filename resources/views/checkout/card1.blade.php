@@ -5,6 +5,10 @@
 			<form id="step1">
 				@csrf
 				<div>
+					<div class="col-12 mt-3">
+						<h6> Dados Pessoais </h6>
+						<hr class="mt-1">
+					</div>
 					<div class="form-group col-md-6 p-0 mb-3">
 						<label class="col-md-12 text-left mb-0">Documento <small>CPF/CNPJ</small> <span class="text-danger">*</span></label>
 						<div class="col-lg-12 col-md-12">
@@ -45,7 +49,7 @@
 					</div>
 					<div class="form-group">
 						<div class="ml-auto col-lg-5 col-md-5">
-							<button class="btn btn-success btn-lg btn-icon icon-right  btn-block shadow-none">Continue <i class="fas fa-arrow-right"></i></button>
+							<button class="btn btn-success btn-lg btn-icon icon-right btn-block shadow-none">Continue <i class="mdi mdi-arrow-right"></i></button>
 						</div>
 					</div>
 				</div>

@@ -14,17 +14,24 @@ Compra
 
 	<div class="section-header p-0">
 		<header class="col-12 bg-white">
-			<div class="container px-5">
-				<div class="row align-items-center">
-					<div class="col-sm-12 col-md-2 py-sm-0 my-3 text-center">
-						<img src="{{ asset('storage/app/system/capsul.png') }}" width="148" title="Logo Capsul">
+			<div class="container row m-auto">
+				<div class="col-6">
+					<div class="row h-100 align-items-center justify-content-start">
+						<div class="col-sm-12 col-md-2 py-sm-0 my-3 text-center">
+							<img src="{{ asset('storage/app/system/capsul.png') }}" width="148" title="Logo Capsul">
+						</div>
+					</div>
+				</div>
+				<div class="col-6">
+					<div class="row h-100 align-items-center justify-content-end">
+						<img src="https://dka575ofm4ao0.cloudfront.net/pages-transactional_logos/retina/1949/PagarMe_Logo_PRINCIPAL-02.png" height="30" alt="PagarME" class="mb-2">
 					</div>
 				</div>
 			</div>
 		</header>
 	</div>
 
-	@if($checkout->cupom_desconto == 1)
+	@if($produto->quantidade <= $produto->quantidade_minima && $checkout->text_topo_mostrar == 1)
 	<div class="col-12 alert alert-success text-center mx-auto">
 		<p><?=$checkout->texto_topo?></p>
 		<i class="fas fa-clock"></i> Oferta termina em <b><span class="getting-started text-dark"></span></b>
@@ -70,15 +77,15 @@ function freteUteis(id){
 				$.each(data, function(e){
 					@if($checkout->prazo_entrega == 1)
 						@if($checkout->data_previsao == 1)
-							$('.envio').append('<div class="col-6 px-3" style="line-height: 15px;"> <div class="h-100 border rounded d-flex p-3 text-left"> <div class="form-check"> <input type="radio" name="frete" value="'+data[e].id+'" class="form-check-input" id="exampleRad'+data[e].id+'" onclick="frete('+data[e].id+')"> <label class="form-check-label" for="exampleRad'+data[e].id+'"> <label class="d-block font-weight-bold mb-1">'+data[e].nome+'</label> <small class="d-block mb-0">Valor: R$ '+data[e].valor.toFixed(2)+' </small> <small class="d-block mb-0">Prazo entrega: '+data[e].prazo_entrega+' dias</small><small class="d-block mb-0">Previsão (dias úteis): '+moment().businessAdd(data[e].prazo_entrega).format("DD/MM/YYYY")+'</small> </label> </div> </div> </div>'); 
+							$('.envio').append('<div class="col-6 px-3" style="line-height: 15px;"> <div class="h-100 border rounded d-flex p-3 text-left"> <div class="form-check"> <input type="radio" name="frete" value="'+data[e].id+'" class="form-check-input" id="exampleRad'+data[e].id+'" onclick="atualizarFrete('+data[e].valor+')"> <label class="form-check-label" for="exampleRad'+data[e].id+'"> <label class="d-block font-weight-bold mb-1">'+data[e].nome+'</label> <small class="d-block mb-0">Valor: '+data[e].valor.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"})+' </small> <small class="d-block mb-0">Prazo entrega: '+data[e].prazo_entrega+' dias</small><small class="d-block mb-0">Previsão (dias úteis): '+moment().businessAdd(data[e].prazo_entrega).format("DD/MM/YYYY")+'</small> </label> </div> </div> </div>'); 
 						@else
-							$('.envio').append('<div class="col-6 px-3" style="line-height: 15px;"> <div class="h-100 border rounded d-flex p-3 text-left"> <div class="form-check"> <input type="radio" name="frete" value="'+data[e].id+'" class="form-check-input" id="exampleRad'+data[e].id+'" onclick="frete('+data[e].id+')"> <label class="form-check-label" for="exampleRad'+data[e].id+'"> <label class="d-block font-weight-bold mb-1">'+data[e].nome+'</label> <small class="d-block mb-0">Valor: R$ '+data[e].valor.toFixed(2)+' </small> <small class="d-block mb-0">Prazo entrega: '+data[e].prazo_entrega+' dias</small></label> </div> </div> </div>'); 
+							$('.envio').append('<div class="col-6 px-3" style="line-height: 15px;"> <div class="h-100 border rounded d-flex p-3 text-left"> <div class="form-check"> <input type="radio" name="frete" value="'+data[e].id+'" class="form-check-input" id="exampleRad'+data[e].id+'" onclick="atualizarFrete('+data[e].valor+')"> <label class="form-check-label" for="exampleRad'+data[e].id+'"> <label class="d-block font-weight-bold mb-1">'+data[e].nome+'</label> <small class="d-block mb-0">Valor: '+data[e].valor.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"})+' </small> <small class="d-block mb-0">Prazo entrega: '+data[e].prazo_entrega+' dias</small></label> </div> </div> </div>'); 
 						@endif
 					@else
 						@if($checkout->data_previsao == 1)
-							$('.envio').append('<div class="col-6 px-3" style="line-height: 15px;"> <div class="h-100 border rounded d-flex p-3 text-left"> <div class="form-check"> <input type="radio" name="frete" value="'+data[e].id+'" class="form-check-input" id="exampleRad'+data[e].id+'" onclick="frete('+data[e].id+')"> <label class="form-check-label" for="exampleRad'+data[e].id+'"> <label class="d-block font-weight-bold mb-1">'+data[e].nome+'</label> <small class="d-block mb-0">Valor: R$ '+data[e].valor.toFixed(2)+' </small> <small class="d-block mb-0">Previsão (dias úteis): '+moment().businessAdd(data[e].prazo_entrega).format("DD/MM/YYYY")+'</small> </label> </div> </div> </div>'); 
+							$('.envio').append('<div class="col-6 px-3" style="line-height: 15px;"> <div class="h-100 border rounded d-flex p-3 text-left"> <div class="form-check"> <input type="radio" name="frete" value="'+data[e].id+'" class="form-check-input" id="exampleRad'+data[e].id+'" onclick="atualizarFrete('+data[e].valor+')"> <label class="form-check-label" for="exampleRad'+data[e].id+'"> <label class="d-block font-weight-bold mb-1">'+data[e].nome+'</label> <small class="d-block mb-0">Valor: '+data[e].valor..toLocaleString("pt-BR", { style: "currency" , currency:"BRL"})+' </small> <small class="d-block mb-0">Previsão (dias úteis): '+moment().businessAdd(data[e].prazo_entrega).format("DD/MM/YYYY")+'</small> </label> </div> </div> </div>'); 
 						@else
-							$('.envio').append('<div class="col-6 px-3" style="line-height: 15px;"> <div class="h-100 border rounded d-flex p-3 text-left"> <div class="form-check"> <input type="radio" name="frete" value="'+data[e].id+'" class="form-check-input" id="exampleRad'+data[e].id+'" onclick="frete('+data[e].id+')"> <label class="form-check-label" for="exampleRad'+data[e].id+'"> <label class="d-block font-weight-bold mb-1">'+data[e].nome+'</label> <small class="d-block mb-0">Valor: R$ '+data[e].valor.toFixed(2)+' </small></label> </div> </div> </div>'); 
+							$('.envio').append('<div class="col-6 px-3" style="line-height: 15px;"> <div class="h-100 border rounded d-flex p-3 text-left"> <div class="form-check"> <input type="radio" name="frete" value="'+data[e].id+'" class="form-check-input" id="exampleRad'+data[e].id+'" onclick="atualizarFrete('+data[e].valor+')"> <label class="form-check-label" for="exampleRad'+data[e].id+'"> <label class="d-block font-weight-bold mb-1">'+data[e].nome+'</label> <small class="d-block mb-0">Valor: '+data[e].valor..toLocaleString("pt-BR", { style: "currency" , currency:"BRL"})+' </small></label> </div> </div> </div>'); 
 						@endif
 					@endif
 
@@ -94,9 +101,79 @@ function freteUteis(id){
 		}
 	});
 }
+
+function updateEndereco(id){
+	$('#step2').fadeOut().addClass('d-none');
+	$('#newEndereco').fadeIn().removeClass('d-none');
+	$('#newEndereco input[name=acao]').val(id);
+	$.ajax({
+		url: "../checkout/endereco/detalhes/"+id,
+		type: 'GET',    
+		beforeSend: function () {
+			$('#modal-processamento').modal('show');
+		}, success: function(data){
+			$('#cep').unmask();
+			$('#cep').val(data.cep);
+			$('#cep').mask('00000-000');
+			$(".country").html(data.cidade+' - '+data.estado);
+			$('#cidade').val(data.cidade);
+			$('#estado').val(data.estado);
+			$('#endereco').val(data.endereco);
+			$('#bairro').val(data.bairro);
+			$('#numero').val(data.numero);
+			$('#complemento').val(data.complemento);
+			$('#destinatario').val(data.destinatario);
+			setTimeout(function(){
+				$('#modal-processamento').modal('hide');
+			}, 200);
+		}, error: function(data){ 
+			$('#modal-processamento').modal('hide');
+			$('#nome').focus();
+		}
+	});
+}
+
+function atualizarFrete(valor){
+	valor_frete = Number(valor);
+	valor_atual = Number($('#carrinho #valor_total_input').val()) + valor_frete;
+	// Atualizando dados de frete
+	$('#carrinho .valor_frete').html('');
+	$('#carrinho .valor_frete').html(valor_frete.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"}));
+	$('#carrinho #valor_frete_input').val(valor_frete);
+	atualizarTotal();
+}
+
+function atualizarQuantidade(valor){
+	valor_atual = Number(valor);
+	// Atualizando dados de frete
+	$('#carrinho .valor_produto').html('');
+	$('#carrinho .valor_produto').html(valor_atual.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"}));
+	$('#carrinho #valor_produto_input').val(valor_atual);
+	atualizarTotal();
+}
+
+function atualizarDesconto(valor){
+	valor_frete = Number(valor);
+	valor_atual = Number($('#carrinho #valor_total_input').val()) + valor_frete;
+	// Atualizando dados de frete
+	$('#carrinho .valor_frete').html('');
+	$('#carrinho .valor_frete').html(valor_frete.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"}));
+	$('#carrinho #valor_frete_input').val(valor_frete);
+	atualizarTotal();
+}
+
+function atualizarTotal(){
+	valor_atual = Number($('#carrinho #valor_produto_input').val()) - Number($('#carrinho #valor_desconto_input').val()) + Number($('#carrinho #valor_frete_input').val());
+
+	$('#carrinho .valor_total').html('');
+	$('#carrinho .valor_total').html(valor_atual.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"}));
+	$('#carrinho #valor_total_input').val(valor_atual);
+}
+
 $(document).ready(function (){
 	// Mascaras 
 	$('#documento').mask('000.000.000-00', {reverse: true});
+	$('#cpf_titular').mask('000.000.000-00', {reverse: true});
 	$('#telefone').mask('(00) 00000-0000');
 	$('#cep').mask('00000-000');
 	$('.card_expiration').mask('00/00');
@@ -184,11 +261,9 @@ $(document).ready(function (){
 					$('#telefone').val(data.telefone.numero.replace("+55", ""));
 					$('#telefone').mask('(00) 00000-0000');
 					$('#data_nascimento').val(data.data_nascimento);
-
 					if(data.endereco){
 						$.each(data.endereco, function(e){
-							$('.enderecos-list').prepend('<div class="col-6 p-2" style="line-height: 19px;"> <div class="h-100 border rounded d-flex p-3 text-left"> <div class="form-check"> <input type="radio" name="endereco" value="'+data.endereco[e].id+'" class="form-check-input" id="exampleRadios'+data.endereco[e].id+'" onclick="freteUteis('+data.endereco[e].id+')"> <label class="form-check-label" for="exampleRadios'+data.endereco[e].id+'"> <label class="d-block font-weight-bold mb-0">'+data.endereco[e].destinatario+'</label> <small class="d-block mb-0">'+data.endereco[e].endereco+', '+data.endereco[e].numero+', '+(data.endereco[e].complemento ? data.endereco[e].complemento+', ':'')+data.endereco[e].bairro+'</small> <small class="d-block mb-0">'+data.endereco[e].cidade+' - '+data.endereco[e].estado+'</small> </label> </div> </div> </div>');
-						});
+							$('.enderecos-list').prepend('<div class="col-6 p-2 end'+data.endereco[e].id+'" style="line-height: 19px;"> <div class="h-100 border rounded row m-0 p-3 text-left"> <div class="form-check w-100 col-12 pr-0"> <input type="radio" name="endereco" value="'+data.endereco[e].id+'" class="form-check-input" id="exampleRadios'+data.endereco[e].id+'" onclick="freteUteis('+data.endereco[e].id+')"> <label class="form-check-label" for="exampleRadios'+data.endereco[e].id+'"> <label class="d-block font-weight-bold mb-0">'+data.endereco[e].destinatario+'</label> <small class="d-block mb-0">'+data.endereco[e].endereco+', '+data.endereco[e].numero+', '+(data.endereco[e].complemento ? data.endereco[e].complemento+', ':'')+data.endereco[e].bairro+'</small> <small class="d-block mb-0">'+data.endereco[e].cidade+' - '+data.endereco[e].estado+'</small><small class="d-block mb-0">'+data.endereco[e].cep.substr(0, 5)+'-'+data.endereco[e].cep.substr(5, 8)+'</small> </label> </div><div class="w-100 text-right col-12 p-0 align-self-end"> <a href="javascript:void(0)" class="" onclick="updateEndereco('+data.endereco[e].id+')"> <i class="ml-auto mdi mdi-pencil"></i> <small>Editar</small> </a></div></div></div>'); });
 					}
 					setTimeout(function(){
 						$('#modal-processamento').modal('hide');
@@ -321,14 +396,6 @@ $(document).ready(function (){
             }
         }
     });
-    $('#buttonNewEndereco').on('click', function(){
-		$('#step2').fadeOut().addClass('d-none');
-		$('#newEndereco').fadeIn().removeClass('d-none');
-	});
-	$('#buttonVoltarEndereco').on('click', function(){
-		$('#step2').fadeIn().removeClass('d-none');
-		$('#newEndereco').fadeOut().addClass('d-none');
-	});
     $('#newEndereco').submit(function(e){
 		// Verificação de erros de validação
 		if(validator2.errorList.length == 0){
@@ -344,7 +411,11 @@ $(document).ready(function (){
 				beforeSend: function () {
 					$('#modal-processamento').modal('show');
 				}, success: function(data){
-					$('.enderecos-list').prepend('<div class="col-6 p-2" style="line-height: 19px;"> <div class="h-100 border rounded d-flex p-3 text-left"> <div class="form-check"> <input type="radio" name="endereco" value="'+data.id+'" class="form-check-input" id="exampleRadi'+data.id+'" onclick="freteUteis('+data.id+')"> <label class="form-check-label" for="exampleRadi'+data.id+'"> <label class="d-block font-weight-bold mb-0">'+data.destinatario+'</label> <small class="d-block mb-0">'+data.endereco+', '+data.numero+', '+(data.complemento ? data.complemento+', ':'')+data.bairro+'</small> <small class="d-block mb-0">'+data.cidade+' - '+data.estado+'</small> </label> </div> </div> </div>');
+					if($('input[name=acao]').val() != ""){
+						$('.end'+$('input[name=acao]').val()).remove();
+					}
+					$('.enderecos-list').prepend('<div class="col-6 p-2 end'+data.id+'" style="line-height: 19px;"> <div class="h-100 border rounded row m-0 p-3 text-left"> <div class="form-check w-100 col-12 pr-0"> <input type="radio" name="endereco" value="'+data.id+'" class="form-check-input" id="exampleRadi'+data.id+'" onclick="freteUteis('+data.id+')"> <label class="form-check-label" for="exampleRadi'+data.id+'"> <label class="d-block font-weight-bold mb-0">'+data.destinatario+'</label> <small class="d-block mb-0">'+data.endereco+', '+data.numero+', '+(data.complemento ? data.complemento+', ':'')+data.bairro+'</small> <small class="d-block mb-0">'+data.cidade+' - '+data.estado+'</small><small class="d-block mb-0">'+data.cep.substr(0, 5)+'-'+data.cep.substr(5, 8)+'</small> </label></div><div class="w-100 text-right col-12 p-0 align-self-end"> <a href="javascript:void(0)" class="" onclick="updateEndereco('+data.id+')"> <i class="ml-auto mdi mdi-pencil"></i> <small>Editar</small> </a></div>  </div> </div>');
+					$('#newEndereco input[name=acao]').val('');
 					$('#newEndereco').fadeOut().addClass('d-none');
 					$('#step2').fadeIn().removeClass('d-none');
 					setTimeout(function(){
@@ -355,8 +426,24 @@ $(document).ready(function (){
 						$('#modal-processamento').modal('hide');	
 					}, 500);
 				}
-			});	
+			});
 		}		
+	});
+    $('#buttonNewEndereco').on('click', function(){
+		$('#step2').fadeOut().addClass('d-none');
+		$('#newEndereco').fadeIn().removeClass('d-none');
+		$('#newEndereco').each (function(){
+		  this.reset();
+		});
+		$('#newEndereco input[name=acao]').val('');
+	});
+	$('#buttonVoltarEndereco').on('click', function(){
+		$('#step2').fadeIn().removeClass('d-none');
+		$('#newEndereco').fadeOut().addClass('d-none');
+		$('#newEndereco').each (function(){
+		  this.reset();
+		});
+		$('#newEndereco input[name=acao]').val('');
 	});
 	$('#step2').submit(function(e){
 		e.preventDefault();
@@ -409,7 +496,6 @@ $(document).ready(function (){
 	$("#card_cvv").on('keyup', function(){
 		$('#field_errors_cvv').html('');
 	});
-	// Compra pelo cartão de crédito
 	$('#step3 #card_credit').submit(function(event){
 		event.preventDefault();
 		var card = {} 
@@ -495,7 +581,6 @@ $(document).ready(function (){
 			}
 			return false;
 	});
-	// Compra pelo boleto bancário
 	$('#step3 #boleto').submit(function(event){
 		event.preventDefault();
 		$.ajax({
@@ -559,26 +644,18 @@ $(document).ready(function (){
 			}
 		});
 	});
-
-
-	// Selecionando meios de pagamento
-	$("#pay1").on('click', function(){
+	$("#step3 #pay1").on('click', function(){
 		$('#card_credit').removeClass('d-none');
 		$('input[value=2]').removeAttr('checked');
 		$('input[value=1]').attr('checked', 'checked');
 		$('#boleto').addClass('d-none');
 	});
-	$("#pay2").on('click', function(){
+	$("#step3 #pay2").on('click', function(){
 		$('#boleto').removeClass('d-none');
 		$('input[value=1]').removeAttr('checked');
 		$('input[value=2]').attr('checked', 'checked');
 		$('#card_credit').addClass('d-none');
 	});
-	// Selecionando meios de pagamento
-
-
-
-	// Retornando bandeira do cartão
 	$("#card_number").on('keyup', function(){
 		var card = {} 
 		card.card_number = $("#step3 #card_number").val();
@@ -586,7 +663,30 @@ $(document).ready(function (){
 		var cardValidations = pagarme.validate({card: card})
 		$('.card_number').addClass(cardValidations.card.brand); 
 	});
-	// Retornando bandeira do cartão
+
+
+	// Funções extras
+	$('#carrinho #quantidade').on('keyup', function(e){
+		e.preventDefault();
+		if(this.value != ""){
+			$.ajax({
+				url: "../checkout/quantidade/{{$pedido->id}}/"+this.value,
+				type: 'GET',  
+				beforeSend: function () {
+					$('#modal-processamento').modal('show');
+				}, success: function(data){
+					atualizarQuantidade(data);
+					setTimeout(function(){
+						$('#modal-processamento').modal('hide');
+					}, 200);
+				}, error: function(data){ 
+					setTimeout(function(){ 
+						$('#modal-processamento').modal('hide');	
+					}, 500);
+				}
+			});
+		}	
+	});
 
 	/*
 	$('#step1').on('change', function(){
@@ -599,13 +699,9 @@ $(document).ready(function (){
 			$( "#step2" ).submit();
 		}
 	});*/
-
-
 	$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
 		//$('#'+this.id).removeClass('bg-success text-white');	
 	});
-
-	
 });
 </script>
 @endsection 
