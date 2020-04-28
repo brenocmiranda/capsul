@@ -28,6 +28,7 @@ Route::group(['prefix' => ''], function(){
         Route::get('endereco/detalhes/{id}', 'CheckoutCtrl@DetalhesEndereco')->name('checkout.endereco.detalhes');
         Route::get('frete/{id}', 'CheckoutCtrl@CalculoFrete')->name('checkout.frete');
         Route::get('quantidade/{id}/{quantidade}', 'CheckoutCtrl@UpdateQuantidade')->name('checkout.quantidade');
+        Route::get('parcelas/{valor}', 'CheckoutCtrl@ParcelasQuantidade')->name('checkout.parcelas');
     });
 });
 

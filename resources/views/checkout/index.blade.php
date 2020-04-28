@@ -141,8 +141,9 @@ function atualizarFrete(valor){
 	$('#carrinho .valor_frete').html('');
 	$('#carrinho .valor_frete').html(valor_frete.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"}));
 	$('#carrinho #valor_frete_input').val(valor_frete);
-	atualizarTotal();
 	$('#step2 button').removeAttr('disabled');
+
+	atualizarTotal();
 }
 
 function atualizarQuantidade(valor){
@@ -170,6 +171,40 @@ function atualizarTotal(){
 	$('#carrinho .valor_total').html('');
 	$('#carrinho .valor_total').html(valor_atual.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"}));
 	$('#carrinho #valor_total_input').val(valor_atual);
+	// Retorna parcelas
+	$.ajax({
+		url: "../checkout/parcelas/"+valor_atual,
+		type: 'GET',  
+		beforeSend: function () {
+			$('#modal-processamento').modal('show');
+		}, success: function(data){
+			if(data.installments){
+				$('#step3 form#card_credit #installments').html('');
+				$.each(data.installments, function(e, element){
+					var valor_parcela = element.installment_amount.toString();
+					var valor = parseFloat(valor_parcela.substr(0, valor_parcela.length - 2)+"."+valor_parcela.substr(valor_parcela.length - 2));
+					@if($checkout->maior_parcela == 1)
+						if(parcela < e){
+							var parcela = element.installment; 
+							$('#step3 form#card_credit #installments').append('<option value="'+element.installment+'">'+element.installment+'x de '+valor.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"})+' sem juros </option>');
+						}else{
+							$('#step3 form#card_credit #installments').append('<option value="'+element.installment+'" selected>'+element.installment+'x de '+valor.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"})+' sem juros </option>');
+							$('.valor_parcelado').html('ou até '+element.installment+'x de '+valor.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"})+' sem juros');
+						}
+					@else
+						$('#step3 form#card_credit #installments').append('<option value="'+element.installment+'">'+element.installment+'x de '+valor.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"})+' sem juros </option>');
+					@endif
+				});
+			}
+			setTimeout(function(){
+				$('#modal-processamento').modal('hide');
+			}, 50);
+		}, error: function(data){ 
+			setTimeout(function(){ 
+				$('#modal-processamento').modal('hide');	
+			}, 50);
+		}
+	});
 }
 
 $(document).ready(function (){
@@ -313,7 +348,6 @@ $(document).ready(function (){
 			});
 		}
 	});
-
 
 	// STEP 2
 	var validator2 = $('#newEndereco').validate({
@@ -465,12 +499,11 @@ $(document).ready(function (){
 					processData: false,    
 					beforeSend: function () {
 						$('#modal-processamento').modal('show');
-
 					}, success: function(data){
+						atualizarTotal();
 						$('#myTab li a#enderecos-tab').addClass("bg-success text-white");
 						$('#myTab li a#payment-tab').removeClass("disabled");
 						$('#myTab li a#payment-tab').tab('show');
-
 						setTimeout(function(){
 							$('#modal-processamento').modal('hide');
 						}, 200);
@@ -507,8 +540,14 @@ $(document).ready(function (){
 	$("#step3 form#card_credit #card_cvv").on('keyup', function(){
 		$('#field_errors_cvv').html('');
 	});
-	$('#step3 form#card_credit').submit(function(event){
-		event.preventDefault();
+	$("#step3 form#card_credit .documento_titular").on('keyup', function(){
+		$('#field_errors_cpf_cart').html('');	
+	});
+	$("#step3 form#boleto .documento_titular").on('keyup', function(){
+		$('#field_errors_cpf_boleto').html('');
+	});
+	$('#step3 form#card_credit').submit(function(e){
+		e.preventDefault();
 		var card = {} 
 		card.card_holder_name = $("#step3 form#card_credit #card_holder_name").val();
 		card.card_expiration_date = $("#step3 form#card_credit #card_expiration").val();
@@ -527,13 +566,14 @@ $(document).ready(function (){
 			$('#field_errors_date').html('Data de expiração inválida.');
 		}else if(!cardValidations.card.card_cvv){
 			$('#field_errors_cvv').html('Número CCV inválido.');
+		}else if(this.documento_titular.value.length != 14){
+			$('#field_errors_cpf_cart').html('Número de CPF incompleto.');
 		}else{
 			pagarme.client.connect({ encryption_key: "{{$checkout->api_criptografada}}" })
 			.then(client => client.security.encrypt(card))
 			.then(card_hash => $('#step3 form#card_credit #card_hash').val(card_hash));
-			
-			  // o próximo passo aqui é enviar o card_hash para seu servidor, e em seguida criar a transação/assinatura 
-			  $.ajax({
+		  	// o próximo passo aqui é enviar o card_hash para seu servidor, e em seguida criar a transação/assinatura 
+		  	$.ajax({
 			  	url: "{{route('checkout.form3', $pedido->id)}}",
 			  	type: 'POST',
 			  	data: new FormData(this),
@@ -544,30 +584,23 @@ $(document).ready(function (){
 			  	beforeSend: function () {
 			  		$('#modal-processamento').modal('show');
 			  	}, success: function(data){
-			  		$('#pedido-confirmation #pedido-image').html('<img src="../public/img/status-pagamento/aprovado.png" class="mx-auto col-4">');
-			  		$('#pedido-confirmation #pedido-status').html(data.nome);
-			  		$('#pedido-confirmation #pedido-message').html(data.descricao);
-			  		$('#pedido-confirmation').fadeIn().removeClass('d-none');
-			  		setTimeout(function(){
-						$('#modal-processamento').modal('hide');
-					}, 200);
-
-
-			  		if(data == "paid" || data == "authorized"){
-			  			$('.status').html('<div class="my-4 col-12 mx-auto text-center"><div> <img src="../public/img/status-pagamento/aprovado.png" class="mx-auto col-4"> </div> <div class="mt-4"> <h3>Pagamento aprovado!</h3> </div> <div class="mt-0 mb-5"> <h5 class="pb-5">Seu número de pedido é: <b>#'+$('.pedido-id').val()+'</b></h5> <h5>Seu pedido já foi recebido e em alguns dias estará a caminho, você receberá por e-mail as alterações nos status. Para mais informações, acesse: <a href="#">Acompanhamento do pedido</a></h5> </div> </div>');
-
-			  		}else if(data == "refused" || data == "chargedback" || data == "refunded"){
-			  			$('.status').html('<div class="my-4 col-12 mx-auto text-center"><div> <img src="../public/img/status-pagamento/recusado.png" class="mx-auto col-4"> </div> <div class="mt-4"> <h3>Pagamento recusado!</h3> </div> <div class="mt-0 mb-5"> <h5>Ops!! Seu pedido foi recusado, tente novamente.</h5> </div> </div>');
-
-			  		}else if(data == "processing" || data == "waiting_payment" || data == "analyzing" || data == "pending_review"){
-			  			$('.status').html('<div class="my-4 col-12 mx-auto text-center"><div> <img src="../public/img/status-pagamento/analise.png" class="mx-auto col-4"> </div> <div class="mt-4"> <h3>Pagamento em análise!</h3> </div> <div class="mt-0 mb-5"> <h5 class="pb-5">Seu número de pedido é: <b>#'+$('.pedido-id').val()+'</b></h5> <h5>Seu pedido foi recebido e está em análise, a qualquer momento receberá por e-mail mais informações.</h5> </div> </div>');
-			  		}	
-
+			  		if(data){
+			  			$('#pedido-status #pedido-image').attr('src', data.image);
+				  		$('#pedido-status #pedido-nome').html(data.nome);
+				  		$('#pedido-status #pedido-message').html(data.descricao);
+				  		$('#pedido-status #pedido-link').attr('href', data.link);
+				  		$('#pedido-status').fadeIn();
+				  		$('#step3').fadeOut();
+				  		$('#descontos').fadeOut();
+			  		}
 			  		setTimeout(function(){
 						$('#modal-processamento').modal('hide');
 					}, 200);
 			  	}, error: function(data){ 
 			  		setTimeout(function(){ 
+			  			$('#pedido-status').addClass('d-none');
+			  			$('#step3').removeClass('d-none');
+			  			$('#descontos').removeClass('d-none');
 						$('#modal-processamento').modal('hide');
 			  			if(!data.responseJSON){
 			  				$('#modal-editar #err').html(data.responseText);
@@ -581,61 +614,56 @@ $(document).ready(function (){
 			  			}
 			  		}, 500);
 			  	}
-			  });
-			}
-			return false;
+		  	});
+		}
+		return false;
 	});
-	$('#step3 form#boleto').submit(function(event){
-		event.preventDefault();
-		$.ajax({
-			url: "{{route('checkout.form4', $pedido->id)}}",
-			type: 'POST',
-			data: new FormData(this),
-			dataType:'JSON',
-			contentType: false,
-			cache: false,
-			processData: false,    
-			beforeSend: function () {
-				$('#modal-processamento').modal('show');
-			}, success: function(data){
-				$('#pedido-confirmation #pedido-image').html('<img src="../public/img/status-pagamento/aprovado.png" class="mx-auto col-4">');
-				$('#pedido-confirmation #pedido-status').html(data.nome);
-		  		$('#pedido-confirmation #pedido-message').html(data.descricao);
-		  		$('#pedido-confirmation').fadeIn().removeClass('d-none');
-		  		setTimeout(function(){
-					$('#modal-processamento').modal('hide');
-				}, 200);
-
-				if(data.status == "paid" || data.status == "authorized"){
-					$('.status').html('<div class="my-4 col-12 mx-auto text-center"><div> <img src="../public/img/status-pagamento/aprovado.png" class="mx-auto col-4"> </div> <div class="mt-4"> <h3>Pagamento efetuado com sucesso</h3> </div> <div class="mt-0 mb-5"> <h5 class="pb-5">Seu número de pedido é: <b>#'+$('.pedido-id').val()+'</b></h5> <h5>Seu pedido já foi recebido e em alguns dias estará a caminho, você receberá por e-mail as alterações nos status. Para mais informações, acesse: <a href="#">Acompanhamento do pedido</a></h5> </div> </div>');
-
-				}else if(data.status == "refused" || data.status == "chargedback" || data.status == "refunded"){
-					$('.status').html('<div class="my-4 col-12 mx-auto text-center"><div> <img src="../public/img/status-pagamento/recusado.png" class="mx-auto col-4"> </div> <div class="mt-4"> <h3>Pagamento não efetivado</h3> </div> <div class="mt-0 mb-5"> <h5>Ops!! Seu pedido foi recusado, tente novamente.</h5> </div> </div>');
-
-				}else if(data.status == "processing" || data.status == "waiting_payment" || data.status == "analyzing" || data.status == "pending_review"){
-					$('.status').html('<div class="my-4 col-12 mx-auto text-center"><div> <img src="../public/img/status-pagamento/analise.png" class="mx-auto col-4"> </div> <div class="mt-4"> <h3>Aguardando o pagamento</h3> </div> <div class="mt-0 mb-5"> <h5 class="pb-5">Seu número de pedido é: <b>#'+$('.pedido-id').val()+'</b></h5> <h5>Seu pedido foi recebido, a confirmação de pagamento do boleto pode demorar em até 48 horas, a qualquer momento receberá por e-mail mais informações. <a href="'+data.boleto_url+'" target="_blank"> Clique aqui para donwload do boleto.</a> </h5> </div> </div>');
+	$('#step3 form#boleto').submit(function(e){
+		e.preventDefault();
+		if(this.documento_titular.value.length == 14){
+			$.ajax({
+				url: "{{route('checkout.form4', $pedido->id)}}",
+				type: 'POST',
+				data: new FormData(this),
+				dataType:'JSON',
+				contentType: false,
+				cache: false,
+				processData: false,    
+				beforeSend: function () {
+					$('#modal-processamento').modal('show');
+				}, success: function(data){
+					if(data){
+			  			$('#pedido-status #pedido-image').attr('src', data.image);
+				  		$('#pedido-status #pedido-nome').html(data.nome);
+				  		$('#pedido-status #pedido-message').html(data.descricao);
+				  		$('#pedido-status #pedido-link').attr('href', data.link);
+				  		window.open(data.link, '_blank');
+				  		$('#pedido-status').fadeIn();
+				  		$('#step3').fadeOut();
+				  		$('#descontos').fadeOut();
+			  		}
+			  		setTimeout(function(){
+						$('#modal-processamento').modal('hide');
+					}, 200);
+				}, error: function(data){ 
+					setTimeout(function(){ 
+						$('#modal-processamento').modal('hide');
+						if(!data.responseJSON){
+							$('#modal-editar #err').html(data.responseText);
+						}else{
+							$('#modal-editar #err').html('');
+							$('input').removeClass('border border-danger');
+							$.each(data.responseJSON.errors, function (key, value) {
+								$('#modal-editar #err').append("<div class='text-danger ml-3'><p>"+value+"</p></div>");
+								$('input[name="'+key+'"]').addClass("border border-danger");
+							});
+						}
+					}, 500);
 				}
-				window.open(data.boleto_url, '_blank');
-
-				setTimeout(function(){
-					$('#modal-processamento').modal('hide');
-				}, 200);
-			}, error: function(data){ 
-				setTimeout(function(){ 
-					$('#modal-processamento').modal('hide');
-					if(!data.responseJSON){
-						$('#modal-editar #err').html(data.responseText);
-					}else{
-						$('#modal-editar #err').html('');
-						$('input').removeClass('border border-danger');
-						$.each(data.responseJSON.errors, function (key, value) {
-							$('#modal-editar #err').append("<div class='text-danger ml-3'><p>"+value+"</p></div>");
-							$('input[name="'+key+'"]').addClass("border border-danger");
-						});
-					}
-				}, 500);
-			}
-		});
+			});
+		}else{
+			$('#field_errors_cpf_boleto').html("Número de CPF incompleto.");
+		}
 	});
 	
 
@@ -662,6 +690,7 @@ $(document).ready(function (){
 			});
 		}	
 	});
+
 
 	/*
 	$('#step1').on('change', function(){

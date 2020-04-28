@@ -3,6 +3,8 @@ Login
 @endsection
 
 @include('template.header')
+@include('template.carregar')
+
 <div id="app" class="min-vh-100">
   <section class="section h-100">
     <div class="d-flex flex-wrap align-items-stretch h-100 m-0">
@@ -118,6 +120,11 @@ Login
 @include('template.footer')
 
 <script type="text/javascript">
+    $(window).load(function() {
+          //Após a leitura da pagina o evento fadeOut do loader é acionado, esta com delay para ser perceptivo em ambiente fora do servidor.
+          $("#modal-processamento").delay(2000).fadeOut("slow");
+      });
+
     $(document).ready(function (){
 
         $('.recuperar').on('click', function(e){

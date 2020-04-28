@@ -3,6 +3,7 @@
 	<div class="card">
 		<div class="card-body">
 			
+			@if($checkout->cumpom_desconto == 1)
 			<form class="row m-0" id="descontos">
 				<div class="col-12 mt-3">
 					<h6> Descontos </h6>
@@ -18,15 +19,16 @@
                     </div>
                 </div>
 			</form>
+			@endif
 
-			<div class="row m-0" id="step3"> 
+			<div class="row m-0 mb-2" id="step3"> 
 				<div class="col-12 mt-2">
 					<h6> Formas de pagamento </h6>
 					<hr class="mt-1">
 				</div>
 				<ul class="col-12 nav nav-pills px-3" id="myTab" role="tablist">
 					<li class="nav-item w-50 p-2">
-						<a class="nav-link h-100 shadow-none border rounded" id="cart-tab" data-toggle="tab" href="#cart" role="tab" aria-controls="cart" aria-selected="true">
+						<a class="nav-link h-100 shadow-none border rounded {{($checkout->pagamento_preferencial == 'Cartão crédito' ? 'active' : '')}}" id="cart-tab" data-toggle="tab" href="#cart" role="tab" aria-controls="cart" aria-selected="true">
 							<div class="row m-0 p-2 h-100" style="line-height: 20px;">
 								<div class="col-2 p-0 m-auto">
 									<i class="mdi mdi-credit-card-outline mdi-36px"></i>
@@ -45,7 +47,7 @@
 						</a>
 					</li>
 					<li class="nav-item w-50 p-2">
-						<a class="nav-link h-100 shadow-none border rounded" id="boleto-tab" data-toggle="tab" href="#boleto" role="tab" aria-controls="boleto" aria-selected="false">
+						<a class="nav-link h-100 shadow-none border rounded {{($checkout->pagamento_preferencial == 'Boleto' ? 'active' : '')}}" id="boleto-tab" data-toggle="tab" href="#boleto" role="tab" aria-controls="boleto" aria-selected="false">
 							<div class="row m-0 p-2 h-100" style="line-height: 20px;">
 								<div class="col-2 p-0 m-auto">
 									<i class="mdi mdi-barcode mdi-36px"></i>
@@ -59,7 +61,7 @@
 				</ul>
 
 				<div class="tab-content col-12" id="myTabContent">
-					<div class="tab-pane fade show" id="cart" role="tabpanel" aria-labelledby="cart-tab">
+					<div class="tab-pane fade {{($checkout->pagamento_preferencial == 'Cartão crédito' ? 'show active' : '')}}" id="cart" role="tabpanel" aria-labelledby="cart-tab">
 						<form class="col-12 mt-3" id="card_credit">
 							@csrf
 							<input type="hidden" name="card_hash" id="card_hash">
@@ -100,27 +102,16 @@
 							<div class="form-group mb-2">
 								<label class="col-lg-6 col-md-6 mb-0">CPF do titular <span class="text-danger">*</span></label>
 								<div class="col-lg-6 col-md-6">
-									<input type="text" class="documento_titular form-control" placeholder="000.000.000-00" onselectstart="return false" onpaste="return false" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" requerid>
-									<div id="field_errors_cpf" class="pt-1 text-danger text-left">
+									<input type="text" name="documento_titular" class="documento_titular form-control" placeholder="000.000.000-00" requerid>
+									<div id="field_errors_cpf_cart" class="pt-1 text-danger text-left">
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-md-12 mb-0">Parcelamento <span class="text-danger">*</span></label>
 								<div class="col-lg-8 col-md-8">
-									<select class="form-control h-100" name="installments">
-										<option value="1">1x de R$ {{ number_format($produto->preco_venda/1, 2 , ",", ".") }}</option>
-										<option value="2">2x de R$ {{ number_format($produto->preco_venda/2, 2 , ",", ".") }}</option>
-										<option value="3">3x de R$ {{ number_format($produto->preco_venda/3, 2 , ",", ".") }}</option>
-										<option value="4">4x de R$ {{ number_format($produto->preco_venda/4, 2 , ",", ".") }}</option>
-										<option value="5">5x de R$ {{ number_format($produto->preco_venda/5, 2 , ",", ".") }}</option>
-										<option value="6">6x de R$ {{ number_format($produto->preco_venda/6, 2 , ",", ".") }}</option>
-										<option value="7">7x de R$ {{ number_format($produto->preco_venda/7, 2 , ",", ".") }}</option>
-										<option value="8">8x de R$ {{ number_format($produto->preco_venda/8, 2 , ",", ".") }}</option>
-										<option value="9">9x de R$ {{ number_format($produto->preco_venda/9, 2 , ",", ".") }}</option>
-										<option value="10">10x de R$ {{ number_format($produto->preco_venda/10, 2 , ",", ".") }}</option>
-										<option value="11"> 11x de R$ {{ number_format($produto->preco_venda/11, 2 , ",", ".") }}</option>
-										<option value="12">12x de R$ {{ number_format($produto->preco_venda/12, 2 , ",", ".") }}</option>
+									<select class="form-control h-100" name="installments" id="installments" requerid>
+										<option disabled> Selecione </option>
 									</select>
 								</div>
 							</div>
@@ -132,7 +123,7 @@
 						</form>
 					</div>
 
-					<div class="tab-pane fade" id="boleto" role="tabpanel" aria-labelledby="boleto-tab">
+					<div class="tab-pane fade {{($checkout->pagamento_preferencial == 'Boleto' ? 'show active' : '')}}" id="boleto" role="tabpanel" aria-labelledby="boleto-tab">
 						<form class="col-12 text-justify mt-4" id="boleto">
 							@csrf
 							<input type="hidden" name="formcount" value="4">
@@ -140,14 +131,16 @@
 								<b><label style="line-height: 20px;">{{$checkout->texto_boleto}}</label></b>
 							</div>
 							<div class="form-group text-left col-6 p-0">
-								<label class="col-md-12 text-left mb-0">Documento <small>CPF/CNPJ</small> <span class="text-danger">*</span></label>
+								<label class="col-md-12 text-left mb-0">CPF do pagador <span class="text-danger">*</span></label>
 								<div class="col-lg-12 col-md-12">
 									<input type="text" class="documento_titular form-control" name="documento_titular" placeholder="000.000.000-00" minlength="14" required>
+									<div id="field_errors_cpf_boleto" class="pt-1 text-danger text-left">
+									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="row">
-									<button class="btn btn-success btn-lg btn-icon icon-right btn-block shadow-none col-12 col-lg-6 mx-auto">Pagar boleto</button>
+									<button class="btn btn-success btn-lg btn-icon icon-right btn-block shadow-none col-12 col-lg-6 mx-auto">Pagar com boleto</button>
 								</div>
 							</div>
 						</form>
@@ -155,21 +148,21 @@
 				</div>
 			</div>
 
-			<div class="my-4 col-12 mx-auto text-center d-none" id="pedido-confirmation">
-				<div id="pedido-image"> 
-					<img src="../public/img/status-pagamento/aprovado.png" class="mx-auto col-4"> 
+			<div class="my-4 col-12 mx-auto text-center" id="pedido-status" style="display:none;">
+				<div> 
+					<img src="" class="mx-auto col-4" id="pedido-image"> 
 				</div> 
 				<div class="mt-3"> 
-					<h3 id="pedido-status"></h3> 
+					<h3 id="pedido-nome"></h3> 
 				</div> 
-				<h6>
+				<label>
 					<span>Seu número de pedido é:</span>
 					<b>{{$pedido->codigo}}</b>
-				</h6>
-				<div class="mt-5"> 
-					<h6 class="mb-0 pedido-message">
+				</label>
+				<div class="mt-4"> 
+					<h6 id="pedido-message" style="line-height: 28px;">
 					</h6>
-					<a href="javascript:void(0)">Acompanhamento do pedido</a> 
+					<a href="javascript:void(0)" id="pedido-link">Acompanhamento do pedido</a> 
 				</div> 
 			</div>
 

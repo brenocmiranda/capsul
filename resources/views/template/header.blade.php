@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-  <title>@yield('title') &#149 {{ env('APP_NAME') }} </title>
+  <title>@yield('title') &#183 {{ env('APP_NAME') }} </title>
 
   <!-- Icons -->
   <link rel="shortcut icon" href="{{ asset('storage/app/system/icon.png').'?'.rand() }}" type="image/x-icon">

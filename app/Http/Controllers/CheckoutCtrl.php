@@ -17,13 +17,14 @@ use App\Enderecos;
 use App\ConfigCheckout;
 use App\ConfigGeral;
 use App\ConfigLogistica;
-
+use App\Status;
 
 class CheckoutCtrl extends Controller
 {
   public function __construct(){
       $this->checkout = ConfigCheckout::first();
       $this->geral = ConfigGeral::first();
+      $this->pagarme = new PagarMe\Client($this->checkout->api_key);
   }
 
   // Criação do pedido
@@ -32,7 +33,8 @@ class CheckoutCtrl extends Controller
     $pedido = Pedidos::create([
       'id_produto' => $produto->id, 
       'codigo' => preg_replace("/[^0-9]/", "", substr(uniqid(date('HisYmd')), 7, 12)), 
-      'valor_compra' => $produto->preco_venda
+      'valor_compra' => $produto->preco_venda,
+      'quantidade' => 1
     ]);
     return view('checkout.index')->with('produto', $produto)->with('pedido', $pedido)->with('checkout', $this->checkout)->with('geral', $this->geral);
   }
@@ -57,7 +59,7 @@ class CheckoutCtrl extends Controller
         $telefone = Telefones::where('id_cliente', $dados->id)->update([
           'numero' => str_replace("(", "+55", str_replace(") ", "", str_replace("-", "", $FormRequest->telefone)))
         ]);
-        $pedido = Pedidos::where('id', $id)->update(['id_cliente' => $dados->id]);
+        $pedido = Pedidos::find($id)->update(['id_cliente' => $dados->id]);
     }else{
         // Cliente não cadaastrado
         $lead = Leads::create([
@@ -76,7 +78,7 @@ class CheckoutCtrl extends Controller
           'id_cliente' => $cliente->id, 
           'numero' => str_replace("(", "+55", str_replace(") ", "", str_replace("-", "", $FormRequest->telefone)))
         ]);
-        $pedido = Pedidos::where('id', $id)->update(['id_cliente' => $cliente->id]);
+        $pedido = Pedidos::find($id)->update(['id_cliente' => $cliente->id]);
     }  
     return response()->json(['success' => true]);
   }
@@ -85,42 +87,45 @@ class CheckoutCtrl extends Controller
 
   // Atualização do endereço
   public function Form2(Request $FormRequest, $id){
-    $pedido = Pedidos::where('id', $id)->first();
-    $pedido = Pedidos::where('id', $id)->update([
-        'id_endereco' => $FormRequest->endereco
-      ]);
+    $pedido = Pedidos::find($id);
     $frete = ConfigLogistica::find($FormRequest->frete);
+
     $rastreamento = PedidosRastreamento::create([
       'tipo' => $frete->nome, 
       'prazo_envio' => $this->addDiasUteis(date('Y-m-d'), $frete->prazo_entrega), 
       'valor_envio' => $frete->valor
     ]);
+    $pedido = Pedidos::find($id)->update([
+        'id_endereco' => $FormRequest->endereco,
+        'id_rastreamento' => $rastreamento->id
+      ]);
     return response()->json(['success' => true]);
   }
 
 
 
-  // Compra efetuada no cartão
+  // Compra efetuada no cartão de crédito
   public function Form3(Request $FormRequest, $id){
-    // Retornando os dados referente ao pedido
-      $pedido = Pedidos::where('id', $id)->first();
+    // Atualizar dados
 
-      // Efetuando pagamento com cartão
-      $pagarme = new PagarMe\Client($checkout->api_key);
-      $transaction = $pagarme->transactions()->create([
-        'amount' => number_format($pedido->valor_compra, 2, '', ''),
+    // Realizando transação
+    if(!empty($FormRequest->card_hash)){
+      $pedido = Pedidos::find($id);
+      $transaction = $this->pagarme->transactions()->create([
+        'amount' => number_format($pedido->valor_compra, 2, '', '') + number_format($pedido->RelationRastreamento->valor_envio, 2, "","") - number_format($pedido->desconto_aplicado, 2, "",""),
         'payment_method' => 'credit_card',
+        'soft_descriptor' => 'CAPSUL',
         'card_hash' => $FormRequest->card_hash,
         'installments' => $FormRequest->installments,
         'customer' => [
-          'external_id' => '#'.$pedido->id_cliente,
+          'external_id' => (string) $pedido->id_cliente,
           'name' => $pedido->RelationCliente->nome,
           'type' => 'individual',
           'country' => 'br',
           'documents' => [
             [
               'type' => 'cpf',
-              'number' => $pedido->RelationCliente->documento
+              'number' => str_replace(".", "", str_replace("-", "", $FormRequest->documento_titular))
             ]
           ],
           'phone_numbers' => [ $pedido->RelationTelefones->numero ],
@@ -130,8 +135,8 @@ class CheckoutCtrl extends Controller
           'name' => $pedido->RelationCliente->nome,
           'address' => [
             'country' => 'br',
-            'street' => $pedido->RelationEndereco->rua,
-            'street_number' => '"'.$pedido->RelationEndereco->numero.'"',
+            'street' => $pedido->RelationEndereco->endereco,
+            'street_number' => $pedido->RelationEndereco->numero,
             'state' => $pedido->RelationEndereco->estado,
             'city' =>  $pedido->RelationEndereco->cidade,
             'complementary' => ($pedido->RelationEndereco->complemento != null ? $pedido->RelationEndereco->complemento : "Sem complemento"),
@@ -140,14 +145,14 @@ class CheckoutCtrl extends Controller
           ]
         ],
         'shipping' => [
-          'name' => $pedido->RelationCliente->nome,
-          'fee' => 1020,
-          'delivery_date' => date('Y-m-d'),
+          'name' => $pedido->RelationEndereco->destinatario,
+          'fee' => number_format($pedido->RelationRastreamento->valor_envio, 2, "",""),
+          'delivery_date' => $pedido->RelationRastreamento->prazo_envio,
           'expedited' => false,
           'address' => [
             'country' => 'br',
-            'street' => $pedido->RelationEndereco->rua,
-            'street_number' => '"'.$pedido->RelationEndereco->numero.'"',
+            'street' => $pedido->RelationEndereco->endereco,
+            'street_number' => $pedido->RelationEndereco->numero,
             'state' => $pedido->RelationEndereco->estado,
             'city' => $pedido->RelationEndereco->cidade,
             'complementary' => ($pedido->RelationEndereco->complemento != null ? $pedido->RelationEndereco->complemento : "Sem complemento"),
@@ -157,79 +162,112 @@ class CheckoutCtrl extends Controller
         ],
         'items' => [
           [
-            'id' => '#'.$pedido->RelationProduto->id,
+            'id' => (string) $pedido->RelationProduto->cod_sku,
             'title' => $pedido->RelationProduto->nome,
-            'unit_price' => str_replace(".", "", $pedido->valor_compra),
-            'quantity' => 1,
-            'tangible' => true
+            'unit_price' => number_format($pedido->RelationProduto->preco_venda, 2, "",""),
+            'quantity' => $pedido->quantidade,
+            'tangible' => ($pedido->RelationProduto->tipo == 'fisico' ? true : false)
           ]
         ]
       ]);
-
-      // Fazendo controle do retorno da transção
+    }else{
+      return false;
+    }
+    
+    // Retorno do status
+    if(!empty($transaction)){
       if($transaction->status == 'authorized' || $transaction->status == 'paid'){
-        $statusID = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 3]);
-        Pedidos::where('id', $id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1', 'id_status' => $statusID->id]);
-        return response()->json($transaction->status);
-
+        // Aprovado
+        $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 3]);
+        Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1']);
+        $dados = Status::select('nome', 'descricao')->find(3);
+        $dados->image = asset('public/img/status-pagamento/aprovado.png');
+        $dados->link = "javascript:void()";
+        return response()->json($dados);
       }elseif($transaction->status == 'refunded' || $transaction->status == 'refused' || $transaction->status == 'chargedback' || $transaction->status == 'pending_refund'){
-        $statusID = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 9]);
-        Pedidos::where('id', $id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1', 'id_status' => $statusID->id]);
-        return response()->json($transaction->status);
-
+         // Recusado
+        $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 9]);
+        Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1']);
+        $dados = Status::select('nome', 'descricao')->find(9);
+        $dados->image = asset('public/img/status-pagamento/recusado.png');
+        $dados->link = "javascript:void()";
+        return response()->json($dados);
       }elseif($transaction->status == 'waiting_payment' || $transaction->status == 'analyzing' || $transaction->status == 'pending_review' || $transaction->status == 'processing'){
-        $statusID = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 1]);
-        Pedidos::where('id', $id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1', 'id_status' => $statusID->id]);
-        return response()->json($transaction->status);
-      }else{
-        return false;
+        // Em análise
+        $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 1]);
+        Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1']);
+        $dados = Status::select('nome', 'descricao')->find(1);
+        $dados->image = asset('public/img/status-pagamento/analise.png');
+        $dados->link = "javascript:void()";
+        return response()->json($dados);
       }
+    }else{
+      return false;
+    }
+    
   }
 
-  // Compra efetuada no boleto
+
+
+  // Compra efetuada pelo boleto
   public function Form4(Request $FormRequest, $id){
-    // Retorno dos dados referente ao pedido
-     $pedido = Pedidos::where('id', $id)->first();
+    // Atualizar dados
 
-     // Efetuando pagamento com boleto
-     $dados = ConfigCheckout::first();
-     $pagarme = new PagarMe\Client($dados->api_key);
-     $transaction = $pagarme->transactions()->create([
-      'amount' => str_replace('.', '',$pedido->valor_compra),
-      'payment_method' => 'boleto',
-      'async' => false,
-      'customer' => [
-        'external_id' => '"'.$pedido->id_cliente.'"',
-        'name' =>  $pedido->RelationCliente->nome,
-        'type' => 'individual',
-        'country' => 'br',
-        'documents' => [
-          [
-            'type' => 'cpf',
-            'number' => $pedido->RelationCliente->documento
-          ]
-        ],
-        'phone_numbers' => [ $pedido->RelationTelefones->numero ],
-        'email' => $pedido->RelationCliente->email
-      ]]);
-
-      // Fazendo controle do retorno da transção
+    // Realizando transação
+    if(!empty($FormRequest->documento_titular)){
+      $pedido = Pedidos::find($id);
+      $transaction = $this->pagarme->transactions()->create([
+        'amount' => number_format($pedido->valor_compra, 2, '', '') + number_format($pedido->RelationRastreamento->valor_envio, 2, "","") - number_format($pedido->desconto_aplicado, 2, "",""),
+        'payment_method' => 'boleto',
+        'async' => false,
+        'customer' => [
+          'external_id' => (string) $pedido->id_cliente,
+          'name' =>  $pedido->RelationCliente->nome,
+          'type' => 'individual',
+          'country' => 'br',
+          'documents' => [
+            [
+              'type' => 'cpf',
+              'number' => str_replace(".", "", str_replace("-", "", $FormRequest->documento_titular))
+            ]
+          ],
+          'phone_numbers' => [ $pedido->RelationTelefones->numero ],
+          'email' => $pedido->RelationCliente->email
+        ]]); 
+    }
+     
+    // Retorno do status
+    if(!empty($transaction)){
       if($transaction->status == 'authorized' || $transaction->status == 'paid'){
-        $statusID = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 3]);
-        Pedidos::where('id', $id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url, 'id_status' => $statusID->id]);
-        return response()->json(['boleto_url' => $transaction->boleto_url, 'status' => $transaction->status]);
-
+        // Aprovado
+        $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 3]);
+        Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url]);
+        $dados = Status::select('nome', 'descricao')->find(3);
+        $dados->image = asset('public/img/status-pagamento/aprovado.png');
+        $dados->link = $transaction->boleto_url;
+        return response()->json($dados);
       }elseif($transaction->status == 'refunded' || $transaction->status == 'refused' || $transaction->status == 'chargedback' || $transaction->status == 'pending_refund'){
-        $statusID = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 9]);
-        Pedidos::where('id', $id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url, 'id_status' => $statusID->id]);
-        return response()->json(['boleto_url' => $transaction->boleto_url, 'status' => $transaction->status]);
-
+         // Recusado
+        $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 9]);
+        Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url]);
+        $dados = Status::select('nome', 'descricao')->find(9);
+        $dados->image = asset('public/img/status-pagamento/recusado.png');
+        $dados->link = $transaction->boleto_url;
+        return response()->json($dados);
       }elseif($transaction->status == 'waiting_payment' || $transaction->status == 'analyzing' || $transaction->status == 'pending_review' || $transaction->status == 'processing'){
-        $statusID = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 1]);
-        Pedidos::where('id', $id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url, 'id_status' => $statusID->id]);
-        return response()->json(['boleto_url' => $transaction->boleto_url, 'status' => $transaction->status]);
+        // Em análise
+        $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 1]);
+        Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url]);
+        $dados = Status::select('nome', 'descricao')->find(1);
+        $dados->image = asset('public/img/status-pagamento/analise.png');
+        $dados->link = $transaction->boleto_url;
+        return response()->json($dados);
       }
+    }
+
   }
+
+
 
   // Detalhes do cliente
   public function DetalhesCliente($documento){
@@ -245,7 +283,7 @@ class CheckoutCtrl extends Controller
 
   // Cadastrando ou atualizar endereço do usuário
   public function UpdateEndereco(Request $request, $id){
-    $pedido = Pedidos::where('id', $id)->first();
+    $pedido = Pedidos::find($id);
       if(empty($request->acao)){
         Enderecos::where('id_cliente', $pedido->id_cliente)->update(['status' => 0]);
         $endereco = Enderecos::create([
@@ -280,12 +318,12 @@ class CheckoutCtrl extends Controller
   // Cadastrando ou atualizar endereço do usuário
   public function UpdateQuantidade($id, $quantidade){
     $pedido = Pedidos::find($id);
-    $total = Pedidos::where('id', $id)->update(['valor_compra' => ($pedido->RelationProduto->preco_venda * $quantidade)]);
+    $total = Pedidos::where('id', $id)->update(['valor_compra' => ($pedido->RelationProduto->preco_venda * $quantidade), 'quantidade' => $quantidade]);
     $dados = Pedidos::find($id);
     return response()->json($dados->valor_compra);
   }
 
-  // Cadastrando retornando dados do endereço do usuário
+  // Retornando dados do endereço do usuário
   public function DetalhesEndereco($id){
       $endereco = Enderecos::find($id);
       return response()->json($endereco);
@@ -300,6 +338,17 @@ class CheckoutCtrl extends Controller
         $dados[] = $envio;
       }
     }
+    return response()->json($dados);
+  }
+
+  // Cálculo de frete, prazo e tipo
+  public function ParcelasQuantidade($valor){
+    $dados = $this->pagarme->transactions()->calculateInstallments([
+      'amount' => number_format($valor, 2, '', ''),
+      'free_installments' => '12',
+      'max_installments' => '12',
+      'interest_rate' => '4.59'
+    ]);
     return response()->json($dados);
   }
 

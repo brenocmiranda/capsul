@@ -495,7 +495,7 @@ Adicionar produto
                     contentType: false,
                     success: function(data){ 
                         for (i = 0; i < data.length; i++) {
-                            $('div.preview').append('<div class="border m-2 rounded col-2 row m-0" id="PreviewImage'+data[i].id+'"> <input type="hidden" name="imagens[]" value="'+data[i].id+'"> <img class="p-3 w-100" src="{{asset("storage/app")}}/'+data[i].caminho+'" style="height: 180px;"><a href="javascript:void(0)" onclick="removeImagem('+data[i].id+')" class="btn btn-light rounded-circle m-n2 border" style="height: 36px;">x</a> </div>');
+                            $('div.preview').append('<div class="border m-2 rounded col-2 d-flex m-0" id="PreviewImage'+data[i].id+'"> <input type="hidden" name="imagens[]" value="'+data[i].id+'"> <img class="p-3 w-100" src="{{asset("storage/app")}}/'+data[i].caminho+'" style="height: 180px;"><a href="javascript:void(0)" onclick="removeImagem('+data[i].id+')" class="btn btn-light rounded-circle m-n2 border" style="height: 36px;">x</a> </div>');
                         } 
                         $('#addFotoGaleria').val('');   
                     }
