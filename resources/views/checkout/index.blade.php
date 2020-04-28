@@ -598,9 +598,9 @@ $(document).ready(function (){
 					}, 200);
 			  	}, error: function(data){ 
 			  		setTimeout(function(){ 
-			  			$('#pedido-status').addClass('d-none');
-			  			$('#step3').removeClass('d-none');
-			  			$('#descontos').removeClass('d-none');
+			  			$('#pedido-status').fadeOut();
+				  		$('#step3').fadeIn();
+				  		$('#descontos').fadeIn();
 						$('#modal-processamento').modal('hide');
 			  			if(!data.responseJSON){
 			  				$('#modal-editar #err').html(data.responseText);
@@ -647,6 +647,9 @@ $(document).ready(function (){
 					}, 200);
 				}, error: function(data){ 
 					setTimeout(function(){ 
+						$('#pedido-status').fadeOut();
+				  		$('#step3').fadeIn();
+				  		$('#descontos').fadeIn();
 						$('#modal-processamento').modal('hide');
 						if(!data.responseJSON){
 							$('#modal-editar #err').html(data.responseText);
