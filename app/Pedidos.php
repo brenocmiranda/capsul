@@ -34,6 +34,10 @@ class Pedidos extends Model
         return $this->belongsTo(PedidosNotas::class, 'id_nota', 'id');
     }
 
+    public function RelationStatus(){
+        return $this->belongsToMany(Status::class, 'pedidos_has_status', 'id_pedido', 'id_status');
+    }
+
     public function RelationRastreamento(){
         return $this->belongsTo(PedidosRastreamento::class, 'id_rastreamento', 'id');
     }
