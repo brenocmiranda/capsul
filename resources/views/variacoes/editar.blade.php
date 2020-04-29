@@ -101,7 +101,7 @@ Editar variação
             },
             success: function(data){
                 $('#variacao-opcao #formOpcao').addClass('d-none');
-                $('.carregamento').html('<div class="mx-auto text-center my-5"><div class="col-sm-12 col-md-12 col-lg-12"><i class="col-sm-2 fa fa-check my-3" style="font-size:62px;"></i></div><label>Opção adicionada com sucesso!</label></div>');
+                $('.carregamento').html('<div class="mx-auto text-center my-5"><div class="col-sm-12 col-md-12 col-lg-12"><i class="col-sm-2 fa fa-check my-3" style="font-size:62px;"></i></div><h6 class="mx-3">Opção adicionada com sucesso!</h6></div>');
                 setTimeout(function(){
                     $('#variacao-opcao #formOpcao').each (function(){
                         this.reset();

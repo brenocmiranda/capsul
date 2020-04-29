@@ -25,6 +25,7 @@ use Mail;
 class ConfiguracoesCtrl extends Controller
 {
     public function __construct(){
+        $this->emails = ConfigEmails::first();
         $this->middleware('auth');
     }
     
@@ -43,7 +44,7 @@ class ConfiguracoesCtrl extends Controller
         }
     }
     public function CarrinhosAtualizar(Request $request){
-        $carrinhos = ConfigCarrinhos::where('id', 1)->update([
+        $carrinhos = ConfigCarrinhos::find(1)->update([
             'ativo' => (isset($request->ativo) ? 1 : 0), 
             'enviar_cupom' => (isset($request->enviar_cupom) ? 's' : 'n'), 
             'assunto' => $request->assunto, 
@@ -67,12 +68,11 @@ class ConfiguracoesCtrl extends Controller
         }
     }
     public function CheckoutAtualizar(Request $request){
-        $checkout = ConfigCheckout::where('id', 1)->update([
+        $checkout = ConfigCheckout::find(1)->update([
             'api_key' => $request->api_key, 
             'api_criptografada' => $request->api_criptografada, 
             'text_topo_mostrar' => (isset($request->text_topo_mostrar) ? 1 : 0), 
             'prazo_entrega' => (isset($request->prazo_entrega) ? 1 : 0), 
-            'calculo_frete' => (isset($request->calculo_frete) ? 1 : 0),
             'cupom_desconto' => (isset($request->cupom_desconto) ? 1 : 0), 
             'data_nascimento' => (isset($request->data_nascimento) ? 1 : 0), 
             'data_previsao' => (isset($request->data_previsao) ? 1 : 0), 
@@ -108,7 +108,7 @@ class ConfiguracoesCtrl extends Controller
         }
     }
     public function EmailsAtualizar(Request $request){
-        $checkout = ConfigEmails::where('id', 1)->update([
+        $checkout = ConfigEmails::find(1)->update([
             'ativo' => (isset($request->ativo) ? 1 : 0), 
             'email_remetente' => $request->email_remetente, 
             'nome_remetente' => $request->nome_remetente, 
@@ -142,7 +142,7 @@ class ConfiguracoesCtrl extends Controller
                     })->rawColumns(['status', 'nome1', 'acoes'])->make(true);
     }
     public function StatusAtualizar(Request $request, $id){
-        $dados = Status::where('id', $id)->update([
+        $dados = Status::find($id)->update([
             'enviar' => (isset($request->enviar) ? 1 : 0), 
             'nome' => $request->nome, 
             'descricao' => $request->descricao]);
@@ -180,7 +180,7 @@ class ConfiguracoesCtrl extends Controller
                 $upload =  $request->logotipo->storeAs('system', $nameFile);
             }
         }
-        $checkout = ConfigGeral::where('id', 1)->update([
+        $checkout = ConfigGeral::find(1)->update([
             'email_pedidos' => $request->email_pedidos, 
             'nome_loja' => $request->nome_loja, 
             'descricao_loja' => $request->descricao_loja, 
@@ -251,7 +251,7 @@ class ConfiguracoesCtrl extends Controller
         return response()->json($dados);
     }
     public function LogisticaEditar(Request $request, $id){
-        $dados = ConfigLogistica::where('id', $id)->update([
+        $dados = ConfigLogistica::find($id)->update([
             'ativo' => (isset($request->ativo) ? 1 : 0), 
             'nome' => $request->nome, 
             'cep_inicial' => str_replace("-", "", $request->cep_inicial), 
@@ -260,7 +260,7 @@ class ConfiguracoesCtrl extends Controller
             'valor' => ($request->valor != null ? str_replace(",", ".", str_replace(".", "", $request->valor)) : '0'),
             'prazo_entrega' => $request->prazo_entrega
         ]);
-        $dados = ConfigLogistica::where('id', $id)->first();
+        $dados = ConfigLogistica::find($id)->first();
         $dados->cep_inicial1 = substr($dados->cep_inicial, 0, 5).'-'.substr($dados->cep_inicial, 5, 8);
         $dados->cep_final1 = substr($dados->cep_final1, 0, 5).'-'.substr($dados->cep_final1, 5, 8);
         $dados->status = ($dados->ativo == 1 ? '<div class="text-success"><i class="fas fa-circle"></i></div>' : '<div class="text-danger"><i class="fas fa-circle"></i></div>');
@@ -268,7 +268,7 @@ class ConfiguracoesCtrl extends Controller
         return response()->json($dados); 
     }
     public function LogisticaExcluir($id){
-        ConfigLogistica::where('id', $id)->delete();
+        ConfigLogistica::find($id)->delete();
         return response()->json(['success' => 'true']); 
     }
 
@@ -295,17 +295,17 @@ class ConfiguracoesCtrl extends Controller
         return response()->json($dados);
     }
     public function SegurancaEditar(Request $request, $id){
-        $dados = ConfigSeguranca::where('id', $id)->update([
+        $dados = ConfigSeguranca::find($id)->update([
             'nome' => $request->nome, 
             'ip_bloqueado' => $request->ip_bloqueado
         ]);
 
-        $dados = ConfigSeguranca::where('id', $id)->first();
+        $dados = ConfigSeguranca::find($id)->first();
         $dados->acoes = '<div class="mx-2 my-auto"> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-primary shadow-none" id="editar"> Editar </a> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-danger shadow-none" id="excluir"> Excluir </a> </div>';
         return response()->json($dados); 
     }
     public function SegurancaExcluir($id){
-        ConfigSeguranca::where('id', $id)->delete();
+        ConfigSeguranca::find($id)->delete();
         return response()->json(['success' => 'true']); 
     }
     
@@ -335,7 +335,7 @@ class ConfiguracoesCtrl extends Controller
                 'password' => Hash::make("capsul123"), 
                 'ativo' => (isset($request->ativo) ? 1 : 0), 
                 '_token' => $request['_token'], 
-                'id_grupo' => $request->id_grupo_usuario
+                'id_grupo' => $request->id_grupo
             ]);
 
             if(is_dir(getcwd().'/storage/app/usuarios')){
@@ -343,50 +343,52 @@ class ConfiguracoesCtrl extends Controller
                 copy(getcwd().'/public/img/user.png', getcwd().'/storage/app/usuarios/'.$name);
                 $caminho = 'usuarios/'.$name;
                 $imagem = Imagens::create(['caminho' =>  $caminho, 'tipo' => 'usuarios']);
-                Usuarios::where('id', $usuario->id)->update(['id_imagem' => $imagem->id]);
+                Usuarios::find($usuario->id)->update(['id_imagem' => $imagem->id]);
             }else{
                 mkdir(getcwd().'/storage/app/usuarios', 0755);
                 $name = uniqid(date('HisYmd')).'.png';
                 copy(getcwd().'/public/img/user.png', getcwd().'/storage/app/usuarios/'.$name);
                 $caminho = 'usuarios/'.$name;
                 $imagem = Imagens::create(['caminho' =>  $caminho, 'tipo' => 'usuarios']);
-                Usuarios::where('id', $usuario->id)->update(['id_imagem' => $imagem->id]);
+                Usuarios::find($usuario->id)->update(['id_imagem' => $imagem->id]);
             }  
 
-            $dados = Usuarios::where('id', $usuario->id)->first();
-            $dados->status = ($dados->ativo == 1 ? '<div class="text-success text-center"><i class="fas fa-circle"></i></div>' : '<div class="text-danger"><i class="fas fa-circle"></i></div>');
-            $dados->acoes = '<div class="mx-2 my-auto"> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-primary shadow-none" id="editar"> Editar </a> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-danger shadow-none" id="excluir"> Excluir </a> </div>'; 
-            return response()->json($dados);
-            /*
-            if($dados->email){
-                Mail::send('emails.cadastro', ['user' => $dados], function ($m) use ($dados) {
-                    $m->from('contato@grupocapsul.com', 'Portal Capsul');
-                    $m->to($dados->email, $dados->nome)->subject('Cadastro no Portal Capsul');
+            // Enviando e-mail de cadastro
+            $dados = Usuarios::find($usuario->id)->first();
+
+            if(!empty($dados->email)){
+                Mail::send('system.emails.cadastro', ['user' => $dados], function ($m) use ($dados) {
+                    $m->from($this->emails->email_remetente, $this->emails->nome_remetente);
+                    $m->to($dados->email, $dados->nome)->subject('Cadastro no '.$this->emails->nome_remetente);
                 });               
             }else{
                  return false;
-            }*/
+            }
+
+            $dados->status = ($dados->ativo == 1 ? '<div class="text-success text-center"><i class="fas fa-circle"></i></div>' : '<div class="text-danger"><i class="fas fa-circle"></i></div>');
+            $dados->acoes = '<div class="mx-2 my-auto"> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-primary shadow-none" id="editar"> Editar </a> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-danger shadow-none" id="excluir"> Excluir </a> </div>'; 
+            return response()->json($dados);      
         }catch (Exception $e) {
             $usuario = Usuarios::delete($usuario->id);
             $imagem = Imagens::delete($imagem->id);
             return false;
         }
     }
-    public function UsuarioEditar(Request $request, $id){
-        $dados = Usuarios::where('id', $id)->update([
+    public function UsuariosEditar(Request $request, $id){
+        $dados = Usuarios::find($id)->update([
             'nome' => $request->nome, 
             'email' => $request->email, 
             'ativo' => (isset($request->ativo) ? 1 : 0), 
-            'id_grupo' => $request->id_grupo_usuario
+            'id_grupo' => $request->id_grupo
         ]);
 
-        $dados = Usuarios::where('id', $id)->first();
+        $dados = Usuarios::find($id)->first();
         $dados->status = ($dados->ativo == 1 ? '<div class="text-success text-center"><i class="fas fa-circle"></i></div>' : '<div class="text-danger"><i class="fas fa-circle"></i></div>');
         $dados->acoes = '<div class="mx-2 my-auto"> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-primary shadow-none" id="editar"> Editar </a> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-danger shadow-none" id="excluir"> Excluir </a> </div>'; 
         return response()->json($dados); 
     }
-    public function UsuarioExcluir($id){
-        Usuarios::where('id', $id)->delete();
+    public function UsuariosExcluir($id){
+        Usuarios::find($id)->delete();
         return response()->json(['success' => 'true']); 
     }
     
@@ -465,7 +467,7 @@ class ConfiguracoesCtrl extends Controller
     }
     public function GruposEditar(Request $request, $id){
         if(isset($request->permissao_total)){
-            $dados = UsuariosGrupos::where('id', $id)->update([
+            $dados = UsuariosGrupos::find($id)->update([
                 'nome' => $request->nome, 
                 'visualizar_produtos' => 1, 
                 'visualizar_marcas' => 1, 
@@ -492,7 +494,7 @@ class ConfiguracoesCtrl extends Controller
                 'gerenciar_geral' => 1
             ]);
         }else{
-            $dados = UsuariosGrupos::where('id', $id)->update([
+            $dados = UsuariosGrupos::find($id)->update([
                 'nome' => $request->nome, 
                 'visualizar_produtos' => (isset($request->visualizar_produtos) ? 1 : 0 ), 
                 'visualizar_marcas' => (isset($request->visualizar_marcas) ? 1 : 0 ), 
@@ -519,7 +521,7 @@ class ConfiguracoesCtrl extends Controller
                 'gerenciar_geral' => (isset($request->gerenciar_geral) ? 1 : 0 )
             ]);
         }
-        $dados = UsuariosGrupos::where('id', $id)->first();
+        $dados = UsuariosGrupos::find($id)->first();
         $dados->acoes = '<div class="mx-2 my-auto"> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-primary shadow-none" id="editar"> Editar </a> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-danger shadow-none" id="excluir"> Excluir </a> </div>';
         return response()->json($dados); 
     }
@@ -527,8 +529,8 @@ class ConfiguracoesCtrl extends Controller
         if($id == 1){
             return false; 
         }else{
-            $usuarios = UsuariosGrupos::where('id_grupo_usuario', $id)->update(['id_grupo_usuario' => 1]);
-            UsuariosGrupos::where('id', $id)->delete();
+            $usuarios = Usuarios::where('id_grupo', $id)->update(['id_grupo' => 1]);
+            UsuariosGrupos::find($id)->delete();
             return response()->json(['success' => 'true']);
         }
     }

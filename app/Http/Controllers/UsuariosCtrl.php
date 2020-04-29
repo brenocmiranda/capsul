@@ -22,12 +22,14 @@ use App\Emails;
 use App\Notificacoes;
 use App\ConfigCheckout;
 use App\ConfigGeral;
+use App\ConfigEmails;
 
 class UsuariosCtrl extends Controller
 {
 
 	public function __construct(){
       $this->geral = ConfigGeral::first();
+      $this->emails = ConfigEmails::first();
   	}
 
 	#-------------------------------------------------------------------
@@ -160,6 +162,26 @@ class UsuariosCtrl extends Controller
         return redirect(route('perfil'));
     }
 
+    // Alterando senha no primeiro acesso
+    public function PrimeiroAcesso(Request $request){
+		$dados = Usuarios::find(Auth::user()->id)->update([
+            'password' => Hash::make($request->confirmpassword), 
+            '_token' => md5(rand()),
+            'email_verified_at' => date("Y-m-d H:i:s")    
+        ]);
+
+        Atividades::create([
+                'nome' => 'Redefinição de senha',
+                'descricao' => 'Você solicitou a redefinição de senha e a modificou.',
+                'icone' => 'mdi-textbox-password',
+                'url' => route('perfil', $request->id),
+                'id_usuario' => $request->id
+            ]);
+
+        return redirect(route('home'));
+	}
+
+
 	// Todas as atividades do usuário
     public function Atividades(){
         $dados = Atividades::where('id_usuario', Auth::id())->where('status', 1)->orderBy('created_at', 'desc')->paginate(6);
@@ -172,7 +194,7 @@ class UsuariosCtrl extends Controller
 			$dados = Usuarios::where('email', $request->email)->first();
 			if(!empty($dados->first())){
 				Mail::send('system.emails.recuperacao', ['user' => $dados], function ($m) use ($dados) {
-					$m->from('suporte@capsul.com.br', 'Grupo Capsul');
+					$m->from($this->emails->email_remetente, $this->emails->nome_remetente);
 					$m->to($dados->email, $dados->nome)->subject('Redefinição de senha');
 				});
 				return response()->json(['success' => true]);

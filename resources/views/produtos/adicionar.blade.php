@@ -595,7 +595,7 @@ Adicionar produto
                 },
                 success: function(data){
                     $('#produtos-categorias #formCategorias').addClass('d-none');
-                    $('.carregamento').html('<div class="mx-auto text-center my-5"><div class="col-sm-12 col-md-12 col-lg-12"><i class="col-sm-2 fa fa-check my-3" style="font-size:62px;"></i></div><label>Categoria adicionada com sucesso!</label></div>');
+                    $('.carregamento').html('<div class="mx-auto text-center my-5"><div class="col-sm-12 col-md-12 col-lg-12"><i class="col-sm-2 fa fa-check" style="font-size:50px;"></i></div><h6 class="my-3">Categoria adicionada com sucesso!</h6></div>');
                     $('#listaCategorias').append('<option value="'+data.id+'">'+data.nome+'</option>');
                     setTimeout(function(){
                         $('#produtos-categorias #formCategorias').each (function(){
@@ -639,7 +639,7 @@ Adicionar produto
                 },
                 success: function(data){
                     $('#produtos-marcas #formMarcas').addClass('d-none');
-                    $('.carregamento').html('<div class="mx-auto text-center my-5"><div class="col-sm-12 col-md-12 col-lg-12"><i class="col-sm-2 fa fa-check my-3" style="font-size:62px;"></i></div><label>Marca adicionada com sucesso!</label></div>');
+                    $('.carregamento').html('<div class="mx-auto text-center my-5"><div class="col-sm-12 col-md-12 col-lg-12"><i class="col-sm-2 fa fa-check" style="font-size:50px;"></i></div><h6 class="my-3">Marca adicionada com sucesso!</h6></div>');
                     setTimeout(function(){
                         $('#produtos-marcas #formMarcas').each (function(){
                             this.reset();
@@ -683,7 +683,7 @@ Adicionar produto
                 },
                 success: function(data){
                     $('#produtos-variantes #formVariantes').addClass('d-none');
-                    $('.carregamento').html('<div class="mx-auto text-center my-5"><div class="col-sm-12 col-md-12 col-lg-12"><i class="col-sm-2 fa fa-check my-3" style="font-size:62px;"></i></div><label>Variação adicionada com sucesso!</label></div>');
+                    $('.carregamento').html('<div class="mx-auto text-center my-5"><div class="col-sm-12 col-md-12 col-lg-12"><i class="col-sm-2 fa fa-check" style="font-size:50px;"></i></div><h6 class="my-3">Variação adicionada com sucesso!</h6></div>');
                     $('#listaVariacoes').append('<option value="'+data.id+'">'+data.nome+'</option>');
                     setTimeout(function(){
                         $('#produtos-variantes #formVariantes').each (function(){

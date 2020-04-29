@@ -333,9 +333,15 @@ $(document).ready(function (){
 				beforeSend: function () {
 					$('#modal-processamento').modal('show');
 				}, success: function(data){
+					$('#myTab li a#profile-tab').removeClass("bg-warning");
 					$('#myTab li a#profile-tab').addClass("bg-success text-white");
 					$('#myTab li a#enderecos-tab').removeClass("disabled");
-					$('#myTab li a#enderecos-tab').tab('show');
+
+					if(!$('#myTab li a#enderecos-tab').hasClass('bg-success')){
+						$('#myTab li a#enderecos-tab').tab('show');
+					}else{
+						$('#myTab li a#payment-tab').tab('show');
+					}				
 
 					setTimeout(function(){
 						$('#modal-processamento').modal('hide');
@@ -348,6 +354,7 @@ $(document).ready(function (){
 			});
 		}
 	});
+
 
 	// STEP 2
 	var validator2 = $('#newEndereco').validate({
@@ -501,9 +508,14 @@ $(document).ready(function (){
 						$('#modal-processamento').modal('show');
 					}, success: function(data){
 						atualizarTotal();
+						$('#myTab li a#enderecos-tab').removeClass("bg-warning");
 						$('#myTab li a#enderecos-tab').addClass("bg-success text-white");
 						$('#myTab li a#payment-tab').removeClass("disabled");
-						$('#myTab li a#payment-tab').tab('show');
+
+						if(!$('#myTab li a#payment-tab').hasClass('bg-success')){
+							$('#myTab li a#payment-tab').tab('show');
+						}		
+
 						setTimeout(function(){
 							$('#modal-processamento').modal('hide');
 						}, 200);
@@ -680,9 +692,9 @@ $(document).ready(function (){
 	});
 	
 
-
 	// Funções extras
 	$('#carrinho #quantidade').on('keyup', function(e){
+		// Alterando quantidade de items do carrinho
 		e.preventDefault();
 		if(this.value != ""){
 			$.ajax({
@@ -703,25 +715,27 @@ $(document).ready(function (){
 			});
 		}	
 	});
-
-
-	/*
-	$('#step1').on('change', function(){
-		if(validator1.successList.length != 0){
-			$( "#step1" ).submit();
-		}
-	});
-	$('#step2').on('change', function(){
-		if(validator2.successList.length != 0){
-			$( "#step2" ).submit();
-		}
-	});*/
-
 	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {		
-		if($("#"+e.relatedTarget.id).hasClass('bg-success')){
-			$('#'+e.relatedTarget.id.replace('-tab', '')+' form:first-child').submit();
+		// Salvando informações alteradas em Form já salvo
+		if($("#"+e.relatedTarget.id).hasClass('bg-warning')){
+			$('#'+e.relatedTarget.id.replace('-tab', '')+' form:first-child').submit(); 
 		}
 	});
+	$('#step1').on('keyup', function(){
+		// Pegando alterações em form já salvo
+		if($('#profile-tab').hasClass('bg-success')){
+			$('#profile-tab').addClass('bg-warning text-white');
+			$('#profile-tab').removeClass('bg-success');
+		}
+	});	
+	$('#step2').on('change', function(){
+		// Pegando alterações em form já salvo
+		if($('#enderecos-tab').hasClass('bg-success')){
+			$('#enderecos-tab').addClass('bg-warning text-white');
+			$('#enderecos-tab').removeClass('bg-success');
+		}
+	});
+	
 });
 </script>
 @endsection 

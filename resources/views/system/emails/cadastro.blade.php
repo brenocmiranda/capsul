@@ -25,7 +25,7 @@
 											<p style="margin-top:0px;margin-bottom:10px">
 											</p><p><b>Olá, {{$user->nome}}, Seja Bem-vindo!!</b></p>
 											<p style="text-align:justify">
-												<label>Acabamos de cadastrar suas credências para acesso a nossa plataforma, para acessar a nossa plataforma pela primeira vez siga os passos abaixo:</label>
+												<label>Acabamos de cadastrar suas credências para acesso, para acessar a nossa plataforma pela primeira vez siga os passos abaixo:</label>
 												<br>
 												<div style="padding:0px 30px 0px 30px;">
 													<label><b>1.</b> Acesse  <a href="{{route('login')}}"><b>a plataforma Capsul.</b></a></label>.
@@ -38,7 +38,7 @@
 													<label><b>Password:</b> capsul123</label>
 													<br>
 													<br>
-													<label><b>3.</b> Após alterada cadastrada a nova senha, você terá acesso a toda nossa plataforma, fique a vontade.</label>
+													<label><b>3.</b> Após entrar na plataforma com esssas credênciais será necessários cadastradar sua a nova senha para ter acesso.</label>
 													<br>
 												</div>
 											</p>

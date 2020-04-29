@@ -22,6 +22,7 @@ class CreatePedidosTable extends Migration
             $table->double('desconto_aplicado')->nullable();
             $table->double('valor_compra');
             $table->integer('quantidade')->default(1);
+            $table->string('ip_compra');
             
             $table->bigInteger('id_produto')->unsigned();
             $table->foreign('id_produto')->references('id')->on('produtos');

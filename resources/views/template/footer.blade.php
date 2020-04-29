@@ -31,20 +31,20 @@
   <script src="{{ asset('public/modules/jquery-selectric/jquery.selectric.min.js') }}"></script>
   <script src="{{ asset('public/modules/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js') }}"></script>
   <script type="text/javascript">
-      function image(input){
-        if(input.files && input.files[0]){
-          var reader = new FileReader();
-          reader.onload = function (oFREvent){
-            $('#'+input.id).prev('#PreviewImage').attr('src', oFREvent.target.result);
-          }
-          reader.readAsDataURL(input.files[0]);
+    function image(input){
+      if(input.files && input.files[0]){
+        var reader = new FileReader();
+        reader.onload = function (oFREvent){
+          $('#'+input.id).prev('#PreviewImage').attr('src', oFREvent.target.result);
         }
+        reader.readAsDataURL(input.files[0]);
       }
+    }
 
-      function dataPtBr(data){
-        var aux = data.split('-');
-        data = aux[2]+'/'+aux[1]+'/'+aux[0];
-        return data;
+    function dataPtBr(data){
+      var aux = data.split('-');
+      data = aux[2]+'/'+aux[1]+'/'+aux[0];
+      return data;
       }
   </script>
 

@@ -76,12 +76,6 @@ Configurações
                     </div>
                     <div class="form-group col-12 mb-0">
                       <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="customCheck6" name="calculo_frete" {{($checkout->calculo_frete == 1 ? ' checked' : '')}}>
-                        <label class="custom-control-label" for="customCheck6">Exibir cálculo de frete no carrinho</label>
-                      </div>
-                    </div>
-                    <div class="form-group col-12 mb-0">
-                      <div class="custom-control custom-checkbox">
                         <input type="checkbox" class="custom-control-input" id="customCheck7" name="cupom_desconto" {{($checkout->cupom_desconto == 1 ? ' checked' : '')}}>
                         <label class="custom-control-label" for="customCheck7">Exibir campo de cupom de desconto</label>
                       </div>

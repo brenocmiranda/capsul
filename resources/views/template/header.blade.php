@@ -9,8 +9,8 @@
   <link rel="shortcut icon" href="{{ asset('storage/app/system/icon.png').'?'.rand() }}" type="image/x-icon">
 
   <!-- Template CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-  <link rel="stylesheet" type="text/css" href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="{{ asset('public/modules/bootstrap/css/bootstrap.min.css') }}">
   <link rel="stylesheet" href="{{ asset('public/modules/fontawesome/css/all.min.css') }}">
   <link rel="stylesheet" href="{{ asset('public/modules/summernote/summernote-bs4.css') }}">

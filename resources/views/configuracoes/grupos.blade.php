@@ -799,7 +799,7 @@ Configurações
           },
           success: function(data){
             $('#modal-editar #formEditar').addClass('d-none');
-            $('.carregamento').html('<div class="mx-auto text-center my-5"><div class="col-sm-12 col-md-12 col-lg-12"><i class="col-sm-2 fa fa-check" style="font-size:50px;"></i></div><h5 class="my-3">Informações alteradas com sucesso!</h5></div>');
+            $('.carregamento').html('<div class="mx-auto text-center my-5"><div class="col-sm-12 col-md-12 col-lg-12"><i class="col-sm-2 fa fa-check" style="font-size:50px;"></i></div><h6 class="my-3">Informações alteradas com sucesso!</h6></div>');
             setTimeout(function(){
               $('#modal-editar #formEditar').each (function(){
                 this.reset();

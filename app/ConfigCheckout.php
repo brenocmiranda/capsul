@@ -8,5 +8,5 @@ class ConfigCheckout extends Model
 {
    	protected $table = 'config_checkout';
     protected $primaryKey = 'id';
-    protected $fillable = ['id', 'api_key', 'api_criptografada', 'text_topo_mostrar', 'prazo_entrega', 'calculo_frete', 'cupom_desconto', 'data_nascimento', 'data_previsao', 'maior_parcela', 'quantidade_itens', 'desconto_boleto', 'desconto_cartao', 'compras_pessoa', 'pagamento_preferencial', 'pedidos_ip', 'tempo_cronometro', 'telefone', 'texto_topo', 'texto_entrega', 'texto_boleto', 'url_boleto', 'url_cartao', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'api_key', 'api_criptografada', 'text_topo_mostrar', 'prazo_entrega', 'cupom_desconto', 'data_nascimento', 'data_previsao', 'maior_parcela', 'quantidade_itens', 'desconto_boleto', 'desconto_cartao', 'compras_pessoa', 'pagamento_preferencial', 'pedidos_ip', 'tempo_cronometro', 'telefone', 'texto_topo', 'texto_entrega', 'texto_boleto', 'url_boleto', 'url_cartao', 'created_at', 'updated_at'];
 }

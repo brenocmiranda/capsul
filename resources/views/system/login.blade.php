@@ -107,8 +107,8 @@ Login
             </div>
             <div class="col-12 m-4 ml-auto">
               <button class="btn btn-success col-3 shadow-none mx-1 d-flex align-items-center justify-content-center ml-auto">
-                <span>Enviar</span> 
-                <i class="mdi mdi-arrow-right px-1"></i></button>
+                <span>Enviar solicitação</span> 
+              </button>
             </div>
           </form>
         </div>
@@ -120,13 +120,7 @@ Login
 @include('template.footer')
 
 <script type="text/javascript">
-    $(window).load(function() {
-          //Após a leitura da pagina o evento fadeOut do loader é acionado, esta com delay para ser perceptivo em ambiente fora do servidor.
-          $("#modal-processamento").delay(2000).fadeOut("slow");
-      });
-
     $(document).ready(function (){
-
         $('.recuperar').on('click', function(e){
           $('#err').html('');
           $('.carregamento').html('');

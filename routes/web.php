@@ -10,7 +10,8 @@ Route::group(['prefix' => ''], function(){
     Route::post('alterando', 'UsuariosCtrl@Alterar')->name('alterando.password');
     
     // Autenticado
-    Route::get('acesso', 'UsuariosCtrl@Acesso')->name('permission')->middleware('auth');
+    Route::get('403', 'UsuariosCtrl@Acesso')->name('permission')->middleware('auth');
+    Route::post('novo', 'UsuariosCtrl@PrimeiroAcesso')->name('novo')->middleware('auth');
     Route::get('logout', 'UsuariosCtrl@Sair')->name('logout')->middleware('auth');
     Route::get('perfil', 'UsuariosCtrl@Perfil')->name('perfil')->middleware('auth');
     Route::post('salvarPerfil', 'UsuariosCtrl@SalvarPerfil')->name('salvar.perfil')->middleware('auth');

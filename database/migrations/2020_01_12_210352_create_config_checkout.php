@@ -20,7 +20,6 @@ class CreateConfigCheckout extends Migration
             $table->string('api_criptografada');
             $table->boolean('text_topo_mostrar');
             $table->boolean('prazo_entrega');
-            $table->boolean('calculo_frete');
             $table->boolean('cupom_desconto');
             $table->boolean('data_nascimento');
             $table->boolean('data_previsao');
@@ -30,7 +29,7 @@ class CreateConfigCheckout extends Migration
             $table->double('desconto_cartao')->nullable();
             $table->string('compras_pessoa');
             $table->string('pagamento_preferencial')->nullable();
-            $table->string('pedidos_ip')->nullable();
+            $table->integer('pedidos_ip')->nullable();
             $table->string('tempo_cronometro')->nullable();
             $table->string('texto_topo')->nullable();
             $table->string('texto_entrega')->nullable();
@@ -45,10 +44,8 @@ class CreateConfigCheckout extends Migration
             array(
                 'api_key' => 'Fornecido pelo meio de pagamento',
                 'api_criptografada' => 'Fornecido pelo meio de pagamento',
-                'endereco_cliente' => '0',
+                'text_topo_mostrar' => '0',
                 'prazo_entrega' => '1',
-                'prazo_uteis' => '0',
-                'calculo_frete' => '0',
                 'cupom_desconto' => '0',
                 'data_nascimento' => '0',
                 'data_previsao' => '0',

@@ -17,6 +17,7 @@ use App\Enderecos;
 use App\ConfigCheckout;
 use App\ConfigGeral;
 use App\ConfigLogistica;
+use App\ConfigSeguranca;
 use App\Status;
 
 class CheckoutCtrl extends Controller
@@ -24,21 +25,32 @@ class CheckoutCtrl extends Controller
   public function __construct(){
       $this->checkout = ConfigCheckout::first();
       $this->geral = ConfigGeral::first();
+      $this->seguranca = ConfigSeguranca::all();
       $this->pagarme = new PagarMe\Client($this->checkout->api_key);
   }
 
   // Criação do pedido
   public function Create($link){
-    $produto = Produtos::where('link_produto', $link)->first();
-    $pedido = Pedidos::create([
-      'id_produto' => $produto->id, 
-      'codigo' => preg_replace("/[^0-9]/", "", substr(uniqid(date('HisYmd')), 7, 12)), 
-      'valor_compra' => $produto->preco_venda,
-      'quantidade' => 1
-    ]);
-    return view('checkout.index')->with('produto', $produto)->with('pedido', $pedido)->with('checkout', $this->checkout)->with('geral', $this->geral);
+    foreach($this->seguranca as $seguranca){
+      if($seguranca->ip_bloqueado == $_SERVER['REMOTE_ADDR']){
+        return view('system.bloqueio');
+      }
+    } 
+    $ip_max = Pedidos::whereNotNull('transacao_pagarme')->whereDate('created_at', date('Y-m-d'))->where('ip_compra', $_SERVER['REMOTE_ADDR'])->count();
+    if($ip_max <= $this->checkout->pedidos_ip){
+      return view('system.bloqueio');
+    }else{
+      $produto = Produtos::where('link_produto', $link)->first();
+      $pedido = Pedidos::create([
+        'id_produto' => $produto->id, 
+        'codigo' => preg_replace("/[^0-9]/", "", substr(uniqid(date('HisYmd')), 7, 12)), 
+        'valor_compra' => $produto->preco_venda,
+        'quantidade' => 1,
+        'ip_compra' => $_SERVER['REMOTE_ADDR']
+      ]);
+      return view('checkout.index')->with('produto', $produto)->with('pedido', $pedido)->with('checkout', $this->checkout)->with('geral', $this->geral);
+    }
   }
-
 
 
 

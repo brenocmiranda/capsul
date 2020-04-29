@@ -201,7 +201,6 @@ Configurações
           $(this).parents('tr').addClass('selected');
           $(this).parent('tr').addClass('selected');
           var data = table.row('tr.selected').data();
-
           if(data.ativo == 1){
               $('.ativo').attr('checked', 'checked');
           }else{
@@ -213,15 +212,15 @@ Configurações
           $('#modal-editar-2').modal('show');
       });
 
-      $('#table tbody').on('click', 'a#excluir', function(){
+      $('#table tbody').on('click', 'a#excluir', function(e){
           var table = $('#table').DataTable();
           table.$('tr.selected').removeClass('selected');
           $(this).parents('tr').addClass('selected');
           $(this).parent('tr').addClass('selected');
           var data = table.row('tr.selected').data();
-
-          e.preventDefault();
+    
           if(confirm('Tem certeza que deseja remover esse usuário?')){
+            e.preventDefault();
             $.ajax({
                 url: 'usuarios/remover/'+data.id,
                 type: 'GET',
@@ -238,7 +237,7 @@ Configurações
 
         // Adicionando novos itens
         $('#modal-adicionar #formAdicionar').on('submit', function(e){
-            var table = $('#table2').DataTable();
+            var table = $('#table').DataTable();
             var data = table.row('tr.selected').data();
             e.preventDefault();
             $.ajax({
@@ -285,7 +284,7 @@ Configurações
 
         // Editando itens
         $('#modal-editar #formEditar').on('submit', function(e){
-            var table = $('#table2').DataTable();
+            var table = $('#table').DataTable();
             var data = table.row('tr.selected').data();
             e.preventDefault();
             $.ajax({
@@ -299,7 +298,7 @@ Configurações
                 },
                 success: function(data){
                     $('#modal-editar #formEditar').addClass('d-none');
-                    $('.carregamento').html('<div class="mx-auto text-center my-5"><div class="col-sm-12 col-md-12 col-lg-12"><i class="col-sm-2 fa fa-check" style="font-size:50px;"></i></div><h5 class="my-3">Informações alteradas com sucesso!</h5></div>');
+                    $('.carregamento').html('<div class="mx-auto text-center my-5"><div class="col-sm-12 col-md-12 col-lg-12"><i class="col-sm-2 fa fa-check" style="font-size:50px;"></i></div><h6 class="my-3">Informações alteradas com sucesso!</h6></div>');
                     setTimeout(function(){
                         $('#modal-editar #formEditar').each (function(){
                             this.reset();
