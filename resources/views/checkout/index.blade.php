@@ -589,6 +589,11 @@ $(document).ready(function (){
 				  		$('#pedido-status #pedido-nome').html(data.nome);
 				  		$('#pedido-status #pedido-message').html(data.descricao);
 				  		$('#pedido-status #pedido-link').attr('href', data.link);
+				  		$('#myTab li a#profile-tab').addClass("disabled");
+				  		$('#myTab li a#endereco-tab').addClass("disabled");
+				  		$('#myTab li a#payment-tab').addClass("disabled");
+				  		$('#myTab li a#payment-tab').addClass(data.estado);
+				  		$('#myTab li a#payment-tab').removeClass("active");
 				  		$('#pedido-status').fadeIn();
 				  		$('#step3').fadeOut();
 				  		$('#descontos').fadeOut();
@@ -637,10 +642,15 @@ $(document).ready(function (){
 				  		$('#pedido-status #pedido-nome').html(data.nome);
 				  		$('#pedido-status #pedido-message').html(data.descricao);
 				  		$('#pedido-status #pedido-link').attr('href', data.link);
-				  		window.open(data.link, '_blank');
+				  		$('#myTab li a#profile-tab').addClass("disabled");
+				  		$('#myTab li a#endereco-tab').addClass("disabled");
+				  		$('#myTab li a#payment-tab').addClass("disabled");
+				  		$('#myTab li a#payment-tab').addClass(data.estado);
+				  		$('#myTab li a#payment-tab').removeClass("active");
 				  		$('#pedido-status').fadeIn();
 				  		$('#step3').fadeOut();
 				  		$('#descontos').fadeOut();
+				  		window.open(data.link, '_blank');
 			  		}
 			  		setTimeout(function(){
 						$('#modal-processamento').modal('hide');
@@ -706,6 +716,12 @@ $(document).ready(function (){
 			$( "#step2" ).submit();
 		}
 	});*/
+
+	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {		
+		if($("#"+e.relatedTarget.id).hasClass('bg-success')){
+			$('#'+e.relatedTarget.id.replace('-tab', '')+' form:first-child').submit();
+		}
+	});
 });
 </script>
 @endsection 

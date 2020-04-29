@@ -183,6 +183,7 @@ class CheckoutCtrl extends Controller
         $dados = Status::select('nome', 'descricao')->find(3);
         $dados->image = asset('public/img/status-pagamento/aprovado.png');
         $dados->link = "javascript:void()";
+        $dados->estado = "bg-success text-white";
         return response()->json($dados);
       }elseif($transaction->status == 'refunded' || $transaction->status == 'refused' || $transaction->status == 'chargedback' || $transaction->status == 'pending_refund'){
          // Recusado
@@ -191,6 +192,7 @@ class CheckoutCtrl extends Controller
         $dados = Status::select('nome', 'descricao')->find(9);
         $dados->image = asset('public/img/status-pagamento/recusado.png');
         $dados->link = "javascript:void()";
+        $dados->estado = "bg-danger text-white";
         return response()->json($dados);
       }elseif($transaction->status == 'waiting_payment' || $transaction->status == 'analyzing' || $transaction->status == 'pending_review' || $transaction->status == 'processing'){
         // Em análise
@@ -199,6 +201,7 @@ class CheckoutCtrl extends Controller
         $dados = Status::select('nome', 'descricao')->find(1);
         $dados->image = asset('public/img/status-pagamento/analise.png');
         $dados->link = "javascript:void()";
+        $dados->estado = "bg-warning text-white";
         return response()->json($dados);
       }
     }else{
@@ -234,6 +237,8 @@ class CheckoutCtrl extends Controller
           'phone_numbers' => [ $pedido->RelationTelefones->numero ],
           'email' => $pedido->RelationCliente->email
         ]]); 
+    }else{
+      return false;
     }
      
     // Retorno do status
@@ -245,6 +250,7 @@ class CheckoutCtrl extends Controller
         $dados = Status::select('nome', 'descricao')->find(3);
         $dados->image = asset('public/img/status-pagamento/aprovado.png');
         $dados->link = $transaction->boleto_url;
+        $dados->estado = "bg-success text-white";
         return response()->json($dados);
       }elseif($transaction->status == 'refunded' || $transaction->status == 'refused' || $transaction->status == 'chargedback' || $transaction->status == 'pending_refund'){
          // Recusado
@@ -253,6 +259,7 @@ class CheckoutCtrl extends Controller
         $dados = Status::select('nome', 'descricao')->find(9);
         $dados->image = asset('public/img/status-pagamento/recusado.png');
         $dados->link = $transaction->boleto_url;
+        $dados->estado = "bg-danger text-white";
         return response()->json($dados);
       }elseif($transaction->status == 'waiting_payment' || $transaction->status == 'analyzing' || $transaction->status == 'pending_review' || $transaction->status == 'processing'){
         // Em análise
@@ -261,8 +268,11 @@ class CheckoutCtrl extends Controller
         $dados = Status::select('nome', 'descricao')->find(1);
         $dados->image = asset('public/img/status-pagamento/analise.png');
         $dados->link = $transaction->boleto_url;
+        $dados->estado = "bg-warning text-white";
         return response()->json($dados);
       }
+    }else{
+      return false;
     }
 
   }

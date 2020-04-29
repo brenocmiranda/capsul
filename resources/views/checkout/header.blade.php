@@ -9,13 +9,13 @@
 		</a>
 	  </li>
 	  <li class="nav-item shadow rounded my-2 bg-white">
-	    <a class="nav-link  p-3" id="enderecos-tab" data-toggle="tab" href="#enderecos" role="tab" aria-controls="enderecos" aria-selected="false">
+	    <a class="nav-link disabled p-3" id="enderecos-tab" data-toggle="tab" href="#enderecos" role="tab" aria-controls="enderecos" aria-selected="false">
 	    	<i class="mdi mdi-truck-fast-outline mdi-24px"></i>
 	    	<span class="font-weight-bold px-3 px-lg-2">Endereço</span>
 	    </a>
 	  </li>
 	  <li class="nav-item shadow rounded my-2 bg-white">
-	    <a class="nav-link p-3" id="payment-tab" data-toggle="tab" href="#payment" role="tab" aria-controls="payment" aria-selected="false">
+	    <a class="nav-link disabled p-3" id="payment-tab" data-toggle="tab" href="#payment" role="tab" aria-controls="payment" aria-selected="false">
 	    	<i class="mdi mdi-credit-card-multiple-outline mdi-24px"></i>
 	    	<span class="font-weight-bold px-3 px-lg-2">Pagamento</span>
 	    </a>
