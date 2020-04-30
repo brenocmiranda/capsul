@@ -85,7 +85,7 @@ Configurações
                   </div>
                   <div class="my-auto">
                     <h6 class="mb-0">Logística</h6>
-                    <label class="text-dark mb-0">Gerencie seus centros de distribuição, estoques, embalagens e opções de fretes.</label>
+                    <label class="text-dark mb-0">Gerencie as opções de fretes, valores e dias de entregas que estarão disponíveis para seus clientes.</label>
                   </div>
                 </a>
               </div>

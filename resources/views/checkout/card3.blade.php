@@ -166,7 +166,7 @@
 				<div class="mt-4"> 
 					<h6 id="pedido-message" style="line-height: 28px;">
 					</h6>
-					<a href="javascript:void(0)" id="pedido-link">Acompanhamento do pedido</a> 
+					<div id="pedido-link"></div> 
 				</div> 
 			</div>
 

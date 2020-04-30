@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Controller;
 use PagarMe;
@@ -133,7 +134,6 @@ class CheckoutCtrl extends Controller
 
   // Compra efetuada no cartão de crédito
   public function Form3(Request $FormRequest, $id){
-    // Atualizar dados
 
     // Realizando transação
     if(!empty($FormRequest->card_hash)){
@@ -141,7 +141,7 @@ class CheckoutCtrl extends Controller
       $transaction = $this->pagarme->transactions()->create([
         'amount' => number_format($pedido->valor_compra, 2, '', '') + number_format($pedido->RelationRastreamento->valor_envio, 2, "","") - number_format($pedido->desconto_aplicado, 2, "",""),
         'payment_method' => 'credit_card',
-        'soft_descriptor' => 'CAPSUL',
+        'soft_descriptor' => 'GRUPOCAPSUL',
         'card_hash' => $FormRequest->card_hash,
         'installments' => $FormRequest->installments,
         'customer' => [
@@ -197,6 +197,7 @@ class CheckoutCtrl extends Controller
           ]
         ]
       ]);
+      Pedidos::find($id)->update(['ip_compra' => $transaction->ip]);
     }else{
       return false;
     }
@@ -209,30 +210,30 @@ class CheckoutCtrl extends Controller
         Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1']);
         $dados = Status::select('nome', 'descricao', 'posicao')->find(3);
         $dados->image = asset('public/img/status-pagamento/aprovado.png');
-        $dados->link = "javascript:void()";
+        $dados->link = '<a href="javascript:void(0)">Acompanhamento do seu pedido</a>';
         $dados->estado = "bg-success text-white";
         $dados->url_redirect = $this->checkout->url_cartao;
-        return response()->json($dados);
+        return json_encode($dados);
       }elseif($transaction->status == 'refunded' || $transaction->status == 'refused' || $transaction->status == 'chargedback' || $transaction->status == 'pending_refund'){
          // Recusado
         $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 10]);
         Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1']);
         $dados = Status::select('nome', 'descricao', 'posicao')->find(10);
         $dados->image = asset('public/img/status-pagamento/recusado.png');
-        $dados->link = "javascript:void()";
+         $dados->link = '<a href="javascript:void(0)" onclick="refazerPayment()" class="btn btn-primary btn-lg btn-icon icon-left shadow-none"><i class="mdi mdi-arrow-left"></i> Tentar novamente</a>';
         $dados->estado = "bg-danger text-white";
         $dados->url_redirect = $this->checkout->url_cartao;
-        return response()->json($dados);
+        return json_encode($dados);
       }elseif($transaction->status == 'waiting_payment' || $transaction->status == 'analyzing' || $transaction->status == 'pending_review' || $transaction->status == 'processing'){
         // Em análise
         $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 1]);
         Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1']);
         $dados = Status::select('nome', 'descricao', 'posicao')->find(1);
         $dados->image = asset('public/img/status-pagamento/analise.png');
-        $dados->link = "javascript:void()";
+        $dados->link = '<a href="javascript:void(0)">Acompanhamento do seu pedido</a>';
         $dados->estado = "bg-warning text-white";
         $dados->url_redirect = $this->checkout->url_cartao;
-        return response()->json($dados);
+        return json_encode($dados);
       }
     }else{
       return false;
@@ -267,6 +268,7 @@ class CheckoutCtrl extends Controller
           'phone_numbers' => [ $pedido->RelationTelefones->numero ],
           'email' => $pedido->RelationCliente->email
         ]]); 
+        Pedidos::find($id)->update(['ip_compra' => $transaction->ip]);
     }else{
       return false;
     }
@@ -279,30 +281,30 @@ class CheckoutCtrl extends Controller
         Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url]);
         $dados = Status::select('nome', 'descricao', 'posicao')->find(3);
         $dados->image = asset('public/img/status-pagamento/aprovado.png');
-        $dados->link = $transaction->boleto_url;
+        $dados->link = '<a href="javascript:void(0)">Acompanhamento do seu pedido</a>';
         $dados->estado = "bg-success text-white";
         $dados->url_redirect = $this->checkout->url_boleto;
-        return response()->json($dados);
+        return json_encode($dados);
       }elseif($transaction->status == 'refunded' || $transaction->status == 'refused' || $transaction->status == 'chargedback' || $transaction->status == 'pending_refund'){
          // Recusado
         $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 10]);
         Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url]);
         $dados = Status::select('nome', 'descricao', 'posicao')->find(10);
         $dados->image = asset('public/img/status-pagamento/recusado.png');
-        $dados->link = $transaction->boleto_url;
+        $dados->link = '<a href="javascript:void(0)" onclick="refazerPayment()" class="btn btn-primary btn-lg btn-icon icon-left shadow-none"><i class="mdi mdi-check"></i> Tentar novamente</a>';
         $dados->estado = "bg-danger text-white";
         $dados->url_redirect = $this->checkout->url_boleto;
-        return response()->json($dados);
+        return json_encode($dados);
       }elseif($transaction->status == 'waiting_payment' || $transaction->status == 'analyzing' || $transaction->status == 'pending_review' || $transaction->status == 'processing'){
         // Em análise
         $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 1]);
         Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url]);
         $dados = Status::select('nome', 'descricao', 'posicao')->find(1);
         $dados->image = asset('public/img/status-pagamento/analise.png');
-        $dados->link = $transaction->boleto_url;
+        $dados->link = '<a href="'.$transaction->boleto_url.'" class="text-decoration-none">Imprimir boleto para pagamento</a>';
         $dados->estado = "bg-warning text-white";
         $dados->url_redirect = $this->checkout->url_boleto;
-        return response()->json($dados);
+        return json_encode($dados);
       }
     }else{
       return false;

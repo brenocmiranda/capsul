@@ -22,8 +22,8 @@ Route::group(['prefix' => ''], function(){
         Route::get('{link}', 'CheckoutCtrl@Create')->name('checkout.create');
         Route::post('form1/{id}', 'CheckoutCtrl@Form1')->name('checkout.form1');
         Route::post('form2/{id}', 'CheckoutCtrl@Form2')->name('checkout.form2');
-        Route::post('form3/{id}', 'CheckoutCtrl@Form3')->name('checkout.form3');
-        Route::post('form4/{id}', 'CheckoutCtrl@Form4')->name('checkout.form4');
+        Route::any('form3/{id}/', 'CheckoutCtrl@Form3')->name('checkout.form3');
+        Route::any('form4/{id}', 'CheckoutCtrl@Form4')->name('checkout.form4');
         Route::get('detalhes/{documento}', 'CheckoutCtrl@DetalhesCliente')->name('checkout.clientes.detalhes');
         Route::post('endereco/{id}', 'CheckoutCtrl@UpdateEndereco')->name('checkout.endereco');
         Route::get('endereco/detalhes/{id}', 'CheckoutCtrl@DetalhesEndereco')->name('checkout.endereco.detalhes');

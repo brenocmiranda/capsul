@@ -4,7 +4,7 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-  <script src="https://assets.pagar.me/pagarme-js/4.5/pagarme.min.js"></script>
+  <script src="https://assets.pagar.me/pagarme-js/4.8/pagarme.min.js"></script>
   <script src="http://jqueryvalidation.org/files/dist/jquery.validate.js"></script>
   <script src="https://assets.pagar.me/checkout/1.1.0/checkout.js"></script>
   <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>

@@ -10,7 +10,7 @@
 						<hr class="mt-1">
 					</div>
 					<div class="form-group col-md-6 p-0 mb-3">
-						<label class="col-md-12 text-left mb-0">Documento <small>CPF/CNPJ</small> <span class="text-danger">*</span></label>
+						<label class="col-md-12 text-left mb-0">Documento <small>{{($checkout->compras_pessoa == "todos" ? 'CPF/CNPJ': ($checkout->compras_pessoa == "pf" ? 'CPF' : 'CNPJ'))}}</small> <span class="text-danger">*</span></label>
 						<div class="col-lg-12 col-md-12">
 							<input type="text" id="documento" class="form-control" name="documento" required>
 						</div>

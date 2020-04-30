@@ -3,9 +3,10 @@ Efetuar pedido
 @endsection
 
 @include('template.header')
-@include('template.carregar')
+
 <div id="app">
 	<div class="main-wrapper">
+		@include('template.carregar')
 		<section class="section">
 			<div class="position-absolute w-100 vh-100 m-0" style="z-index: -1;">
 		      <div class="d-flex h-100">
@@ -230,6 +231,27 @@ function atualizarTotal(){
 	});
 }
 
+function refazerPayment(){
+	$('#modal-processamento').modal('show');
+	// Atualizando dados de frete
+	setTimeout(function(){
+		$('#myTab li a#profile-tab').removeClass("disabled");
+		$('#myTab li a#enderecos-tab').removeClass("disabled");
+		$('#myTab li a#payment-tab').removeClass("disabled");
+		$('#myTab li a#payment-tab').removeClass("bg-danger bg-success text-white");
+		$('#myTab li a#payment-tab').addClass("active");
+		$('#pedido-status #pedido-image').attr('src', '');
+		$('#pedido-status #pedido-nome').html('');
+		$('#pedido-status #pedido-message').html('');
+		$('#pedido-status #pedido-link').html('');
+		$('#step3 #card_hash').val('');
+		$('#pedido-status').fadeOut();
+		$('#step3').fadeIn();
+		$('#descontos').fadeIn();
+	$('#modal-processamento').modal('hide');
+	}, 1000);
+}
+
 $(document).ready(function (){
 	// Mascaras 
 	@if($checkout->compras_pessoa == "todos")
@@ -351,7 +373,7 @@ $(document).ready(function (){
 					$('#data_nascimento').val(data.data_nascimento);
 					if(data.endereco){
 						$.each(data.endereco, function(e){
-							$('.enderecos-list').prepend('<div class="col-6 p-2 end'+data.endereco[e].id+'" style="line-height: 19px;"> <div class="h-100 border rounded row m-0 p-3 text-left"> <div class="form-check w-100 col-12 pr-0"> <input type="radio" name="endereco" value="'+data.endereco[e].id+'" class="form-check-input" id="exampleRadios'+data.endereco[e].id+'" onclick="freteUteis('+data.endereco[e].id+')"> <label class="form-check-label" for="exampleRadios'+data.endereco[e].id+'"> <label class="d-block font-weight-bold mb-0">'+data.endereco[e].destinatario+'</label> <small class="d-block mb-0">'+data.endereco[e].endereco+', '+data.endereco[e].numero+', '+(data.endereco[e].complemento ? data.endereco[e].complemento+', ':'')+data.endereco[e].bairro+'</small> <small class="d-block mb-0">'+data.endereco[e].cidade+' - '+data.endereco[e].estado+'</small><small class="d-block mb-0">'+data.endereco[e].cep.substr(0, 5)+'-'+data.endereco[e].cep.substr(5, 8)+'</small> </label> </div><div class="w-100 text-right col-12 p-0 align-self-end"> <a href="javascript:void(0)" class="" onclick="updateEndereco('+data.endereco[e].id+')"> <i class="ml-auto mdi mdi-pencil"></i> <small>Editar</small> </a></div></div></div>'); });
+							$('.enderecos-list').prepend('<div class="col-6 px-2 pb-2 end'+data.endereco[e].id+'" style="line-height: 19px;"> <div class="h-100 border rounded row m-0 p-3 text-left"> <div class="form-check w-100 col-12 pr-0"> <input type="radio" name="endereco" value="'+data.endereco[e].id+'" class="form-check-input" id="exampleRadios'+data.endereco[e].id+'" onclick="freteUteis('+data.endereco[e].id+')"> <label class="form-check-label" for="exampleRadios'+data.endereco[e].id+'"> <label class="d-block font-weight-bold mb-0">'+data.endereco[e].destinatario+'</label> <small class="d-block mb-0">'+data.endereco[e].endereco+', '+data.endereco[e].numero+', '+(data.endereco[e].complemento ? data.endereco[e].complemento+', ':'')+data.endereco[e].bairro+'</small> <small class="d-block mb-0">'+data.endereco[e].cidade+' - '+data.endereco[e].estado+'</small><small class="d-block mb-0">'+data.endereco[e].cep.substr(0, 5)+'-'+data.endereco[e].cep.substr(5, 8)+'</small> </label> </div><div class="w-100 text-right col-12 p-0 align-self-end"> <a href="javascript:void(0)" class="" onclick="updateEndereco('+data.endereco[e].id+')"> <i class="ml-auto mdi mdi-pencil"></i> <small>Editar</small> </a></div></div></div>'); });
 					}
 					setTimeout(function(){
 						$('#modal-processamento').modal('hide');
@@ -652,7 +674,7 @@ $(document).ready(function (){
 			  			$('#pedido-status #pedido-image').attr('src', data.image);
 				  		$('#pedido-status #pedido-nome').html(data.nome);
 				  		$('#pedido-status #pedido-message').html(data.descricao);
-				  		$('#pedido-status #pedido-link').attr('href', data.link);
+				  		$('#pedido-status #pedido-link').html(data.link);
 				  		$('#myTab li a#profile-tab').addClass("disabled");
 				  		$('#myTab li a#enderecos-tab').addClass("disabled");
 				  		$('#myTab li a#payment-tab').addClass("disabled");
@@ -665,7 +687,7 @@ $(document).ready(function (){
 				  			if(data.url_redirect && data.posicao == 3){
 								window.open(data.url_redirect, '_blank');
 							}
-						}, 1000);
+						}, 2000);
 			  		}
 			  		setTimeout(function(){
 						$('#modal-processamento').modal('hide');
@@ -710,7 +732,7 @@ $(document).ready(function (){
 			  			$('#pedido-status #pedido-image').attr('src', data.image);
 				  		$('#pedido-status #pedido-nome').html(data.nome);
 				  		$('#pedido-status #pedido-message').html(data.descricao);
-				  		$('#pedido-status #pedido-link').attr('href', data.link);
+				  		$('#pedido-status #pedido-link').html(data.link);
 				  		$('#myTab li a#profile-tab').addClass("disabled");
 				  		$('#myTab li a#enderecos-tab').addClass("disabled");
 				  		$('#myTab li a#payment-tab').addClass("disabled");
@@ -726,7 +748,7 @@ $(document).ready(function (){
 				  			if(data.url_redirect && data.posicao == 3){
 				  				window.open(data.url_redirect, '_blank');
 				  			}
-						}, 1000);
+						}, 2000);
 			  		}
 			  		setTimeout(function(){
 						$('#modal-processamento').modal('hide');
@@ -813,7 +835,6 @@ $(document).ready(function (){
 			atualizarDesconto(valor_desconto);
 		}
 	});
-
 });
 </script>
 @endsection 

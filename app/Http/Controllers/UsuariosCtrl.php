@@ -38,7 +38,7 @@ class UsuariosCtrl extends Controller
 
 	// Página inicial
 	public function Home(){
-		return view('system.home');
+		return view('system.home')->with('geral', $this->geral);
 	}
 
     // Login
@@ -120,7 +120,7 @@ class UsuariosCtrl extends Controller
     // Perfil do usuário
 	public function Perfil(){
 		$usuarios = Usuarios::select('nome', 'email', 'id_grupo', 'id_imagem')->find(Auth::id());
-		return view('system.perfil')->with('usuarios', $usuarios);
+		return view('system.perfil')->with('usuarios', $usuarios)->with('geral', $this->geral);
 	}
     public function SalvarPerfil(PerfilRqt $request){
         $dados = $request->all();

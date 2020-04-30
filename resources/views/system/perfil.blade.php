@@ -102,7 +102,7 @@ Meu perfil
                                             </div>  
                                             <h5 class="mt-3 d-block card-subtitletext-break" id="nome">{{ $usuarios->nome }}</h5>
                                             <label class="my-2 d-block text-break" id="email">{{ $usuarios->email }}</label>
-                                            <label class="my-2 d-block text-break text-primary" id="email">Grupo Capsul</label>
+                                            <label class="my-2 d-block text-break text-primary" id="email">{{$geral->nome_loja}}</label>
                                         </div>
                                     </div>
                                 </div>
