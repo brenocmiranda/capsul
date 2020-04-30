@@ -31,9 +31,9 @@ class CreateConfigCheckout extends Migration
             $table->string('pagamento_preferencial')->nullable();
             $table->integer('pedidos_ip')->nullable();
             $table->string('tempo_cronometro')->nullable();
-            $table->string('texto_topo')->nullable();
-            $table->string('texto_entrega')->nullable();
-            $table->string('texto_boleto')->nullable();
+            $table->text('texto_topo')->nullable();
+            $table->text('texto_entrega')->nullable();
+            $table->text('texto_boleto')->nullable();
             $table->string('url_boleto')->nullable();
             $table->string('url_cartao')->nullable();
             

@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 use Illuminate\Http\Request;
 
+use App\Atividades;
 use App\ConfigCarrinhos;
 use App\ConfigCheckout;
 use App\ConfigEmails;
@@ -51,6 +52,14 @@ class ConfiguracoesCtrl extends Controller
             'sms' => $request->sms
         ]);
 
+        Atividades::create([
+            'nome' => 'Atuailização de configurações',
+            'descricao' => 'Você atualizou as configurações de carrinhos abandonados.',
+            'icone' => 'mdi-cart-outline',
+            'url' => route('configuracoes.carrinhos'),
+            'id_usuario' => Auth::id()
+        ]);
+
         \Session::flash('confirm', array(
                 'class' => 'success',
                 'mensagem' => 'Suas informações foram alteradas com sucesso.'
@@ -91,6 +100,14 @@ class ConfiguracoesCtrl extends Controller
             'url_cartao'=> $request->url_cartao
         ]);
 
+        Atividades::create([
+            'nome' => 'Atuailização de configurações',
+            'descricao' => 'Você atualizou as configurações de checkout.',
+            'icone' => 'mdi-credit-card-settings-outline',
+            'url' => route('configuracoes.checkout'),
+            'id_usuario' => Auth::id()
+        ]);
+
         \Session::flash('confirm', array(
                 'class' => 'success',
                 'mensagem' => 'Suas informações foram alteradas com sucesso.'
@@ -113,6 +130,14 @@ class ConfiguracoesCtrl extends Controller
             'email_remetente' => $request->email_remetente, 
             'nome_remetente' => $request->nome_remetente, 
             'avaliar_produto' => $request->avaliar_produto
+        ]);
+
+        Atividades::create([
+            'nome' => 'Atuailização de configurações',
+            'descricao' => 'Você atualizou as configurações de checkout.',
+            'icone' => 'mdi-email-outline',
+            'url' => route('configuracoes.emails'),
+            'id_usuario' => Auth::id()
         ]);
 
         \Session::flash('confirm', array(
@@ -146,6 +171,14 @@ class ConfiguracoesCtrl extends Controller
             'enviar' => (isset($request->enviar) ? 1 : 0), 
             'nome' => $request->nome, 
             'descricao' => $request->descricao]);
+
+        Atividades::create([
+            'nome' => 'Atuailização de configurações',
+            'descricao' => 'Você atualizou as configurações do status '.$request->nome.'.',
+            'icone' => 'mdi-state-machine',
+            'url' => route('configuracoes.status'),
+            'id_usuario' => Auth::id()
+        ]);
 
         $dados = Status::where('id', $id)->first();
         $dados->nome1 = '<div class="mx-2 my-auto"><a href="javascript:void(0)" class="nome mx-3 my-auto" id="editar">'.$dados->nome.'</a></div>';
@@ -198,6 +231,14 @@ class ConfiguracoesCtrl extends Controller
             'whatsapp'=> $request->whatsapp
         ]);
 
+        Atividades::create([
+            'nome' => 'Atuailização de configurações',
+            'descricao' => 'Você atualizou as configurações de geral.',
+            'icone' => 'mdi-home-edit-outline',
+            'url' => route('configuracoes.geral'),
+            'id_usuario' => Auth::id()
+        ]);
+
         \Session::flash('confirm', array(
                 'class' => 'success',
                 'mensagem' => 'Suas informações foram alteradas com sucesso.'
@@ -248,6 +289,15 @@ class ConfiguracoesCtrl extends Controller
         $dados->cep_final1 = substr($dados->cep_final1, 0, 5).'-'.substr($dados->cep_final1, 5, 8);
         $dados->status = ($dados->ativo == 1 ? '<div class="text-success"><i class="fas fa-circle"></i></div>' : '<div class="text-danger"><i class="fas fa-circle"></i></div>');
         $dados->acoes = '<div class="mx-2 my-auto d-flex"> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-primary shadow-none" id="editar"> Editar </a> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-danger shadow-none" id="excluir"> Excluir </a> </div>'; 
+
+        Atividades::create([
+            'nome' => 'Atuailização de configurações',
+            'descricao' => 'Você adicionou um nova configuração de logística, '.$request->nome.'.',
+            'icone' => 'mdi-truck-outline',
+            'url' => route('configuracoes.logistica'),
+            'id_usuario' => Auth::id()
+        ]);
+
         return response()->json($dados);
     }
     public function LogisticaEditar(Request $request, $id){
@@ -265,10 +315,28 @@ class ConfiguracoesCtrl extends Controller
         $dados->cep_final1 = substr($dados->cep_final1, 0, 5).'-'.substr($dados->cep_final1, 5, 8);
         $dados->status = ($dados->ativo == 1 ? '<div class="text-success"><i class="fas fa-circle"></i></div>' : '<div class="text-danger"><i class="fas fa-circle"></i></div>');
         $dados->acoes = '<div class="mx-2 my-auto d-flex"> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-primary shadow-none" id="editar"> Editar </a> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-danger shadow-none" id="excluir"> Excluir </a> </div>';
+
+        Atividades::create([
+            'nome' => 'Atuailização de configurações',
+            'descricao' => 'Você editou uma configuração de logística, '.$request->nome.'.',
+            'icone' => 'mdi-truck-outline',
+            'url' => route('configuracoes.logistica'),
+            'id_usuario' => Auth::id()
+        ]);
+
         return response()->json($dados); 
     }
     public function LogisticaExcluir($id){
         ConfigLogistica::find($id)->delete();
+
+        Atividades::create([
+            'nome' => 'Atuailização de configurações',
+            'descricao' => 'Você removeu uma configuração de logística.',
+            'icone' => 'mdi-truck-outline',
+            'url' => route('configuracoes.logistica'),
+            'id_usuario' => Auth::id()
+        ]);
+
         return response()->json(['success' => 'true']); 
     }
 
@@ -292,6 +360,14 @@ class ConfiguracoesCtrl extends Controller
             'ip_bloqueado' => $request->ip_bloqueado
         ]);
         $dados->acoes = '<div class="mx-2 my-auto"> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-primary shadow-none" id="editar"> Editar </a> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-danger shadow-none" id="excluir"> Excluir </a> </div>'; 
+
+        Atividades::create([
+            'nome' => 'Atuailização de configurações',
+            'descricao' => 'Você adicionou uma nova  configuração de segurança, '.$request->nome.'.',
+            'icone' => 'mdi-lock-outline',
+            'url' => route('configuracoes.seguranca'),
+            'id_usuario' => Auth::id()
+        ]);
         return response()->json($dados);
     }
     public function SegurancaEditar(Request $request, $id){
@@ -302,10 +378,27 @@ class ConfiguracoesCtrl extends Controller
 
         $dados = ConfigSeguranca::find($id)->first();
         $dados->acoes = '<div class="mx-2 my-auto"> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-primary shadow-none" id="editar"> Editar </a> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-danger shadow-none" id="excluir"> Excluir </a> </div>';
+
+        Atividades::create([
+            'nome' => 'Atuailização de configurações',
+            'descricao' => 'Você editou uma configuração de segurança, '.$request->nome.'.',
+            'icone' => 'mdi-lock-outline',
+            'url' => route('configuracoes.seguranca'),
+            'id_usuario' => Auth::id()
+        ]);
         return response()->json($dados); 
     }
     public function SegurancaExcluir($id){
         ConfigSeguranca::find($id)->delete();
+
+        Atividades::create([
+            'nome' => 'Atuailização de configurações',
+            'descricao' => 'Você removeu uma configuração de segurança.',
+            'icone' => 'mdi-lock-outline',
+            'url' => route('configuracoes.seguranca'),
+            'id_usuario' => Auth::id()
+        ]);
+
         return response()->json(['success' => 'true']); 
     }
     
@@ -354,10 +447,9 @@ class ConfiguracoesCtrl extends Controller
             }  
 
             // Enviando e-mail de cadastro
-            $dados = Usuarios::find($usuario->id)->first();
-
+            $dados = Usuarios::find($usuario->id);
             if(!empty($dados->email)){
-                Mail::send('system.emails.cadastro', ['user' => $dados], function ($m) use ($dados) {
+                Mail::send('system.emails.cadastro', ['user' => $dados, 'emails' => $this->emails], function ($m) use ($dados) {
                     $m->from($this->emails->email_remetente, $this->emails->nome_remetente);
                     $m->to($dados->email, $dados->nome)->subject('Cadastro no '.$this->emails->nome_remetente);
                 });               
@@ -367,6 +459,15 @@ class ConfiguracoesCtrl extends Controller
 
             $dados->status = ($dados->ativo == 1 ? '<div class="text-success text-center"><i class="fas fa-circle"></i></div>' : '<div class="text-danger"><i class="fas fa-circle"></i></div>');
             $dados->acoes = '<div class="mx-2 my-auto"> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-primary shadow-none" id="editar"> Editar </a> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-danger shadow-none" id="excluir"> Excluir </a> </div>'; 
+
+            Atividades::create([
+                'nome' => 'Atuailização de configurações',
+                'descricao' => 'Você adicionou um novo usuário, '.$request->nome.'.',
+                'icone' => 'mdi-account-cog-outline',
+                'url' => route('configuracoes.usuarios'),
+                'id_usuario' => Auth::id()
+            ]);
+
             return response()->json($dados);      
         }catch (Exception $e) {
             $usuario = Usuarios::delete($usuario->id);
@@ -385,10 +486,29 @@ class ConfiguracoesCtrl extends Controller
         $dados = Usuarios::find($id)->first();
         $dados->status = ($dados->ativo == 1 ? '<div class="text-success text-center"><i class="fas fa-circle"></i></div>' : '<div class="text-danger"><i class="fas fa-circle"></i></div>');
         $dados->acoes = '<div class="mx-2 my-auto"> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-primary shadow-none" id="editar"> Editar </a> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-danger shadow-none" id="excluir"> Excluir </a> </div>'; 
+
+        Atividades::create([
+            'nome' => 'Atuailização de configurações',
+            'descricao' => 'Você editou as informações do usuário, '.$request->nome.'.',
+            'icone' => 'mdi-account-cog-outline',
+            'url' => route('configuracoes.usuarios'),
+            'id_usuario' => Auth::id()
+        ]);
+
         return response()->json($dados); 
     }
     public function UsuariosExcluir($id){
+        Atividades::where('id_usuario', $id)->delete();
         Usuarios::find($id)->delete();
+
+        Atividades::create([
+            'nome' => 'Atuailização de configurações',
+            'descricao' => 'Você removeu um usuário.',
+            'icone' => 'mdi-account-cog-outline',
+            'url' => route('configuracoes.usuarios'),
+            'id_usuario' => Auth::id()
+        ]);
+
         return response()->json(['success' => 'true']); 
     }
     
@@ -463,6 +583,15 @@ class ConfiguracoesCtrl extends Controller
             ]); 
         }
         $dados->acoes = '<div class="mx-2 my-auto"> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-primary shadow-none" id="editar"> Editar </a> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-danger shadow-none" id="excluir"> Excluir </a> </div>'; 
+
+        Atividades::create([
+            'nome' => 'Atuailização de configurações',
+            'descricao' => 'Você adicionou um grupo de permissões, '.$request->nome.'.',
+            'icone' => 'mdi-account-group-outline',
+            'url' => route('configuracoes.grupos'),
+            'id_usuario' => Auth::id()
+        ]);
+
         return response()->json($dados);
     }
     public function GruposEditar(Request $request, $id){
@@ -523,6 +652,13 @@ class ConfiguracoesCtrl extends Controller
         }
         $dados = UsuariosGrupos::find($id)->first();
         $dados->acoes = '<div class="mx-2 my-auto"> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-primary shadow-none" id="editar"> Editar </a> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-danger shadow-none" id="excluir"> Excluir </a> </div>';
+        Atividades::create([
+            'nome' => 'Atuailização de configurações',
+            'descricao' => 'Você editou informações do grupo de permissão, '.$request->nome.'.',
+            'icone' => 'mdi-account-group-outline',
+            'url' => route('configuracoes.grupos'),
+            'id_usuario' => Auth::id()
+        ]);
         return response()->json($dados); 
     }
     public function GruposExcluir($id){
@@ -531,6 +667,15 @@ class ConfiguracoesCtrl extends Controller
         }else{
             $usuarios = Usuarios::where('id_grupo', $id)->update(['id_grupo' => 1]);
             UsuariosGrupos::find($id)->delete();
+
+            Atividades::create([
+                'nome' => 'Atuailização de configurações',
+                'descricao' => 'Você removeu um grupo de permissão.',
+                'icone' => 'mdi-account-group-outline',
+                'url' => route('configuracoes.grupos'),
+                'id_usuario' => Auth::id()
+            ]);
+
             return response()->json(['success' => 'true']);
         }
     }

@@ -60,7 +60,7 @@ class ClientesCtrl extends Controller
             'ativo' => (isset($request->ativo) ? 1 : 0), 
             'nome' => $request->nome, 
             'email' => $request->email, 
-            'documento' => $request->documento, 
+            'documento' => preg_replace('/[^0-9]/', '', $request->documento), 
             'data_nascimento' => (isset($request->data_nascimento) ? $request->data_nascimento : null), 
             'observacoes' => (isset($request->observacoes) ? $request->observacoes : null), 
             'senha' => (isset($request->senha) ? Hash::make($request->senha) : null), 
@@ -109,7 +109,7 @@ class ClientesCtrl extends Controller
         if(Auth::user()->RelationGrupo->gerenciar_clientes == 1){
             $grupos = Grupos::all();
             $cliente = Clientes::find($id);
-            $enderecos = Enderecos::where('id_cliente', $id)->get();
+            $enderecos = Enderecos::where('id_cliente', $id)->where('status', 1)->get();
             $pedidos = Pedidos::where('id_cliente', $id)->WhereNotNull('transacao_pagarme')->get();
             $carrinhos = Pedidos::where('id_cliente', $id)->WhereNull('transacao_pagarme')->get();
             return view('clientes.editar')->with('cliente', $cliente)->with('grupos', $grupos)->with('pedidos', $pedidos)->with('carrinhos', $carrinhos)->with('enderecos', $enderecos);
@@ -129,7 +129,7 @@ class ClientesCtrl extends Controller
             'ativo' => (isset($request->ativo) ? 1 : 0), 
             'nome' => $request->nome, 
             'email' => $request->email, 
-            'documento' => $request->documento, 
+            'documento' => preg_replace('/[^0-9]/', '', $request->documento), 
             'data_nascimento' => (isset($request->data_nascimento) ? $request->data_nascimento : null), 
             'observacoes' => (isset($request->observacoes) ? $request->observacoes : null), 
             'senha' => (isset($request->senha) ? Hash::make($request->senha) : null), 
@@ -140,24 +140,41 @@ class ClientesCtrl extends Controller
             'numero' => str_replace("(", "+55", str_replace(") ", "", str_replace("-", "", $request->telefone)))
         ]);
 
+        Enderecos::where('id_cliente', $id)->update(['status' => 0]);
         if(isset($request->cep)){
-            Enderecos::where('id_cliente', $id)->delete();
             foreach($request->cep as $key => $enderecos){
-                // Inserindo o usuario
-                Enderecos::create([
-                    'nome' => $request->nomeEndereco[$key],
-                    'status' => ($key == 0 ? 1 : 0),
-                    'destinatario' => $request->destinatario[$key],
-                    'cep' => $request->cep[$key],
-                    'endereco' => $request->endereco[$key],
-                    'numero' => $request->numero[$key],
-                    'complemento' => (isset($request->complemento[$key]) ? $request->complemento[$key] : null),
-                    'referencia' => (isset($request->referencia[$key]) ? $request->referencia[$key] : null),
-                    'bairro' => (isset($request->bairro[$key]) ? $request->bairro[$key] : $request->bairro1[$key]),
-                    'cidade' => (isset($request->cidade[$key]) ? $request->cidade[$key] : $request->cidade1[$key]),
-                    'estado' => (isset($request->estado[$key]) ? $request->estado[$key] : $request->estado1[$key]),
-                    'id_cliente' => $id
-                ]); 
+                if($request->id_endereco[$key]){
+                    Enderecos::find($request->id_endereco[$key])->update([
+                        'nome' => $request->nomeEndereco[$key],
+                        'status' => 1,
+                        'destinatario' => $request->destinatario[$key],
+                        'cep' => $request->cep[$key],
+                        'endereco' => $request->endereco[$key],
+                        'numero' => $request->numero[$key],
+                        'complemento' => (isset($request->complemento[$key]) ? $request->complemento[$key] : null),
+                        'referencia' => (isset($request->referencia[$key]) ? $request->referencia[$key] : null),
+                        'bairro' => (isset($request->bairro[$key]) ? $request->bairro[$key] : $request->bairro1[$key]),
+                        'cidade' => (isset($request->cidade[$key]) ? $request->cidade[$key] : $request->cidade1[$key]),
+                        'estado' => (isset($request->estado[$key]) ? $request->estado[$key] : $request->estado1[$key]),
+                        'id_cliente' => $id
+                    ]); 
+                }else{
+                    Enderecos::create([
+                        'nome' => $request->nomeEndereco[$key],
+                        'status' => 1,
+                        'destinatario' => $request->destinatario[$key],
+                        'cep' => $request->cep[$key],
+                        'endereco' => $request->endereco[$key],
+                        'numero' => $request->numero[$key],
+                        'complemento' => (isset($request->complemento[$key]) ? $request->complemento[$key] : null),
+                        'referencia' => (isset($request->referencia[$key]) ? $request->referencia[$key] : null),
+                        'bairro' => (isset($request->bairro[$key]) ? $request->bairro[$key] : $request->bairro1[$key]),
+                        'cidade' => (isset($request->cidade[$key]) ? $request->cidade[$key] : $request->cidade1[$key]),
+                        'estado' => (isset($request->estado[$key]) ? $request->estado[$key] : $request->estado1[$key]),
+                        'id_cliente' => $id
+                    ]); 
+                    
+                }
             }
         }
 

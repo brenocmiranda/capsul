@@ -209,7 +209,7 @@ Configurações
           $('.nome1').val(data.nome);
           $('.email').val(data.email);
           $('.id_grupo').val(data.id_grupo);
-          $('#modal-editar-2').modal('show');
+          $('#modal-editar').modal('show');
       });
 
       $('#table tbody').on('click', 'a#excluir', function(e){
@@ -247,7 +247,7 @@ Configurações
                 beforeSend: function(){
                     $('#modal-adicionar #formAdicionar').addClass('d-none');
                     $('.carregamento').html('<div class="mx-auto text-center my-5"><div class="spinner-border my-3" role="status"><span class="sr-only"> Loading... </span></div><p>Salvando informações...</p></div>');
-                    $('#modal-adicionar-2 #err').html('');
+                    $('#modal-adicionar #err').html('');
                 },
                 success: function(data){
                     $('#modal-adicionar #formAdicionar').addClass('d-none');
@@ -294,7 +294,7 @@ Configurações
                 beforeSend: function(){
                     $('#modal-editar #formEditar').addClass('d-none');
                     $('.carregamento').html('<div class="mx-auto text-center my-5"><div class="spinner-border my-3" role="status"><span class="sr-only"> Loading... </span></div><p>Salvando informações...</p></div>');
-                    $('#modal-editar-2 #err').html('');
+                    $('#modal-editar #err').html('');
                 },
                 success: function(data){
                     $('#modal-editar #formEditar').addClass('d-none');

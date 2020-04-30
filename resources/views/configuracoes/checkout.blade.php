@@ -113,10 +113,9 @@ Configurações
                       <label>Permitir compras de <span class="text-danger">*</span></label>
                       <div class="input-group">
                         <select class="form-control h-100" name="compras_pessoa" required>
-                          <option value="Nenhum">Nenhum</option>
-                          <option value="Pessoa física e jurídica" {{($checkout->compras_pessoa == 'Pessoa física e jurídica' ? ' selected' : '')}}>Pessoa física e jurídica</option>
-                          <option value="Pessoa física" {{($checkout->compras_pessoa == 'Pessoa física' ? ' selected' : '')}}>Pessoa física</option>
-                          <option value="Pessoa jurídica" {{($checkout->compras_pessoa == 'Pessoa jurídica' ? ' selected' : '')}}>Pessoa jurídica</option>
+                          <option value="todos" {{($checkout->compras_pessoa == 'todos' ? ' selected' : '')}}>Pessoa física e jurídica</option>
+                          <option value="pf" {{($checkout->compras_pessoa == 'pf' ? ' selected' : '')}}>Pessoa física</option>
+                          <option value="pj" {{($checkout->compras_pessoa == 'pj' ? ' selected' : '')}}>Pessoa jurídica</option>
                         </select>
                       </div>  
                     </div>  
@@ -125,8 +124,8 @@ Configurações
                       <div class="input-group">
                         <select class="form-control h-100" name="pagamento_preferencial">
                           <option disabled="disabled">Selecione</option>
-                          <option value="Cartão crédito" {{($checkout->pagamento_preferencial == 'Cartão crédito' ? ' selected' : '')}}>Cartão crédito</option>
-                          <option value="Boleto" {{($checkout->pagamento_preferencial == 'Boleto' ? ' selected' : '')}}>Boleto</option>
+                          <option value="cart_credit" {{($checkout->pagamento_preferencial == 'Cartão crédito' ? ' selected' : '')}}>Cartão crédito</option>
+                          <option value="boleto" {{($checkout->pagamento_preferencial == 'Boleto' ? ' selected' : '')}}>Boleto</option>
                         </select>
                       </div>  
                     </div> 

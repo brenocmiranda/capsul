@@ -29,7 +29,7 @@ Redefinição de Senha
 							@csrf
 							<div class="text-center mx-3">
 								<img class="rounded-circle mb-2" src="{{ asset('storage/app/'.'/'.$user->RelationImagens->caminho) }}" width="80" height="80">
-								<h6 class="my-2">Olá, {{ $user->nome }}!</h6>
+								<h6 class="my-2">Olá, {{explode(" ", $user->nome)[0]}}!</h6>
 								<label>Para prosseguir na redefinição de senha preencha os campos abaixo com a sua nova senha que deverá conter números, letras e caracteres especiais.</label>
 							</div>
 							<div class="col-12 my-3">

@@ -30,6 +30,7 @@ Route::group(['prefix' => ''], function(){
         Route::get('frete/{id}', 'CheckoutCtrl@CalculoFrete')->name('checkout.frete');
         Route::get('quantidade/{id}/{quantidade}', 'CheckoutCtrl@UpdateQuantidade')->name('checkout.quantidade');
         Route::get('parcelas/{valor}', 'CheckoutCtrl@ParcelasQuantidade')->name('checkout.parcelas');
+        Route::get('descontos/{id}/{valor}', 'CheckoutCtrl@DescontosCheckout')->name('checkout.descontos');
     });
 });
 

@@ -193,7 +193,7 @@ class UsuariosCtrl extends Controller
 		if(!empty($request->email)){
 			$dados = Usuarios::where('email', $request->email)->first();
 			if(!empty($dados->first())){
-				Mail::send('system.emails.recuperacao', ['user' => $dados], function ($m) use ($dados) {
+				Mail::send('system.emails.recuperacao', ['user' => $dados, 'emails' => $this->emails], function ($m) use ($dados) {
 					$m->from($this->emails->email_remetente, $this->emails->nome_remetente);
 					$m->to($dados->email, $dados->nome)->subject('Redefinição de senha');
 				});

@@ -30,7 +30,7 @@
 					<label class="col-12 mt-n2">Selecione um endereço acima e veja as formas de envio disponíveis.</label>
 				</div>
 
-				<div class="form-group mt-4">
+				<div class="form-group mt-4 mb-0">
 					<div class="ml-auto col-lg-5 col-md-5">
 						<button class="btn btn-success btn-lg btn-icon icon-right btn-block shadow-none" disabled>Continue <i class="mdi mdi-send"></i></button>
 					</div>

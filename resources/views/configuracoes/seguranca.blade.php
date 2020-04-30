@@ -135,6 +135,8 @@ Configurações
 @section('support')
 <script type="text/javascript">
     $(document).ready(function (){
+        $('.ip_bloqueado').mask('099.099.099.099');
+        
         // Limpando as informações para adicionar
         $('#adicionar').on('click', function(){
             $('#modal-adicionar #formAdicionar').each (function(){

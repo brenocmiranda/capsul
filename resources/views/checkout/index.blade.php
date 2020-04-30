@@ -4,64 +4,69 @@ Efetuar pedido
 
 @include('template.header')
 @include('template.carregar')
+<div id="app">
+	<div class="main-wrapper">
+		<section class="section">
+			<div class="position-absolute w-100 vh-100 m-0" style="z-index: -1;">
+		      <div class="d-flex h-100">
+		          <img src="{{ asset('public/img/bg_banner1.png') }}" class="mt-auto w-100 h-50 fixed-bottom" style="transform: rotate(180deg);">
+		      </div>
+		    </div>
 
-<section class="section">
-	<div class="position-absolute w-100 vh-100 m-0" style="z-index: -1;">
-      <div class="d-flex h-100">
-          <img src="{{ asset('public/img/bg_banner1.png') }}" class="mt-auto w-100 h-50 fixed-bottom" style="transform: rotate(180deg);">
-      </div>
-    </div>
+			<div class="section-header p-0">
+				<header class="col-12 bg-white">
+					<div class="container row m-auto">
+						<div class="col-6">
+							<div class="row h-100 align-items-center justify-content-start">
+								<div class="col-sm-12 col-md-2 py-sm-0 my-3 text-center">
+									<img src="{{ asset('storage/app/system/capsul.png') }}" width="148" title="Logo Capsul">
+								</div>
+							</div>
+						</div>
+						<div class="col-6">
+							<div class="row h-100 align-items-center justify-content-end">
+								<img src="https://dka575ofm4ao0.cloudfront.net/pages-transactional_logos/retina/1949/PagarMe_Logo_PRINCIPAL-02.png" height="30" alt="PagarME" class="mb-2">
+							</div>
+						</div>
+					</div>
+				</header>
+			</div>
 
-	<div class="section-header p-0">
-		<header class="col-12 bg-white">
-			<div class="container row m-auto">
-				<div class="col-6">
-					<div class="row h-100 align-items-center justify-content-start">
-						<div class="col-sm-12 col-md-2 py-sm-0 my-3 text-center">
-							<img src="{{ asset('storage/app/system/capsul.png') }}" width="148" title="Logo Capsul">
+			@if($produto->quantidade <= $produto->quantidade_minima && $checkout->text_topo_mostrar == 1)
+			<div class="col-12 alert alert-primary text-center mx-auto p-2 mb-0">
+				<p><?=$checkout->texto_topo?></p>
+				<div class="row">
+					<h6 class="mb-0 ml-auto px-1"><i class="fas fa-clock"></i> Oferta termina em </h6>
+					<h6 class="mb-0 mr-auto text-dark" id="clock"></h6>
+				</div>
+			</div>
+			@endif
+
+			<div class="section-body">
+				<div class="row">
+					<div class="row col-12 col-sm-12 col-md-11 mx-md-auto m-0">
+						@include('checkout.header')
+						<div class="col-12 col-sm-12 col-md-10 row">
+							<div class="col-12 col-sm-12 col-md-7 my-3">
+								<div class="tab-content">
+									@include('checkout.card1')
+							 		@include('checkout.card2')
+							  		@include('checkout.card3')
+								</div>	
+							</div>
+
+							@include('checkout.footer')
 						</div>
 					</div>
 				</div>
-				<div class="col-6">
-					<div class="row h-100 align-items-center justify-content-end">
-						<img src="https://dka575ofm4ao0.cloudfront.net/pages-transactional_logos/retina/1949/PagarMe_Logo_PRINCIPAL-02.png" height="30" alt="PagarME" class="mb-2">
-					</div>
-				</div>
+				<footer class="text-right text-white fixed-bottom p-4 d-none d-md-block" style="z-index: -1;">
+					<label class="mb-0">Todos os direitos reservados ao {{$geral->nome_loja}}</label><br>
+					<label class="mb-0">CNPJ: {{$geral->cnpj}}</label>
+				</footer>
 			</div>
-		</header>
+		</section>
 	</div>
-
-	@if($produto->quantidade <= $produto->quantidade_minima && $checkout->text_topo_mostrar == 1)
-	<div class="col-12 alert alert-success text-center mx-auto">
-		<p><?=$checkout->texto_topo?></p>
-		<i class="fas fa-clock"></i> Oferta termina em <b><span class="getting-started text-dark"></span></b>
-	</div>
-	@endif
-
-	<div class="section-body">
-		<div class="row">
-			<div class="row col-12 col-sm-12 col-md-11 mx-md-auto m-0">
-				@include('checkout.header')
-				<div class="col-12 col-sm-12 col-md-10 row">
-					<div class="col-12 col-sm-12 col-md-7 my-3">
-						<div class="tab-content">
-							@include('checkout.card1')
-					 		@include('checkout.card2')
-					  		@include('checkout.card3')
-						</div>	
-					</div>
-
-					@include('checkout.footer')
-				</div>
-			</div>
-		</div>
-		<footer class="text-right text-white fixed-bottom p-4 d-none d-md-block" style="z-index: -1;">
-			<label>Todos os direitos reservados ao {{$geral->nome_loja}}</label><br>
-			<label>CNPJ: {{$geral->cnpj}}</label>
-		</footer>
-	</div>
-</section>
-
+</div>
 
 @section('support')
 <script type="text/javascript">
@@ -77,13 +82,13 @@ function freteUteis(id){
 				$.each(data, function(e){
 					@if($checkout->prazo_entrega == 1)
 						@if($checkout->data_previsao == 1)
-							$('.envio').append('<div class="col-6 px-2" style="line-height: 15px;"> <div class="h-100 border rounded d-flex p-3 text-left"> <div class="form-check"> <input type="radio" name="frete" value="'+data[e].id+'" class="form-check-input" id="exampleRad'+data[e].id+'" onclick="atualizarFrete('+data[e].valor+')"> <label class="form-check-label" for="exampleRad'+data[e].id+'"> <label class="d-block font-weight-bold mb-1">'+data[e].nome+'</label> <small class="d-block mb-0">Valor: '+data[e].valor.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"})+' </small> <small class="d-block mb-0">Prazo entrega: '+data[e].prazo_entrega+' dias</small><small class="d-block mb-0">Previsão (dias úteis): '+moment().businessAdd(data[e].prazo_entrega).format("DD/MM/YYYY")+'</small> </label> </div> </div> </div>'); 
+							$('.envio').append('<div class="col-6 px-2" style="line-height: 15px;"> <div class="h-100 border rounded d-flex p-3 text-left"> <div class="form-check"> <input type="radio" name="frete" value="'+data[e].id+'" class="form-check-input" id="exampleRad'+data[e].id+'" onclick="atualizarFrete('+data[e].valor+')"> <label class="form-check-label" for="exampleRad'+data[e].id+'"> <label class="d-block font-weight-bold mb-1">'+data[e].nome+'</label> <small class="d-block mb-0">Valor: '+data[e].valor.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"})+' </small> <small class="d-block mb-0">Prazo entrega: até '+data[e].prazo_entrega+' dias</small><small class="d-block mb-0">Previsão (dias úteis): '+moment().businessAdd(data[e].prazo_entrega).format("DD/MM/YYYY")+'</small> </label> </div> </div> </div>'); 
 						@else
-							$('.envio').append('<div class="col-6 px-2" style="line-height: 15px;"> <div class="h-100 border rounded d-flex p-3 text-left"> <div class="form-check"> <input type="radio" name="frete" value="'+data[e].id+'" class="form-check-input" id="exampleRad'+data[e].id+'" onclick="atualizarFrete('+data[e].valor+')"> <label class="form-check-label" for="exampleRad'+data[e].id+'"> <label class="d-block font-weight-bold mb-1">'+data[e].nome+'</label> <small class="d-block mb-0">Valor: '+data[e].valor.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"})+' </small> <small class="d-block mb-0">Prazo entrega: '+data[e].prazo_entrega+' dias</small></label> </div> </div> </div>'); 
+							$('.envio').append('<div class="col-6 px-2" style="line-height: 15px;"> <div class="h-100 border rounded d-flex p-3 text-left"> <div class="form-check"> <input type="radio" name="frete" value="'+data[e].id+'" class="form-check-input" id="exampleRad'+data[e].id+'" onclick="atualizarFrete('+data[e].valor+')"> <label class="form-check-label" for="exampleRad'+data[e].id+'"> <label class="d-block font-weight-bold mb-1">'+data[e].nome+'</label> <small class="d-block mb-0">Valor: '+data[e].valor.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"})+' </small> <small class="d-block mb-0">Prazo entrega: até '+data[e].prazo_entrega+' dias</small></label> </div> </div> </div>'); 
 						@endif
 					@else
 						@if($checkout->data_previsao == 1)
-							$('.envio').append('<div class="col-6 px-2" style="line-height: 15px;"> <div class="h-100 border rounded d-flex p-3 text-left"> <div class="form-check"> <input type="radio" name="frete" value="'+data[e].id+'" class="form-check-input" id="exampleRad'+data[e].id+'" onclick="atualizarFrete('+data[e].valor+')"> <label class="form-check-label" for="exampleRad'+data[e].id+'"> <label class="d-block font-weight-bold mb-1">'+data[e].nome+'</label> <small class="d-block mb-0">Valor: '+data[e].valor..toLocaleString("pt-BR", { style: "currency" , currency:"BRL"})+' </small> <small class="d-block mb-0">Previsão (dias úteis): '+moment().businessAdd(data[e].prazo_entrega).format("DD/MM/YYYY")+'</small> </label> </div> </div> </div>'); 
+							$('.envio').append('<div class="col-6 px-2" style="line-height: 15px;"> <div class="h-100 border rounded d-flex p-3 text-left"> <div class="form-check"> <input type="radio" name="frete" value="'+data[e].id+'" class="form-check-input" id="exampleRad'+data[e].id+'" onclick="atualizarFrete('+data[e].valor+')"> <label class="form-check-label" for="exampleRad'+data[e].id+'"> <label class="d-block font-weight-bold mb-1">'+data[e].nome+'</label> <small class="d-block mb-0">Valor: '+data[e].valor..toLocaleString("pt-BR", { style: "currency" , currency:"BRL"})+' </small> <small class="d-block mb-0">Previsão (dias úteis): até '+moment().businessAdd(data[e].prazo_entrega).format("DD/MM/YYYY")+'</small> </label> </div> </div> </div>'); 
 						@else
 							$('.envio').append('<div class="col-6 px-2" style="line-height: 15px;"> <div class="h-100 border rounded d-flex p-3 text-left"> <div class="form-check"> <input type="radio" name="frete" value="'+data[e].id+'" class="form-check-input" id="exampleRad'+data[e].id+'" onclick="atualizarFrete('+data[e].valor+')"> <label class="form-check-label" for="exampleRad'+data[e].id+'"> <label class="d-block font-weight-bold mb-1">'+data[e].nome+'</label> <small class="d-block mb-0">Valor: '+data[e].valor..toLocaleString("pt-BR", { style: "currency" , currency:"BRL"})+' </small></label> </div> </div> </div>'); 
 						@endif
@@ -157,12 +162,29 @@ function atualizarQuantidade(valor){
 
 function atualizarDesconto(valor){
 	// Insere valores de desconto
-	valor_frete = Number(valor);
-	valor_atual = Number($('#carrinho #valor_total_input').val()) + valor_frete;
-	$('#carrinho .valor_frete').html('');
-	$('#carrinho .valor_frete').html(valor_frete.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"}));
-	$('#carrinho #valor_frete_input').val(valor_frete);
-	atualizarTotal();
+	valor_desconto = Number(valor);
+	valor_atual = Number($('#carrinho #valor_total_input').val()) + valor_desconto;
+	$('#carrinho .valor_desconto').html('');
+	$('#carrinho .valor_desconto').html(valor_desconto.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"}));
+	$('#carrinho #valor_desconto_input').val(valor_desconto);
+	$.ajax({
+		url: "../checkout/descontos/{{$pedido->id}}/"+valor_desconto,
+		type: 'GET',  
+		beforeSend: function () {
+			$('#modal-processamento').modal('show');
+		}, success: function(data){
+			atualizarTotal();
+			setTimeout(function(){
+				$('#modal-processamento').modal('hide');
+			}, 50);
+		}, error: function(data){ 
+			setTimeout(function(){ 
+				$('#modal-processamento').modal('hide');	
+			}, 50);
+		}
+	});
+
+	
 }
 
 function atualizarTotal(){
@@ -170,6 +192,7 @@ function atualizarTotal(){
 	valor_atual = Number($('#carrinho #valor_produto_input').val()) - Number($('#carrinho #valor_desconto_input').val()) + Number($('#carrinho #valor_frete_input').val());
 	$('#carrinho .valor_total').html('');
 	$('#carrinho .valor_total').html(valor_atual.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"}));
+	$('#step3 .valor_total').html(valor_atual.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"}));
 	$('#carrinho #valor_total_input').val(valor_atual);
 	// Retorna parcelas
 	$.ajax({
@@ -209,8 +232,22 @@ function atualizarTotal(){
 
 $(document).ready(function (){
 	// Mascaras 
-	$('#documento').mask('000.000.000-00', {reverse: true});
-	$('.documento_titular').mask('000.000.000-00', {reverse: true});
+	@if($checkout->compras_pessoa == "todos")
+		var options = {
+			onKeyPress : function(cpfcnpj, e, field, options) {
+				var masks = ['000.000.000-000', '00.000.000/0000-00'];
+				var mask = (cpfcnpj.length > 14) ? masks[1] : masks[0];
+				$('#documento').mask(mask, options);
+			}
+		};
+		$('#documento').mask('000.000.000-000', options);
+    @elseif($checkout->compras_pessoa == "pf")
+        $('#documento').mask('000.000.000-00', {reverse: true});
+    @else
+        $('#documento').mask('00.000.000/0000-00', {reverse: true});
+    @endif
+
+	$('.documento_titular').mask('000.000.000-00');
 	$('#telefone').mask('(00) 00000-0000');
 	$('#cep').mask('00000-000');
 	$('#card_expiration').mask('00/00');
@@ -241,7 +278,6 @@ $(document).ready(function (){
 		return this.optional(element) || retorno;
 	}, "Informe um CPF válido");
 
-
 	// STEP 1 
 	var validator1 = $('#step1').validate({
 		rules: {
@@ -255,8 +291,12 @@ $(document).ready(function (){
 			},
 			documento: {
 				required:true,
-				minlength:14,
-				cpf:true
+				@if($checkout->compras_pessoa == "pf")
+					minlength:14,
+					cpf:true
+				@elseif($checkout->compras_pessoa == "pj")
+					minlength:18,
+				@endif
 			},
 			telefone: {
 				required:true,
@@ -284,8 +324,18 @@ $(document).ready(function (){
 		action : 'keyup, blur',
 	});
 	$('#documento').blur(function(){
-		var documento = this.value.replace(".", "").replace(".", "").replace("-", "");
-		if(documento && documento.length == 11 && validator2.errorList.length == 0){
+		@if($checkout->compras_pessoa == "todos")
+			if($("#documento").val().length == 14){
+		       	var documento = this.value.replace(".", "").replace(".", "").replace("-", "");
+		    } else {
+		        var documento = this.value.replace(".", "").replace(".", "").replace("/", "").replace("-", "");
+		    }
+	    @elseif($checkout->compras_pessoa == "pf")
+	       	var documento = this.value.replace(".", "").replace(".", "").replace("-", "");
+	    @else
+	        var documento = this.value.replace(".", "").replace(".", "").replace("/", "").replace("-", "");
+	    @endif
+		if(documento && (documento.length == 11 || documento.length == 14) && validator2.errorList.length == 0){
 			$.ajax({
 				url: "../checkout/detalhes/"+documento,
 				type: 'GET',    
@@ -293,6 +343,7 @@ $(document).ready(function (){
 					$('#modal-processamento').modal('show');
 				}, success: function(data){
 					$('#nome').val(data.nome);
+					$('#destinatario').val(data.nome);
 					$('#email').val(data.email);
 					$('#telefone').unmask();
 					$('#telefone').val(data.telefone.numero.replace("+55", ""));
@@ -310,10 +361,11 @@ $(document).ready(function (){
 					$('#step1 #email').val('');
 					$('#step1 #data_nascimento').val('');
 					$('#step1 #telefone').val('');
+					$('#destinatario').val('');
 					setTimeout(function(){
 						$('#modal-processamento').modal('hide');
-					}, 200);
-					$('#nome').focus();
+						$('#step1 #nome').focus();
+					}, 100);
 				}
 			});	
 		}
@@ -345,11 +397,11 @@ $(document).ready(function (){
 
 					setTimeout(function(){
 						$('#modal-processamento').modal('hide');
-					}, 200);
+					}, 100);
 				}, error: function(data){ 
 					setTimeout(function(){ 
 						$('#modal-processamento').modal('hide');	
-					}, 500);
+					}, 100);
 				}
 			});
 		}
@@ -467,11 +519,11 @@ $(document).ready(function (){
 					$('#step2').fadeIn().removeClass('d-none');
 					setTimeout(function(){
 						$('#modal-processamento').modal('hide');
-					}, 200);
+					}, 100);
 				}, error: function(data){ 
 					setTimeout(function(){ 
 						$('#modal-processamento').modal('hide');	
-					}, 500);
+					}, 100);
 				}
 			});
 		}		
@@ -518,11 +570,11 @@ $(document).ready(function (){
 
 						setTimeout(function(){
 							$('#modal-processamento').modal('hide');
-						}, 200);
+						}, 100);
 					}, error: function(data){ 
 						setTimeout(function(){ 
 							$('#modal-processamento').modal('hide');	
-						}, 500);
+						}, 100);
 					}
 				});
 			}else{
@@ -602,17 +654,22 @@ $(document).ready(function (){
 				  		$('#pedido-status #pedido-message').html(data.descricao);
 				  		$('#pedido-status #pedido-link').attr('href', data.link);
 				  		$('#myTab li a#profile-tab').addClass("disabled");
-				  		$('#myTab li a#endereco-tab').addClass("disabled");
+				  		$('#myTab li a#enderecos-tab').addClass("disabled");
 				  		$('#myTab li a#payment-tab').addClass("disabled");
 				  		$('#myTab li a#payment-tab').addClass(data.estado);
 				  		$('#myTab li a#payment-tab').removeClass("active");
 				  		$('#pedido-status').fadeIn();
 				  		$('#step3').fadeOut();
 				  		$('#descontos').fadeOut();
+				  		setTimeout(function(){
+				  			if(data.url_redirect && data.posicao == 3){
+								window.open(data.url_redirect, '_blank');
+							}
+						}, 1000);
 			  		}
 			  		setTimeout(function(){
 						$('#modal-processamento').modal('hide');
-					}, 200);
+					}, 100);
 			  	}, error: function(data){ 
 			  		setTimeout(function(){ 
 			  			$('#pedido-status').fadeOut();
@@ -629,7 +686,7 @@ $(document).ready(function (){
 			  					$('input[name="'+key+'"]').addClass("border border-danger");
 			  				});
 			  			}
-			  		}, 500);
+			  		}, 100);
 			  	}
 		  	});
 		}
@@ -655,18 +712,25 @@ $(document).ready(function (){
 				  		$('#pedido-status #pedido-message').html(data.descricao);
 				  		$('#pedido-status #pedido-link').attr('href', data.link);
 				  		$('#myTab li a#profile-tab').addClass("disabled");
-				  		$('#myTab li a#endereco-tab').addClass("disabled");
+				  		$('#myTab li a#enderecos-tab').addClass("disabled");
 				  		$('#myTab li a#payment-tab').addClass("disabled");
 				  		$('#myTab li a#payment-tab').addClass(data.estado);
 				  		$('#myTab li a#payment-tab').removeClass("active");
 				  		$('#pedido-status').fadeIn();
 				  		$('#step3').fadeOut();
 				  		$('#descontos').fadeOut();
-				  		window.open(data.link, '_blank');
+				  		if(data.url_redirect && data.posicao == 1){
+				  			window.open(data.link, '_blank');
+				  		}
+				  		setTimeout(function(){
+				  			if(data.url_redirect && data.posicao == 3){
+				  				window.open(data.url_redirect, '_blank');
+				  			}
+						}, 1000);
 			  		}
 			  		setTimeout(function(){
 						$('#modal-processamento').modal('hide');
-					}, 200);
+					}, 100);
 				}, error: function(data){ 
 					setTimeout(function(){ 
 						$('#pedido-status').fadeOut();
@@ -683,7 +747,7 @@ $(document).ready(function (){
 								$('input[name="'+key+'"]').addClass("border border-danger");
 							});
 						}
-					}, 500);
+					}, 100);
 				}
 			});
 		}else{
@@ -735,7 +799,21 @@ $(document).ready(function (){
 			$('#enderecos-tab').removeClass('bg-success');
 		}
 	});
-	
+	$('#clock').countdown("{{date('Y-m-d H:i:s', strtotime('+'.$checkout->tempo_cronometro.' minutes'))}}", function(event) {
+		// Contador de tempo
+        $(this).html(event.strftime('%H:%M:%S'));
+    });
+	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {	
+		// Aplicando desconto estabelescidos no checkout
+		if(e.target.id.replace('-tab', '') == 'payment' || e.target.id.replace('-tab', '') == 'cart'){
+			valor_desconto = $('#carrinho #valor_produto_input').val() * (parseFloat('{{$checkout->desconto_cartao}}')/100);
+			atualizarDesconto(valor_desconto);
+		}else{
+			valor_desconto = $('#carrinho #valor_produto_input').val() * (parseFloat('{{$checkout->desconto_boleto}}')/100);
+			atualizarDesconto(valor_desconto);
+		}
+	});
+
 });
 </script>
 @endsection 

@@ -12,7 +12,7 @@
 					<div class="form-group col-md-6 p-0 mb-3">
 						<label class="col-md-12 text-left mb-0">Documento <small>CPF/CNPJ</small> <span class="text-danger">*</span></label>
 						<div class="col-lg-12 col-md-12">
-							<input type="text" id="documento" class="form-control" name="documento" placeholder="000.000.000-00" minlength="14" required>
+							<input type="text" id="documento" class="form-control" name="documento" required>
 						</div>
 					</div>
 					<div class="form-group mb-3">
@@ -47,7 +47,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="form-group">
+					<div class="form-group mb-0">
 						<div class="ml-auto col-lg-5 col-md-5">
 							<button class="btn btn-success btn-lg btn-icon icon-right btn-block shadow-none">Continue <i class="mdi mdi-send"></i></button>
 						</div>

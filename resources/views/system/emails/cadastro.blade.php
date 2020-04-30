@@ -23,22 +23,22 @@
 									<td align="left" id="m_42936987098664594m_1127568141554999x_content-5" style="font-size:15px;font-family:Helvetica,Arial,sans-serif;line-height:25px;color:#222222">
 										<div><span>
 											<p style="margin-top:0px;margin-bottom:10px">
-											</p><p><b>Olá, {{$user->nome}}, Seja Bem-vindo!!</b></p>
+											</p><p><b>Olá, {{explode(" ", $user->nome)[0]}}, bem-vindo!!</b></p>
 											<p style="text-align:justify">
-												<label>Acabamos de cadastrar suas credências para acesso, para acessar a nossa plataforma pela primeira vez siga os passos abaixo:</label>
+												<label>Acabamos de cadastrar as suas credências, para acessar a nossa plataforma pela primeira vez siga os passos abaixo:</label>
 												<br>
 												<div style="padding:0px 30px 0px 30px;">
 													<label><b>1.</b> Acesse  <a href="{{route('login')}}"><b>a plataforma Capsul.</b></a></label>.
 													<br>
 													<br>
-													<label><b>2.</b> Acessando o link acima você entrará com suas credênciais padrões na nossa página de acesso a plataforma:</label>
+													<label><b>2.</b> Após acessar o link acima, na página de login você digitará as suas credênciais padrões para acesso a plataforma:</label>
 													<br>
 													<label><b>Login:</b> {{$user->email}}</label>
 													<br>
 													<label><b>Password:</b> capsul123</label>
 													<br>
 													<br>
-													<label><b>3.</b> Após entrar na plataforma com esssas credênciais será necessários cadastradar sua a nova senha para ter acesso.</label>
+													<label><b>3.</b> Como será o seu primeiro acesso, será necessário cadastrar novas senhas, respeitando as regras de segurança.(Mínimo 6 caracteres)</label>
 													<br>
 												</div>
 											</p>
@@ -74,6 +74,7 @@
 																	<div>
 																		<p style="margin-top:0px;margin-bottom:10px">
 																			<b>Um grande abraço da equipe Capsul!</b><br>
+																			<label>{{$emails->email_remetente}}</label><br>
 																			<a href="http://grupocapsul.com.br/" target="_blank">grupocapsul.com.br</a><br>
 																			
 																		</p>

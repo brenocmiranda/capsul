@@ -15,7 +15,7 @@
 
 										<div>
 											<p style="margin-top:0px;margin-bottom:10px">
-												<b>Olá, {{$user->nome}}, você solicitou a redefinição de senha?</b>
+												<b>Olá, {{explode(" ", $user->nome)[0]}}, você solicitou a redefinição de senha?</b>
 											</p>
 											<p style="text-align:justify">
 												<label>Recebemos sua solicitação de recuperação de senha através da nossa plataforma, para prosseguir o processo siga as etapas abaixo:</label>
@@ -58,8 +58,8 @@
 													<td align="left" id="x_m_42936987098664594m_1127568141554999x_content-9" style="font-size:14px; font-family:Helvetica,Arial,sans-serif; line-height:23px; color:#222222; width:100%">
 														<div>
 															<p style="margin-top:0px; margin-bottom:10px"><b>Grupo Capsul</b><br>
-																<label>suporte@capsul.com.br</label> <br>
-																<a href="http://compreca.com.br/" target="_blank" rel="noopener noreferrer" data-auth="NotApplicable">grupocapsul.com.br</a><br>
+																<label>{{$emails->email_remetente}}</label><br>
+																<a href="http://grupocapsul.com.br/" target="_blank" rel="noopener noreferrer" data-auth="NotApplicable">grupocapsul.com.br</a><br>
 															</p>
 														</div>
 													</td>

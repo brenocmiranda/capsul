@@ -118,6 +118,7 @@
           </ul>
         </li>
         
+        @if(Auth::user()->RelationGrupo->visualizar_checkout == 1 || Auth::user()->RelationGrupo->gerenciar_checkout == 1 || Auth::user()->RelationGrupo->visualizar_geral == 1 || Auth::user()->RelationGrupo->gerenciar_geral == 1 || Auth::user()->RelationGrupo->visualizar_usuarios == 1 || Auth::user()->RelationGrupo->gerenciar_usuarios == 1 ||Auth::user()->RelationGrupo->visualizar_logistica == 1 || Auth::user()->RelationGrupo->gerenciar_logistica == 1)
         <li class="nav-item dropdown {{(Request::segment(1) == 'configuracoes' ? 'active' : '')}}">
           <a href="{{route('configuracoes')}}" class="nav-link has-dropdown menu-border" data-toggle="dropdown"><i class="mdi mdi-cog-outline mdi-24px"></i> <span>Configurações</span></a>
           <ul class="dropdown-menu">                  
@@ -145,6 +146,7 @@
             @endif
           </ul>
         </li>
+        @endif
       </ul> 
       
       <div class="mt-2 mb-2 p-3 hide-sidebar-mini">

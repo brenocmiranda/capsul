@@ -31,7 +31,7 @@ Configurações
                         </div>
                         <div class="card-body">
                             <div class="col-12 table-responsive">
-                                <label>Gerencie seus centros de distribuição, estoques, embalagens e opções de fretes.</label>
+                                <label>Gerencie as opções de fretes, valores e dias de entregas que estarão disponíveis para seus clientes.</label>
                                 <table class="table table-striped text-center w-100" id="table">
                                     <thead class="">
                                         <tr class="cab">

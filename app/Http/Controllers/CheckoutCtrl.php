@@ -37,26 +37,29 @@ class CheckoutCtrl extends Controller
       }
     } 
     $ip_max = Pedidos::whereNotNull('transacao_pagarme')->whereDate('created_at', date('Y-m-d'))->where('ip_compra', $_SERVER['REMOTE_ADDR'])->count();
-    if($ip_max <= $this->checkout->pedidos_ip){
+    if($ip_max >= $this->checkout->pedidos_ip){
       return view('system.bloqueio');
     }else{
       $produto = Produtos::where('link_produto', $link)->first();
-      $pedido = Pedidos::create([
-        'id_produto' => $produto->id, 
-        'codigo' => preg_replace("/[^0-9]/", "", substr(uniqid(date('HisYmd')), 7, 12)), 
-        'valor_compra' => $produto->preco_venda,
-        'quantidade' => 1,
-        'ip_compra' => $_SERVER['REMOTE_ADDR']
-      ]);
-      return view('checkout.index')->with('produto', $produto)->with('pedido', $pedido)->with('checkout', $this->checkout)->with('geral', $this->geral);
+      if($produto){
+        $pedido = Pedidos::create([
+          'id_produto' => $produto->id, 
+          'codigo' => preg_replace("/[^0-9]/", "", substr(uniqid(date('HisYmd')), 7, 12)), 
+          'valor_compra' => $produto->preco_venda,
+          'quantidade' => 1,
+          'ip_compra' => $_SERVER['REMOTE_ADDR']
+        ]);
+        return view('checkout.index')->with('produto', $produto)->with('pedido', $pedido)->with('checkout', $this->checkout)->with('geral', $this->geral);
+        }else{
+          abort(404);
+        }
     }
   }
 
 
-
   // Atualização dos dados pessoais
   public function Form1(Request $FormRequest, $id){
-    $dados = Clientes::where('documento', str_replace(".", "", str_replace("-", "", $FormRequest->documento)))->first();
+    $dados = Clientes::where('documento', preg_replace('/[^0-9]/', '', $FormRequest->documento))->first();
     if(isset($dados)){
         // Cliente já cadastrado
         $lead = Leads::find($dados->id_lead)->update([
@@ -78,14 +81,26 @@ class CheckoutCtrl extends Controller
           'nome' => $FormRequest->nome, 
           'email' => $FormRequest->email
         ]);
-        $cliente = Clientes::create([
-          'tipo' => 'pf', 
-          'ativo' => 1, 
-          'nome' => $FormRequest->nome, 
-          'email' => $FormRequest->email, 
-          'documento' => str_replace(".", "", str_replace("-", "", $FormRequest->documento)), 
-          'id_lead' => $lead->id
-        ]);
+        if(strlen(preg_replace('/[^0-9]/', '', $FormRequest->documento)) == 14){
+          $cliente = Clientes::create([
+            'tipo' => 'pj', 
+            'ativo' => 1, 
+            'nome' => $FormRequest->nome, 
+            'email' => $FormRequest->email, 
+            'documento' => preg_replace('/[^0-9]/', '', $FormRequest->documento), 
+            'id_lead' => $lead->id
+          ]);
+        }else{
+          $cliente = Clientes::create([
+            'tipo' => 'pf', 
+            'ativo' => 1, 
+            'nome' => $FormRequest->nome, 
+            'email' => $FormRequest->email, 
+            'documento' => preg_replace('/[^0-9]/', '', $FormRequest->documento),  
+            'id_lead' => $lead->id
+          ]);
+        }
+        
         $telefone = Telefones::create([
           'id_cliente' => $cliente->id, 
           'numero' => str_replace("(", "+55", str_replace(") ", "", str_replace("-", "", $FormRequest->telefone)))
@@ -192,28 +207,31 @@ class CheckoutCtrl extends Controller
         // Aprovado
         $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 3]);
         Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1']);
-        $dados = Status::select('nome', 'descricao')->find(3);
+        $dados = Status::select('nome', 'descricao', 'posicao')->find(3);
         $dados->image = asset('public/img/status-pagamento/aprovado.png');
         $dados->link = "javascript:void()";
         $dados->estado = "bg-success text-white";
+        $dados->url_redirect = $this->checkout->url_cartao;
         return response()->json($dados);
       }elseif($transaction->status == 'refunded' || $transaction->status == 'refused' || $transaction->status == 'chargedback' || $transaction->status == 'pending_refund'){
          // Recusado
-        $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 9]);
+        $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 10]);
         Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1']);
-        $dados = Status::select('nome', 'descricao')->find(9);
+        $dados = Status::select('nome', 'descricao', 'posicao')->find(10);
         $dados->image = asset('public/img/status-pagamento/recusado.png');
         $dados->link = "javascript:void()";
         $dados->estado = "bg-danger text-white";
+        $dados->url_redirect = $this->checkout->url_cartao;
         return response()->json($dados);
       }elseif($transaction->status == 'waiting_payment' || $transaction->status == 'analyzing' || $transaction->status == 'pending_review' || $transaction->status == 'processing'){
         // Em análise
         $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 1]);
         Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1']);
-        $dados = Status::select('nome', 'descricao')->find(1);
+        $dados = Status::select('nome', 'descricao', 'posicao')->find(1);
         $dados->image = asset('public/img/status-pagamento/analise.png');
         $dados->link = "javascript:void()";
         $dados->estado = "bg-warning text-white";
+        $dados->url_redirect = $this->checkout->url_cartao;
         return response()->json($dados);
       }
     }else{
@@ -259,28 +277,31 @@ class CheckoutCtrl extends Controller
         // Aprovado
         $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 3]);
         Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url]);
-        $dados = Status::select('nome', 'descricao')->find(3);
+        $dados = Status::select('nome', 'descricao', 'posicao')->find(3);
         $dados->image = asset('public/img/status-pagamento/aprovado.png');
         $dados->link = $transaction->boleto_url;
         $dados->estado = "bg-success text-white";
+        $dados->url_redirect = $this->checkout->url_boleto;
         return response()->json($dados);
       }elseif($transaction->status == 'refunded' || $transaction->status == 'refused' || $transaction->status == 'chargedback' || $transaction->status == 'pending_refund'){
          // Recusado
-        $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 9]);
+        $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 10]);
         Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url]);
-        $dados = Status::select('nome', 'descricao')->find(9);
+        $dados = Status::select('nome', 'descricao', 'posicao')->find(10);
         $dados->image = asset('public/img/status-pagamento/recusado.png');
         $dados->link = $transaction->boleto_url;
         $dados->estado = "bg-danger text-white";
+        $dados->url_redirect = $this->checkout->url_boleto;
         return response()->json($dados);
       }elseif($transaction->status == 'waiting_payment' || $transaction->status == 'analyzing' || $transaction->status == 'pending_review' || $transaction->status == 'processing'){
         // Em análise
         $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 1]);
         Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url]);
-        $dados = Status::select('nome', 'descricao')->find(1);
+        $dados = Status::select('nome', 'descricao', 'posicao')->find(1);
         $dados->image = asset('public/img/status-pagamento/analise.png');
         $dados->link = $transaction->boleto_url;
         $dados->estado = "bg-warning text-white";
+        $dados->url_redirect = $this->checkout->url_boleto;
         return response()->json($dados);
       }
     }else{
@@ -289,14 +310,12 @@ class CheckoutCtrl extends Controller
 
   }
 
-
-
   // Detalhes do cliente
   public function DetalhesCliente($documento){
       $clientes = Clientes::where('documento', $documento)->select('id', 'nome', 'email','data_nascimento')->first();
       if(!empty($clientes)){
          $clientes->telefone = Telefones::where('id_cliente', $clientes->id)->select('numero')->first();
-         $clientes->endereco = Enderecos::where('id_cliente', $clientes->id)->get();
+         $clientes->endereco = Enderecos::where('id_cliente', $clientes->id)->where('status', 1)->get();
         return response()->json($clientes);
       }else{
         return false;
@@ -307,7 +326,6 @@ class CheckoutCtrl extends Controller
   public function UpdateEndereco(Request $request, $id){
     $pedido = Pedidos::find($id);
       if(empty($request->acao)){
-        Enderecos::where('id_cliente', $pedido->id_cliente)->update(['status' => 0]);
         $endereco = Enderecos::create([
           'endereco' => $request->endereco, 
           'bairro' => $request->bairro, 
@@ -373,6 +391,18 @@ class CheckoutCtrl extends Controller
     ]);
     return response()->json($dados);
   }
+
+  // Cálculo de frete, prazo e tipo
+  public function DescontosCheckout($id,$valor){
+    $valor_desconto = (double) $valor;
+    if(!empty($valor_desconto)){
+      Pedidos::find($id)->update(['desconto_aplicado' => $valor_desconto]);
+    }else{
+      Pedidos::find($id)->update(['desconto_aplicado' => 0]);
+    }
+    return response()->json(['success' => true]);
+  }
+
 
   // Caclulando dias úteis
   public function addDiasUteis($str_data,$int_qtd_dias_somar = 7){

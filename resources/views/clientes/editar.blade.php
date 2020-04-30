@@ -132,8 +132,8 @@ Editar cliente
                         </div>
 
                         <div id="localizacao">
-                            @if(!empty($cliente->RelationEnderecos->first()))
-                            @foreach($cliente->RelationEnderecos as $key => $endereco)
+                            @if(!empty($enderecos))
+                            @foreach($enderecos as $key => $endereco)
                             <div class="card" id="card-{{$key+2}}">
                                 <div class="card-header py-0">
                                     <h5 class="section-title d-flex">
@@ -147,6 +147,7 @@ Editar cliente
                                     <div class="form-group col-3">
                                         <label>CEP <i class="text-danger">*</i></label>
                                         <input type="text" name="cep[]" class="cep form-control" placeholder="39270-000" value="{{$endereco->cep}}" required>
+                                        <input type="hidden" name="id_endereco[]" value="{{$endereco->id}}">
                                         <small class="error"></small>
                                     </div>
                                     <div class="d-flex">
@@ -228,7 +229,7 @@ Editar cliente
                                                 <tr>
                                                     <td class="p-0 ml-4">
                                                         <div class="col ml-5 pr-0">
-                                                            <a href="{{route('pedidos.detalhe', $pedido->id)}}" class="d-flex text-decoration-none">
+                                                            <a href="{{route('pedidos.detalhes', $pedido->id)}}" class="d-flex text-decoration-none">
                                                                 @if($pedido->id_forma_pagamento == 1)  
                                                                 <div class="my-auto">
                                                                     <img data-v-a542e072="" src="http://download.seaicons.com/icons/iconsmind/outline/512/Credit-Card-3-icon.png" width="30" class="uk-float-left icon-payment">
@@ -239,13 +240,18 @@ Editar cliente
                                                                 </div>
                                                                 @endif
                                                                 <div class="text-center">
-                                                                    <label class="n_pedido mx-3 pointer">{{$pedido->codigo}}</label>
+                                                                    <label class="nome mx-3 pointer">{{$pedido->codigo}}</label>
                                                                 </div>
                                                             </a>
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        {{date_format($pedido->created_at, "d/m/Y H:i:s")}}
+                                                       <div class="col-12">
+                                                            {{date_format($pedido->created_at, "d/m/Y H:i:s")}}
+                                                        </div>
+                                                        <div class="col-12">
+                                                            {{$pedido->created_at->subMinutes(2)->diffForHumans()}}
+                                                        </div>
                                                     </td>
                                                     <td>
                                                         R$ {{number_format($pedido->valor_compra, 2, ',', '.')}}
@@ -295,18 +301,26 @@ Editar cliente
                                                     <td>
                                                         <div class="d-flex">
                                                             <div class="my-auto mx-3">
-                                                                <img src="{{ url('storage/app/'.$carrinho->RelationProduto->RelationImagens->first()['caminho']) }}" alt="Imagem do produto" style="height: auto; width: 55px;">
+                                                                <img src="{{ url('storage/app/'.$carrinho->RelationProduto->RelationImagensPrincipal->first()->caminho) }}" alt="Imagem do produto" style="height: auto; width: 55px;">
                                                             </div>
-                                                            <div class="">
-                                                                <a href="{{route('produtos.editar', $carrinho->id_produto)}}" class="d-flex text-decoration-none">
-                                                                    <p class="my-auto n_pedido">{{$carrinho->RelationProduto->nome}}
-                                                                    </p>
+                                                            <div class="my-auto text-left">
+                                                                <a href="{{route('produtos.editar', $carrinho->id_produto)}}" class="text-decoration-none">
+                                                                    <label class="nome col-12 m-0 pointer">{{$carrinho->RelationProduto->nome}}
+                                                                    </label>
+                                                                    <label class="col-12 mb-0 text-dark">
+                                                                        {{$carrinho->RelationProduto->cod_sku}}
+                                                                    </label>
                                                                 </a>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        {{date_format($carrinho->created_at, "d/m/Y H:i:s")}}
+                                                        <div class="col-12">
+                                                            {{date_format($carrinho->created_at, "d/m/Y H:i:s")}}
+                                                        </div>
+                                                        <div class="col-12">
+                                                            {{$carrinho->created_at->subMinutes(2)->diffForHumans()}}
+                                                        </div>
                                                     </td>
                                                     <td>
                                                         R$ {{number_format($carrinho->valor_compra, 2, ',', '.')}}
@@ -345,6 +359,7 @@ Editar cliente
             <div class="form-group col-3">
                 <label>CEP <i class="text-danger">*</i></label>
                 <input type="text" name="cep[]" class="cep form-control" placeholder="39270-000" required>
+                <input type="hidden" name="id_endereco[]" value="">
                 <small class="error"></small>
             </div>
             <div class="d-flex">
@@ -393,7 +408,12 @@ Editar cliente
 
     $(document).ready(function (){
         // Mascaras
-        $('.documento').mask('000.000.000-00', {reverse: true});
+        @if($cliente->tipo == 'pf')
+            $('.documento').mask('000.000.000-00', {reverse: true});
+        @else
+            $('.documento').mask('00.000.000/0000-00', {reverse: true});
+        @endif
+        
         $('.cep').mask('00000-000');
         $('.telefone').mask('(00) 00000-0000');
 

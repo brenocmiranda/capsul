@@ -78,6 +78,12 @@ class CreateStatusTable extends Migration
                 'posicao' => '9',
                 'created_at' => '2019-12-04 00:00:00',
                 'updated_at' => '2019-12-04 22:18:40'
+                ],[
+                'nome' => 'Pagamento não autorizado',
+                'descricao' => 'O seu pagamento não foi autorizado pelo meio de pagamento, tente novamente.',
+                'posicao' => '10',
+                'created_at' => '2019-12-04 00:00:00',
+                'updated_at' => '2019-12-04 22:18:40'
                 ]
             )
         );

@@ -26,9 +26,9 @@
 					<h6> Formas de pagamento </h6>
 					<hr class="mt-1">
 				</div>
-				<ul class="col-12 nav nav-pills px-3" id="myTab" role="tablist">
+				<ul class="col-12 nav nav-pills px-3" id="myTabPAG" role="tablist">
 					<li class="nav-item w-50 p-2">
-						<a class="nav-link h-100 shadow-none border rounded {{($checkout->pagamento_preferencial == 'Cartão crédito' ? 'active' : '')}}" id="cart-tab" data-toggle="tab" href="#cart" role="tab" aria-controls="cart" aria-selected="true">
+						<a class="nav-link h-100 shadow-none border rounded {{($checkout->pagamento_preferencial == 'cart_credit' ? 'active' : '')}}" id="cart-tab" data-toggle="tab" href="#cart" role="tab" aria-controls="cart" aria-selected="true">
 							<div class="row m-0 p-2 h-100" style="line-height: 20px;">
 								<div class="col-2 p-0 m-auto">
 									<i class="mdi mdi-credit-card-outline mdi-36px"></i>
@@ -47,7 +47,7 @@
 						</a>
 					</li>
 					<li class="nav-item w-50 p-2">
-						<a class="nav-link h-100 shadow-none border rounded {{($checkout->pagamento_preferencial == 'Boleto' ? 'active' : '')}}" id="boleto-tab" data-toggle="tab" href="#boleto" role="tab" aria-controls="boleto" aria-selected="false">
+						<a class="nav-link h-100 shadow-none border rounded {{($checkout->pagamento_preferencial == 'boleto' ? 'active' : '')}}" id="boleto-tab" data-toggle="tab" href="#boleto" role="tab" aria-controls="boleto" aria-selected="false">
 							<div class="row m-0 p-2 h-100" style="line-height: 20px;">
 								<div class="col-2 p-0 m-auto">
 									<i class="mdi mdi-barcode mdi-36px"></i>
@@ -61,7 +61,7 @@
 				</ul>
 
 				<div class="tab-content col-12" id="myTabContent">
-					<div class="tab-pane fade {{($checkout->pagamento_preferencial == 'Cartão crédito' ? 'show active' : '')}}" id="cart" role="tabpanel" aria-labelledby="cart-tab">
+					<div class="tab-pane fade {{($checkout->pagamento_preferencial == 'cart_credit' ? 'show active' : '')}}" id="cart" role="tabpanel" aria-labelledby="cart-tab">
 						<form class="col-12 mt-3" id="card_credit">
 							@csrf
 							<input type="hidden" name="card_hash" id="card_hash">
@@ -115,21 +115,25 @@
 									</select>
 								</div>
 							</div>
-							<div class="form-group">
+							<div class="form-group mb-0">
 								<div class="row">
-									<button class="btn btn-success btn-lg btn-icon icon-right btn-block shadow-none col-12 col-lg-6 mx-auto">Pagar com cartão de crédito</button>
+									<button class="btn btn-success btn-lg btn-icon icon-right btn-block shadow-none col-12 col-lg-6 mx-auto "><i class="mdi mdi-lock"></i> Comprar agora</button>
 								</div>
 							</div>
 						</form>
 					</div>
 
-					<div class="tab-pane fade {{($checkout->pagamento_preferencial == 'Boleto' ? 'show active' : '')}}" id="boleto" role="tabpanel" aria-labelledby="boleto-tab">
+					<div class="tab-pane fade {{($checkout->pagamento_preferencial == 'boleto' ? 'show active' : '')}}" id="boleto" role="tabpanel" aria-labelledby="boleto-tab">
 						<form class="col-12 text-justify mt-4" id="boleto">
 							@csrf
 							<input type="hidden" name="formcount" value="4">
 							<div class="px-3">
 								<b><label style="line-height: 20px;">{{$checkout->texto_boleto}}</label></b>
 							</div>
+							<h6 class="col-12 text-primary py-2">
+								<span>Valor no boleto:</span>
+								<span class="valor_total">R$ {{ number_format($pedido->valor_compra,2, ",", ".") }}</span>
+							</h6>
 							<div class="form-group text-left col-6 p-0">
 								<label class="col-md-12 text-left mb-0">CPF do pagador <span class="text-danger">*</span></label>
 								<div class="col-lg-12 col-md-12">
@@ -138,9 +142,9 @@
 									</div>
 								</div>
 							</div>
-							<div class="form-group">
+							<div class="form-group mb-0">
 								<div class="row">
-									<button class="btn btn-success btn-lg btn-icon icon-right btn-block shadow-none col-12 col-lg-6 mx-auto">Pagar com boleto</button>
+									<button class="btn btn-success btn-lg btn-icon icon-right btn-block shadow-none col-12 col-lg-6 mx-auto"><i class="mdi mdi-lock"></i> Comprar agora</button>
 								</div>
 							</div>
 						</form>
@@ -153,9 +157,9 @@
 					<img src="" class="mx-auto col-4" id="pedido-image"> 
 				</div> 
 				<div class="mt-3"> 
-					<h3 id="pedido-nome"></h3> 
+					<h3 id="pedido-nome" class="mb-0"></h3> 
 				</div> 
-				<label>
+				<label class="mb-0">
 					<span>Seu número de pedido é:</span>
 					<b>{{$pedido->codigo}}</b>
 				</label>
