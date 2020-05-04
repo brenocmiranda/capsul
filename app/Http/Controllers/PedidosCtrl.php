@@ -49,7 +49,7 @@ class PedidosCtrl extends Controller
                     ->editColumn('transacao', function(Pedidos $dados){ 
                         return '<div>'.($dados->id_forma_pagamento == 1 ? '<img data-v-a542e072="" src="http://download.seaicons.com/icons/iconsmind/outline/512/Credit-Card-3-icon.png" width="30" class="uk-float-left icon-payment">' : '<img data-v-a542e072="" src="https://github.bubbstore.com/svg/billet.svg" width="40" class="uk-float-left icon-payment">').'</div>';
                     })->editColumn('cliente', function(Pedidos $dados){
-                        return '<div class="text-left"><a href="'.route('pedidos.detalhes', $dados->id).'" class="nome text-decoration-none m-0">'.$dados->codigo.'<p class="mb-0 text-capitalize text-dark">'.strtolower($dados->RelationCliente['nome']).'</p></a></div>';
+                        return '<div class="text-left"><a href="'.route('pedidos.detalhes', $dados->id).'" class="nome text-decoration-none m-0">'.$dados->codigo.'<p class="mb-0 text-capitalize text-dark">'.strtolower($dados->RelationCliente->nome).'</p></a></div>';
                     })->editColumn('data', function(Pedidos $dados){
                         return '<div class="text-left">'.date_format($dados->updated_at, "d/m/Y H:i:s").'</div><div class="text-left font-weight-bold">'.$dados->updated_at->subMinutes(2)->diffForHumans().'</div>';
                     })->editColumn('valor', function(Pedidos $dados){

@@ -26,11 +26,11 @@ Pedidos
                     <div class="">
                         <div class="buttons d-flex">
                             <button class="mx-auto border btn btn-1 btn-light shadow-none btn-filter" value="2"><span>AGUARDAN. PAGAMENTO</span></button>
-                            <button class="mx-auto border btn btn-3 btn-light shadow-none btn-filter" value="3"><span>PAGAMENTO APROVADO</span></button>
-                            <button class="mx-auto border btn btn-9 btn-light shadow-none btn-filter" value="4"><span>PAGAMENTO NÃO APROVADO</span></button>
-                            <button class="mx-auto border btn btn-2 btn-light shadow-none btn-filter" value="5"><span>PEDIDO AUTORIZADO</span></button>
-                            <button class="mx-auto border btn btn-4 btn-light shadow-none btn-filter" value="6"><span>EM SEPARAÇÃO</span></button>
-                            <button class="mx-auto border btn btn-5 btn-light shadow-none btn-filter" value="7"><span>FATURADO</span></button>
+                            <button class="mx-auto border btn btn-2 btn-light shadow-none btn-filter" value="3"><span>PAGAMENTO APROVADO</span></button>
+                            <button class="mx-auto border btn btn-3 btn-light shadow-none btn-filter" value="4"><span>PAGAM. NÃO APROVADO</span></button>
+                            <button class="mx-auto border btn btn-4 btn-light shadow-none btn-filter" value="5"><span>PEDIDO AUTORIZADO</span></button>
+                            <button class="mx-auto border btn btn-5 btn-light shadow-none btn-filter" value="6"><span>EM SEPARAÇÃO</span></button>
+                            <button class="mx-auto border btn btn-6 btn-light shadow-none btn-filter" value="7"><span>FATURADO</span></button>
                             <button class="mx-auto border btn btn-7 btn-light shadow-none btn-filter" value="8"><span>EM TRANSPORTE</span></button>
                             <button class="mx-auto border btn btn-8 btn-light shadow-none btn-filter" value="9"><span>ENTREGUE</span></button>
                             <button class="mx-auto border btn btn-9 btn-light shadow-none btn-filter" value="10"><span>CANCELADO</span></button>
