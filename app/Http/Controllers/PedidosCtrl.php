@@ -67,8 +67,8 @@ class PedidosCtrl extends Controller
                             <i class="mdi mdi-cog mdi-18px"> </i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#"><i class="mdi mdi-printer px-1"></i> Imprimir pedido</a>
-                            <a class="dropdown-item" href="#"><i class="mdi mdi-file-alert-outline px-1"></i> Declaração de conteúdo</a>
+                            <a class="dropdown-item" href="'.route('pedidos.imprimir', $dados->id).'" target="_blank"><i class="mdi mdi-printer px-1"></i> Imprimir pedido</a>
+                            <a class="dropdown-item" href="'.route('pedidos.declaracao', $dados->id).'" target="_blank"><i class="mdi mdi-file-alert-outline px-1"></i> Declaração de conteúdo</a>
                         </div>
                     </div>';
                     })->rawColumns(['transacao', 'cliente', 'data', 'valor', 'status', 'acoes'])->make(true);
