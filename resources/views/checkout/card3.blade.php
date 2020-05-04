@@ -167,7 +167,7 @@
 					<span>Seu número de pedido é:</span>
 					<b>{{$pedido->codigo}}</b>
 				</label>
-				<div class="mt-4"> 
+				<div class="mt-4 px-3"> 
 					<h6 id="pedido-message" style="line-height: 28px;">
 					</h6>
 					<div id="pedido-link"></div> 

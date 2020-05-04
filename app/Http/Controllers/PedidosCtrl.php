@@ -51,7 +51,7 @@ class PedidosCtrl extends Controller
                     })->editColumn('cliente', function(Pedidos $dados){
                         return '<div class="text-left"><a href="'.route('pedidos.detalhes', $dados->id).'" class="nome text-decoration-none m-0">'.$dados->codigo.'<p class="mb-0 text-capitalize text-dark">'.strtolower($dados->RelationCliente['nome']).'</p></a></div>';
                     })->editColumn('data', function(Pedidos $dados){
-                        return '<div class="text-left">'.date_format($dados->created_at, "d/m/Y H:i:s").'</div><div class="text-left font-weight-bold">'.$dados->created_at->subMinutes(2)->diffForHumans().'</div>';
+                        return '<div class="text-left">'.date_format($dados->updated_at, "d/m/Y H:i:s").'</div><div class="text-left font-weight-bold">'.$dados->updated_at->subMinutes(2)->diffForHumans().'</div>';
                     })->editColumn('valor', function(Pedidos $dados){
                         return 'R$ '.number_format( ($dados->valor_compra - $dados->desconto_aplicado + $dados->RelationRastreamento->valor_envio) , 2, ',', '.');
                     })->editColumn('status', function(Pedidos $dados){
