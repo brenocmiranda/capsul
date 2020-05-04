@@ -436,11 +436,11 @@ Pedido #{{$pedido->codigo}}
                                                                 <div class="px-3 my-auto">
                                                                     <img src="{{ url('storage/app/'.$pedido->RelationProduto->RelationImagensPrincipal->first()->caminho)}}" alt="Imagem atual" style="height: auto; width: 70px;" class="p-1 border rounded">
                                                                 </div>
-                                                                <div class="px-3">
+                                                                <div class="px-3 my-auto">
                                                                     <a href="{{ route('produtos.editar', $pedido->RelationProduto->id) }}" class="text-decoration-none">
                                                                         <p class="n_pedido my-auto not-espaco"><b>{{$pedido->RelationProduto->nome}}</b></p>
                                                                     </a>
-                                                                    <label>{{$pedido->RelationProduto->cod_sku}}</label>
+                                                                    <label><b>SKU:</b>{{$pedido->RelationProduto->cod_sku}}</label>
                                                                 </div>
                                                             </div>
                                                         </td>
