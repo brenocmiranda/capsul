@@ -108,7 +108,7 @@ Configurações
                     </div>
                     <div class="form-group col-5">
                         <label>Bairro <i class="text-danger">*</i></label>
-                        <input type="text" name="bairro[]" class="bairro form-control" onkeyup="this.value = this.value.toUpperCase();" value="{{$geral->bairro}}" disabled>
+                        <input type="text" name="bairro" class="bairro form-control" onkeyup="this.value = this.value.toUpperCase();" value="{{$geral->bairro}}" disabled>
                         <input type="hidden" name="bairro1" class="bairro1" value="{{$geral->bairro}}">
                     </div>
                     <div class="d-flex">

@@ -83,7 +83,7 @@
             	</div>
 
             	<div style="border-top: 4px dashed #666 !important;" class="my-5">
-            		<i class="mdi mdi-content-cut mdi-36px position-absolute mt-n4 mx-5 bg-white"></i>
+            		<i class="mdi mdi-content-cut mdi-36px position-absolute mt-n3 mx-5 bg-white"></i>
             	</div>
 
             	<h3>Pedido: {{$pedido->codigo}}</h3>
@@ -201,10 +201,10 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Produto</th>
-                                        <th>Quantidade</th>
-                                        <th>Valor unitário</th>
-                                        <th>Subtotal</th>
+                                        <th class="bg-white">Produto</th>
+                                        <th class="bg-white">Quantidade</th>
+                                        <th class="bg-white">Valor unitário</th>
+                                        <th class="bg-white">Subtotal</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -241,5 +241,13 @@
         </div>
     </section>
 </div>
+
+@section('support')
+<script type="text/javascript">
+	$(document).ready(function (){
+		window.print();
+	});
+</script>
+@endsection
 
 @include('template.footer')
