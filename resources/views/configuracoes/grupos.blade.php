@@ -23,8 +23,8 @@ Configurações
       <div class="row">
         <div class="col-12">
           <div class="card">
-            <div class="card-header py-0">
-              <h3 class="section-title">Grupos de usuários</h3>  
+            <div class="card-header">
+              <h3 class="section-title my-0">Grupos de usuários</h3>  
               <div class="ml-auto">
                 <button type="button" class="btn btn-sm btn-primary mx-1" id="adicionar" data-toggle="modal" data-target="#modal-adicionar"><i class="fa fa-plus" aria-hidden="true"></i> Novo grupo</button>
               </div>

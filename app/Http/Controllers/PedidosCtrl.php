@@ -177,7 +177,7 @@ class PedidosCtrl extends Controller
     // Declaração de conteúdo
     public function Declaracao($id){
         $pedido = Pedidos::find($id);
-        return view('pedidos.imprimir')->with('pedido', $pedido);
+        return view('pedidos.declaracao')->with('pedido', $pedido)->with('geral', $this->geral);
     }
 
 

@@ -35,8 +35,8 @@ Adicionar grupo
                 @csrf
 
                 <div class="card" id="card-1">
-                    <div class="card-header py-0">
-                        <h5 class="section-title">Informações básicas</h5>
+                    <div class="card-header">
+                        <h5 class="section-title my-0">Informações básicas</h5>
                     </div>
                     <div class="card-body">
                         <div class="col-12 my-3">
@@ -81,8 +81,8 @@ Adicionar grupo
                 </div>
 
                 <div class="card" id="card-2">
-                    <div class="card-header py-0">
-                        <h5 class="section-title">Pedido mínimo <i class="fa fa-question-circle f16 black-20 ml10 px-2" data-toggle="tooltip" data-placement="top" title="O cliente só realizará um pedido se a soma dos produtos for igual o maior a este valor." aria-expanded="false"></i>
+                    <div class="card-header">
+                        <h5 class="section-title my-0">Pedido mínimo <i class="fa fa-question-circle f16 black-20 ml10 px-2" data-toggle="tooltip" data-placement="top" title="O cliente só realizará um pedido se a soma dos produtos for igual o maior a este valor." aria-expanded="false"></i>
                         </h5>
                     </div>
                     <div class="card-body">
@@ -98,8 +98,8 @@ Adicionar grupo
                 </div>
 
                 <div class="card" id="card-3">
-                    <div class="card-header py-0">
-                        <h5 class="section-title">Alteração de preço</h5>
+                    <div class="card-header">
+                        <h5 class="section-title my-0">Alteração de preço</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -143,8 +143,8 @@ Adicionar grupo
                 </div>
 
                 <div class="card" id="card-4">
-                    <div class="card-header py-0">
-                        <h5 class="section-title">Inserir automaticamente novos clientes</h5>
+                    <div class="card-header">
+                        <h5 class="section-title my-0">Inserir automaticamente novos clientes</h5>
                         <label class="custom-switch px-5">
                             <input type="checkbox" name="inserrir_novos_clientes" class="custom-switch-input" checked>
                             <span class="custom-switch-indicator"></span>

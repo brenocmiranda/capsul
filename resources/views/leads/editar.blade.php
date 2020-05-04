@@ -34,8 +34,8 @@ Editar lead
             <form method="POST" action="{{ route('leads.editando', $leads->id) }}" enctype="multipart/form-data">
                 @csrf
                 <div class="card" id="card-1">
-                    <div class="card-header py-0">
-                        <h5 class="section-title">Informações básicas</h5>
+                    <div class="card-header">
+                        <h5 class="section-title my-0">Informações básicas</h5>
                     </div>
                     <div class="card-body">
                         <div class="form-group col-8">

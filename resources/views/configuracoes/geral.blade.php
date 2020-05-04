@@ -35,8 +35,8 @@ Configurações
             @endif
 
             <div class="card">
-              <div class="card-header py-0">
-                <h3 class="section-title">Geral</h3>  
+              <div class="card-header">
+                <h3 class="section-title my-0">Geral</h3>  
               </div>
               <div class="card-body">
                 <div class="col-12">

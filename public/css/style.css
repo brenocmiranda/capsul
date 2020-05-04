@@ -1964,7 +1964,7 @@ body {
   background-color: #f4f6f9;
   font-size: 13px;
   font-weight: 400;
-  /*font-family: Rubik,sans-serif,apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial !important;*/
+  font-family: Rubik,sans-serif,apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial !important;
   color: #6c757d; 
 }
 
@@ -3392,6 +3392,10 @@ body:not(.sidebar-mini) .sidebar-style-2 .sidebar-menu li.active ul.dropdown-men
 
   .valor p{
     line-height: 6px;
+  }
+
+  .button-edit{
+    z-index: 20;
   }
 
   .btn_detalhes{

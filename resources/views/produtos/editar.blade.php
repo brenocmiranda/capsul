@@ -62,15 +62,15 @@ Editar produto
                     </div>
 
                     <div class="card" id="card-1">
-                        <div class="card-header py-0">
-                            <label class="section-title">Informações básicas</label>
+                        <div class="card-header">
+                            <label class="section-title my-0">Informações básicas</label>
                         </div>
                         <div class="card-body">
                             <div class="col-12 my-3">
                                 <label class="custom-switch px-0">
                                     <input type="checkbox" name="ativo" class="custom-switch-input" {{ ($produto->ativo == "s" ? 'checked' : '') }}>
                                     <span class="custom-switch-indicator"></span>
-                                    <span class="custom-switch-description"><b>Ativo</b></span>
+                                    <span class="custom-switch-description">Ativo</span>
                                 </label>
                             </div>
                             <div class="col-12 my-3">
@@ -115,8 +115,8 @@ Editar produto
                 </div>
 
                 <div class="card" id="card-2">
-                    <div class="card-header py-0">
-                        <label class="section-title">Checkout</label>
+                    <div class="card-header">
+                        <label class="section-title my-0">Checkout</label>
                     </div>
                     <div class="card-body">
                         <div class="form-group col-6">
@@ -132,8 +132,8 @@ Editar produto
                 </div>
 
                 <div class="card" id="card-3">
-                    <div class="card-header py-0">
-                        <label class="section-title">Categorias</label>
+                    <div class="card-header">
+                        <label class="section-title my-0">Categorias</label>
                         <div class="ml-auto">
                             <a href="javascript:void(0)" data-toggle="modal" data-target="#produtos-categorias">+ Cadastrar categoria</a>
                         </div>
@@ -143,7 +143,7 @@ Editar produto
                             <div class="col-6 form-group">
                                 <label>Selecione as categorias <i class="text-danger">*</i></label>
                                 <div class="col-12 p-0">
-                                    <select class="form-control" id="listaCategorias">
+                                    <select class="form-control h-100" id="listaCategorias">
                                         <option disabled="disabled">Selecione</option>
                                         @foreach($categorias as $categoria)
                                         <option value="{{$categoria->id}}">{{$categoria->nome}}</option>
@@ -195,8 +195,8 @@ Editar produto
                 </div>
 
                 <div class="card{{ ($produto->variante == 's' ? '' : ' d-none') }}" id="card-4">
-                    <div class="card-header py-0">
-                        <label class="section-title">Variantes</label>
+                    <div class="card-header">
+                        <label class="section-title my-0">Variantes</label>
                         <div class="ml-auto">
                             <a href="javascript:void(0)" data-toggle="modal" data-target="#produtos-variantes">+ Cadastrar variação</a>
                         </div>
@@ -206,7 +206,7 @@ Editar produto
                             <div class="col-6 form-group">
                                 <label>Selecione as variações <i class="text-danger">*</i></label>
                                 <div class="col-12 p-0">
-                                    <select class="form-control" id="listaVariacoes">
+                                    <select class="form-control h-100" id="listaVariacoes">
                                         <option disabled="disabled">Selecione</option>
                                         @foreach($variacoes as $variacao)
                                         <option value="{{$variacao->id}}">{{$variacao->nome}}</option>
@@ -263,15 +263,15 @@ Editar produto
                 </div>
 
                 <div class="card" id="card-5">
-                    <div class="card-header py-0">
-                        <label class="section-title">SKU</label>
+                    <div class="card-header">
+                        <label class="section-title my-0">SKU</label>
                     </div>
                     <div class="card-body p-0 pt-3">
                         <div class="form-group col-12 px-5">
                             <label class="custom-switch px-0">
                                 <input type="checkbox" name="disponivel_venda" class="custom-switch-input" {{ ($produto->disponivel_venda == "s" ? 'checked' : '') }}>
                                 <span class="custom-switch-indicator"></span>
-                                <span class="custom-switch-description"><b>Disponível para venda</b></span>
+                                <span class="custom-switch-description">Disponível para vendaz</span>
                             </label>
                         </div>
                         <div class="my-3 px-5">
@@ -348,8 +348,8 @@ Editar produto
                 </div>
 
                 <div class="card{{ ($produto->variante == 's' ? ' d-none' : '') }}" id="card-6">
-                    <div class="card-header py-0">
-                        <label class="section-title">Peso e Dimensões</label>
+                    <div class="card-header">
+                        <label class="section-title my-0">Peso e Dimensões</label>
                     </div>
                     <div class="card-body row">
                         <div class="row col-8">
@@ -405,8 +405,8 @@ Editar produto
                 </div>
 
                 <div class="card" id="card-7">
-                    <div class="card-header py-0">
-                        <label class="section-title">Imagens</label>
+                    <div class="card-header">
+                        <label class="section-title my-0">Imagens</label>
                     </div>
                     <div class="card-body">
                         <div class="col-12 form-group">
@@ -449,8 +449,8 @@ Editar produto
                 </div>
 
                 <div class="card" id="card-8">
-                    <div class="card-header py-0">
-                        <label class="section-title">Detalhes do produto</label>
+                    <div class="card-header">
+                        <label class="section-title my-0">Detalhes do produto</label>
                     </div>
                     <div class="card-body">
                         <div class="form-group col-12">
@@ -648,13 +648,10 @@ Editar produto
                 success: function(data){
                     $('#produtos-categorias #formCategorias').addClass('d-none');
                     $('.carregamento').html('<div class="mx-auto text-center my-5"><div class="col-sm-12 col-md-12 col-lg-12"><i class="col-sm-2 fa fa-check" style="font-size:50px;"></i></div><h6 class="my-3">Categoria adicionada com sucesso!</h6></div>');
+                    $('#listaCategorias').append('<option value="'+data.id+'">'+data.nome+'</option>');
                     setTimeout(function(){
                         $('#produtos-categorias #formCategorias').each (function(){
                             this.reset();
-                        });
-                        $('.sub_categoria').html('');
-                        $(data).each(function(index, element){
-                            $('.sub_categoria').append('<option value="'+element.id+'">'+element.nome+'</option>');
                         });
                         $('input').removeClass('border border-danger');
                         $('.carregamento').html('');
@@ -693,20 +690,17 @@ Editar produto
                     $('.carregamento').html('<div class="mx-auto text-center my-5"><div class="spinner-border my-3" role="status"><span class="sr-only"> Loading... </span></div><label class="col-12">Salvando informações...</label></div>');
                 },
                 success: function(data){
-                    $('#produtos-marcas #formMarcas').addClass('d-none');
-                    $('.carregamento').html('<div class="mx-auto text-center my-5"><div class="col-sm-12 col-md-12 col-lg-12"><i class="col-sm-2 fa fa-check" style="font-size:50px;"></i></div><h6 class="my-3">Marca adicionada com sucesso!</h6></div>');
+                    $('#produtos-variantes #formVariantes').addClass('d-none');
+                    $('.carregamento').html('<div class="mx-auto text-center my-5"><div class="col-sm-12 col-md-12 col-lg-12"><i class="col-sm-2 fa fa-check" style="font-size:50px;"></i></div><h6 class="my-3">Variação adicionada com sucesso!</h6></div>');
+                    $('#listaVariacoes').append('<option value="'+data.id+'">'+data.nome+'</option>');
                     setTimeout(function(){
-                        $('#produtos-marcas #formMarcas').each (function(){
+                        $('#produtos-variantes #formVariantes').each (function(){
                             this.reset();
-                        });
-                        $('.id_marca').html('');
-                        $(data).each(function(index, element){
-                            $('.id_marca').append('<option value="'+element.id+'">'+element.nome+'</option>');
                         });
                         $('input').removeClass('border border-danger');
                         $('.carregamento').html('');
-                        $('#produtos-marcas #formMarcas').removeClass('d-none');
-                        $('#produtos-marcas').modal('hide');
+                        $('#produtos-variantes #formVariantes').removeClass('d-none');
+                        $('#produtos-variantes').modal('hide');
                     }, 800);
                 }, error: function (data) {
                     setTimeout(function(){

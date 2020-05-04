@@ -23,8 +23,8 @@ Configurações
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header py-0">
-                            <h3 class="section-title">Integrações</h3>  
+                        <div class="card-header">
+                            <h3 class="section-title my-0">Integrações</h3>  
                         </div>
                         <div class="card-body">
                             <label>Nenhuma integração realizada, módulo em desenvolvimento.</label>

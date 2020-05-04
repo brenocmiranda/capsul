@@ -62,15 +62,15 @@ Adicionar produto
                     </div>
 
                     <div class="card" id="card-1">
-                        <div class="card-header py-0">
-                            <h5 class="section-title">Informações básicas</h5>
+                        <div class="card-header">
+                            <h5 class="section-title my-0">Informações básicas</h5>
                         </div>
                         <div class="card-body">
                             <div class="form-group col-12">
                                 <label class="custom-switch px-0">
                                     <input type="checkbox" name="ativo" class="custom-switch-input" checked>
                                     <span class="custom-switch-indicator"></span>
-                                    <span class="custom-switch-description"><b>Ativo</b></span>
+                                    <span class="custom-switch-description">Ativo</span>
                                 </label>
                             </div>
                             <div class="form-group col-12">
@@ -115,8 +115,8 @@ Adicionar produto
                 </div>
 
                 <div class="card" id="card-2">
-                    <div class="card-header py-0">
-                        <h5 class="section-title">Checkout</h5>
+                    <div class="card-header">
+                        <h5 class="section-title my-0">Checkout</h5>
                     </div>
                     <div class="card-body">
                         <div class="col-6 form-group">
@@ -132,8 +132,8 @@ Adicionar produto
                 </div>
 
                 <div class="card" id="card-3">
-                    <div class="card-header py-0">
-                        <h5 class="section-title">Categorias</h5>
+                    <div class="card-header">
+                        <h5 class="section-title my-0">Categorias</h5>
                         <div class="ml-auto">
                             <a href="javascript:void(0)" data-toggle="modal" data-target="#produtos-categorias">+ Cadastrar nova categoria</a>
                         </div>
@@ -179,8 +179,8 @@ Adicionar produto
                 </div>
 
                 <div class="card d-none" id="card-4">
-                    <div class="card-header py-0">
-                        <h5 class="section-title">Variantes</h5>
+                    <div class="card-header">
+                        <h5 class="section-title my-0">Variantes</h5>
                         <div class="ml-auto">
                             <a href="javascript:void(0)" data-toggle="modal" data-target="#produtos-variantes">+ Cadastrar nova variação</a>
                         </div>
@@ -228,15 +228,15 @@ Adicionar produto
                 </div>
 
                 <div class="card" id="card-5">
-                    <div class="card-header py-0">
-                        <h5 class="section-title">SKU</h5>
+                    <div class="card-header">
+                        <h5 class="section-title my-0">SKU</h5>
                     </div>
                     <div class="card-body p-0 pt-3">
                         <div class="form-group col-12 px-5">
                             <label class="custom-switch px-0">
                                 <input type="checkbox" name="disponivel_venda" class="custom-switch-input" checked>
                                 <span class="custom-switch-indicator"></span>
-                                <span class="custom-switch-description"><b>Disponível para venda</b></span>
+                                <span class="custom-switch-description">Disponível para venda</span>
                             </label>
                         </div>
                         <div class="form-group col-12 px-5">
@@ -313,8 +313,8 @@ Adicionar produto
                 </div>
 
                 <div class="card" id="card-6">
-                    <div class="card-header py-0 ">
-                        <h5 class="section-title">Peso e Dimensões</h5>
+                    <div class="card-header">
+                        <h5 class="section-title my-0">Peso e Dimensões</h5>
                     </div>
                     <div class="card-body row">
                         <div class="row col-8">
@@ -370,8 +370,8 @@ Adicionar produto
                 </div>
 
                 <div class="card" id="card-7">
-                    <div class="card-header py-0">
-                        <h5 class="section-title">Imagens</h5>
+                    <div class="card-header">
+                        <h5 class="section-title my-0">Imagens</h5>
                     </div>
                     <div class="card-body">
                         <div class="col-12 form-group">
@@ -380,7 +380,7 @@ Adicionar produto
                             <div class="row mt-3">
                                 <div class="col-7">
                                     <div class="border p-3 col-6 rounded text-center">
-                                        <img class="w-100" id="PreviewImage" src="{{ asset('public/img/product.png').'?'.rand() }}" style="height: 250px;" >
+                                        <img class="w-100" id="PreviewImage" src="{{ asset('public/img/product.png').'?'.rand() }}" style="height: 250px;">
                                         <input type="file" class="px-0 col-12 position-absolute mx-auto h-100 pointer" style="opacity: 0; top: 0%; left: 0%" accept="image/*" name="imagem_principal" id="imagem_principal" onchange="image(this);" title="Selecione sua imagem">
                                     </div>
                                 </div>
@@ -401,8 +401,8 @@ Adicionar produto
                 </div>
 
                 <div class="card" id="card-8">
-                    <div class="card-header py-0">
-                        <h5 class="section-title">Detalhes do produto</h5>
+                    <div class="card-header">
+                        <h5 class="section-title py-0">Detalhes do produto</h5>
                     </div>
                     <div class="card-body">
                         <div class="form-group col-12 form-group">

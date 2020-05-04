@@ -34,8 +34,8 @@ Adicionar categoria
             <form method="POST" action="{{ route('categorias.salvar') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="card" id="card-1">
-                    <div class="card-header py-0">
-                        <h5 class="section-title">Informações básicas</h5>
+                    <div class="card-header">
+                        <h5 class="section-title my-0">Informações básicas</h5>
                     </div>
                     <div class="card-body">
                         <div class="form-group col-12">
@@ -99,8 +99,8 @@ Adicionar categoria
                 </div>
 
                 <div class="card" id="card-2">
-                    <div class="card-header py-0">
-                        <h5 class="section-title">Banners</h5>
+                    <div class="card-header">
+                        <h5 class="section-title my-0">Banners</h5>
                     </div>
                     <div class="card-body">
                         <div class="form-group col-4">
@@ -125,8 +125,8 @@ Adicionar categoria
           </div>
 
           <div class="card" id="card-3">
-            <div class="card-header py-0">
-                <h5 class="section-title">Google / SEO</h5>
+            <div class="card-header">
+                <h5 class="section-title my-0">Google / SEO</h5>
             </div>
             <div class="card-body">
                 <div class="form-group col-8">

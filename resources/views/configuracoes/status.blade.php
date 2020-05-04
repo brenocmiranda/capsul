@@ -23,8 +23,8 @@ Configurações
       <div class="row">
         <div class="col-12">
             <div class="card">
-              <div class="card-header py-0">
-                <h3 class="section-title">Status dos pedidos</h3>  
+              <div class="card-header">
+                <h3 class="section-title my-0">Status dos pedidos</h3>  
               </div>
               <div class="card-body">
                     <div class="col-12 table-responsive">
