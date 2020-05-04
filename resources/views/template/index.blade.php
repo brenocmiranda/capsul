@@ -1,7 +1,6 @@
-
 @include('template.header')
 
-	@if(!empty(Auth::user()->email_verified_at)){
+	@if(!empty(Auth::user()->email_verified_at))
 		<div id="app">
 			<div class="main-wrapper">
 				<div class="navbar-bg"></div>

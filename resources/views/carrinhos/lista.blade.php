@@ -72,19 +72,29 @@ Carrinhos Abandonados
 
         $('#table tbody').on('click', 'a#detalhes', function () {
             var table = $('#table').DataTable();
-            var data = table.row('tr').data();
-
-            $('#nome-produto').html('<a href="../produtos/editar/'+data.relation_produto.id+'">'+data.relation_produto.nome+'</a>');
-            $('.prod_resume').attr('src', '../storage/app/'+data.relation_produto.relation_imagens_principal[0].caminho);
-            $('#cod_sku').html(data.relation_produto.cod_sku);
-            $('#preco_venda').html(data.relation_produto.preco_venda.toFixed(2).replace('.',','));
+            table.$('tr.selected').removeClass('selected');
+            $(this).parents('tr').addClass('selected');
+            $(this).parent('tr').addClass('selected');
+            var data = table.row('tr.selected').data();
+            var cliente = JSON.parse(data.relation_cliente);
+            var produto = JSON.parse(data.relation_produto);
+            $('#nome-produto').html('<a href="../produtos/editar/'+data.id_produto+'">'+produto.nome+'</a>');
+            $('.prod_resume').attr('src', '../storage/app/'+produto.relation_imagens_principal[0].caminho);
+            $('#cod_sku').html(produto.cod_sku);
+            $('#precoVenda').html(produto.preco_venda.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"}));
             $('#codigo').html('#'+data.codigo);
-            $('#valor-total').html(data.valor_compra.toFixed(2).replace('.',','));
-            $('#valor-subtotal').html(data.valor_compra.toFixed(2).replace('.',','));
+            $('#linkCarrinho').attr('href', '../checkout/continuar/'+data.codigo);
+            $('#valorSubtotal').html(Number(data.valor_compra).toLocaleString("pt-BR", { style: "currency" , currency:"BRL"}));
+            $('#valorTotal').html(Number(data.valor_compra).toLocaleString("pt-BR", { style: "currency" , currency:"BRL"}));
+            $('#quantidade').html(data.quantidade);
+            $('#atualizacao').html(data.updated_at)
+            
             if(data.id_cliente != null){
-                $('#cliente').html(data.relation_cliente.nome);
-                $('#email').html(data.relation_cliente.email);
-                $('#phone').html(data.telefone);
+                $('#cliente').html(cliente.nome);
+                $('#cliente').attr('href', '../clientes/editar/'+cliente.id);
+                $('#email').html(cliente.email);
+                $('#phone').attr('href', "https://api.whatsapp.com/send?phone="+data.telefone)
+                $('#phone').html("("+data.telefone.replace('+55', '').substr(0,2)+") "+data.telefone.replace('+55', '').substr(2,5)+"-"+data.telefone.replace('+55', '').substr(7,10));
             }else{
                 $('#cliente').html('<b>--</b>');
                 $('#email').html('<b>--</b>');

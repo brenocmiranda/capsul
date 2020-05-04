@@ -45,18 +45,38 @@ class CheckoutCtrl extends Controller
       if($produto){
         $pedido = Pedidos::create([
           'id_produto' => $produto->id, 
-          'codigo' => preg_replace("/[^0-9]/", "", substr(uniqid(date('HisYmd')), 7, 12)), 
+          'codigo' => preg_replace("/[^0-9]/", "", substr(uniqid(date('HisYmd')), -11)), 
           'valor_compra' => $produto->preco_venda,
           'quantidade' => 1,
           'ip_compra' => $_SERVER['REMOTE_ADDR']
         ]);
-        return view('checkout.index')->with('produto', $produto)->with('pedido', $pedido)->with('checkout', $this->checkout)->with('geral', $this->geral);
-        }else{
+        return view('checkout.index')->with('pedido', $pedido)->with('checkout', $this->checkout)->with('geral', $this->geral);
+      }else{
           abort(404);
-        }
+      }
     }
   }
 
+  // Continua o pedido de onde parou
+  public function Continuar($codigo){
+    foreach($this->seguranca as $seguranca){
+      if($seguranca->ip_bloqueado == $_SERVER['REMOTE_ADDR']){
+        return view('system.bloqueio');
+      }
+    } 
+    $ip_max = Pedidos::whereNotNull('transacao_pagarme')->whereDate('created_at', date('Y-m-d'))->where('ip_compra', $_SERVER['REMOTE_ADDR'])->count();
+    if($ip_max >= $this->checkout->pedidos_ip){
+      return view('system.bloqueio');
+    }else{
+      $pedido = Pedidos::where('codigo', $codigo)->first();
+      if($pedido && @$pedido->RelationStatus->last()->posicao != 3 && @$pedido->RelationStatus->last()->posicao < 5){
+        $enderecos = Enderecos::where('id_cliente', $pedido->id_cliente)->get();
+        return view('checkout.index')->with('pedido', $pedido)->with('checkout', $this->checkout)->with('geral', $this->geral)->with('enderecos', $enderecos);
+      }else{
+        abort(404);
+      }
+    }
+  }
 
   // Atualização dos dados pessoais
   public function Form1(Request $FormRequest, $id){
@@ -111,8 +131,6 @@ class CheckoutCtrl extends Controller
     return response()->json(['success' => true]);
   }
 
-
-
   // Atualização do endereço
   public function Form2(Request $FormRequest, $id){
     $pedido = Pedidos::find($id);
@@ -120,7 +138,8 @@ class CheckoutCtrl extends Controller
 
     $rastreamento = PedidosRastreamento::create([
       'tipo' => $frete->nome, 
-      'prazo_envio' => $this->addDiasUteis(date('Y-m-d'), $frete->prazo_entrega), 
+      'prazo_envio' => $this->addDiasUteis(date('Y-m-d'), $frete->prazo_entrega),
+      'prazo' =>  $frete->prazo_entrega,
       'valor_envio' => $frete->valor
     ]);
     $pedido = Pedidos::find($id)->update([
@@ -129,8 +148,6 @@ class CheckoutCtrl extends Controller
       ]);
     return response()->json(['success' => true]);
   }
-
-
 
   // Compra efetuada no cartão de crédito
   public function Form3(Request $FormRequest, $id){
@@ -197,56 +214,56 @@ class CheckoutCtrl extends Controller
           ]
         ]
       ]);
+
       Pedidos::find($id)->update(['ip_compra' => $transaction->ip]);
-    }else{
-      return false;
-    }
-    
-    // Retorno do status
-    if(!empty($transaction)){
-      if($transaction->status == 'authorized' || $transaction->status == 'paid'){
-        // Aprovado
-        $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 3]);
-        Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1']);
-        $dados = Status::select('nome', 'descricao', 'posicao')->find(3);
-        $dados->image = asset('public/img/status-pagamento/aprovado.png');
-        $dados->link = '<a href="javascript:void(0)">Acompanhamento do seu pedido</a>';
-        $dados->estado = "bg-success text-white";
-        $dados->url_redirect = $this->checkout->url_cartao;
-        return json_encode($dados);
-      }elseif($transaction->status == 'refunded' || $transaction->status == 'refused' || $transaction->status == 'chargedback' || $transaction->status == 'pending_refund'){
-         // Recusado
-        $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 10]);
-        Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1']);
-        $dados = Status::select('nome', 'descricao', 'posicao')->find(10);
-        $dados->image = asset('public/img/status-pagamento/recusado.png');
-         $dados->link = '<a href="javascript:void(0)" onclick="refazerPayment()" class="btn btn-primary btn-lg btn-icon icon-left shadow-none"><i class="mdi mdi-arrow-left"></i> Tentar novamente</a>';
-        $dados->estado = "bg-danger text-white";
-        $dados->url_redirect = $this->checkout->url_cartao;
-        return json_encode($dados);
-      }elseif($transaction->status == 'waiting_payment' || $transaction->status == 'analyzing' || $transaction->status == 'pending_review' || $transaction->status == 'processing'){
-        // Em análise
-        $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 1]);
-        Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1']);
-        $dados = Status::select('nome', 'descricao', 'posicao')->find(1);
-        $dados->image = asset('public/img/status-pagamento/analise.png');
-        $dados->link = '<a href="javascript:void(0)">Acompanhamento do seu pedido</a>';
-        $dados->estado = "bg-warning text-white";
-        $dados->url_redirect = $this->checkout->url_cartao;
-        return json_encode($dados);
+      if($pedido->transacao_pagarme == null){
+        PedidosStatus::create(['id_pedido' => $id, 'id_status' => 1]);
+      }
+      
+      // Retorno do status
+      if(!empty($transaction)){
+        if($transaction->status == 'authorized' || $transaction->status == 'paid'){
+          // Aprovado
+          $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 3]);
+          Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1']);
+          $dados = Status::select('nome', 'descricao', 'posicao')->find(3);
+          $dados->image = asset('public/img/status-pagamento/aprovado.png');
+          $dados->link = '<a href="'.route('checkout.acompanhamento.pedido', $pedido->codigo).'" target="_blank">Acompanhamento do seu pedido</a> &#183 <a href="'.route('checkout.create', $pedido->RelationProduto->link_produto).'" target="_blank"> Comprar novamente</a>';
+          $dados->estado = "bg-success text-white";
+          $dados->url_redirect = $this->checkout->url_cartao;
+          return json_encode($dados);
+        }elseif($transaction->status == 'refunded' || $transaction->status == 'refused' || $transaction->status == 'chargedback' || $transaction->status == 'pending_refund'){
+           // Recusado
+          $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 4]);
+          Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1']);
+          $dados = Status::select('nome', 'descricao', 'posicao')->find(4);
+          $dados->image = asset('public/img/status-pagamento/recusado.png');
+           $dados->link = '<a href="javascript:void(0)" onclick="refazerPayment()" class="btn btn-primary btn-lg btn-icon icon-left shadow-none"><i class="mdi mdi-arrow-left"></i> Tentar novamente</a>';
+          $dados->estado = "bg-danger text-white";
+          $dados->url_redirect = $this->checkout->url_cartao;
+          return json_encode($dados);
+        }elseif($transaction->status == 'waiting_payment' || $transaction->status == 'analyzing' || $transaction->status == 'pending_review' || $transaction->status == 'processing'){
+          // Em análise
+          $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 2]);
+          Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1']);
+          $dados = Status::select('nome', 'descricao', 'posicao')->find(2);
+          $dados->image = asset('public/img/status-pagamento/analise.png');
+          $dados->link = '<a href="'.route('checkout.acompanhamento.pedido', $pedido->codigo).'" target="_blank">Acompanhamento do seu pedido</a> &#183 <a href="'.route('checkout.create', $pedido->RelationProduto->link_produto).'" target="_blank"> Comprar novamente</a>';
+          $dados->estado = "bg-warning text-white";
+          $dados->url_redirect = $this->checkout->url_cartao;
+          return json_encode($dados);
+        }
+      }else{
+        return false;
       }
     }else{
       return false;
     }
-    
   }
-
-
 
   // Compra efetuada pelo boleto
   public function Form4(Request $FormRequest, $id){
-    // Atualizar dados
-
+    
     // Realizando transação
     if(!empty($FormRequest->documento_titular)){
       $pedido = Pedidos::find($id);
@@ -268,48 +285,51 @@ class CheckoutCtrl extends Controller
           'phone_numbers' => [ $pedido->RelationTelefones->numero ],
           'email' => $pedido->RelationCliente->email
         ]]); 
+
         Pedidos::find($id)->update(['ip_compra' => $transaction->ip]);
-    }else{
-      return false;
-    }
-     
-    // Retorno do status
-    if(!empty($transaction)){
-      if($transaction->status == 'authorized' || $transaction->status == 'paid'){
-        // Aprovado
-        $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 3]);
-        Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url]);
-        $dados = Status::select('nome', 'descricao', 'posicao')->find(3);
-        $dados->image = asset('public/img/status-pagamento/aprovado.png');
-        $dados->link = '<a href="javascript:void(0)">Acompanhamento do seu pedido</a>';
-        $dados->estado = "bg-success text-white";
-        $dados->url_redirect = $this->checkout->url_boleto;
-        return json_encode($dados);
-      }elseif($transaction->status == 'refunded' || $transaction->status == 'refused' || $transaction->status == 'chargedback' || $transaction->status == 'pending_refund'){
-         // Recusado
-        $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 10]);
-        Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url]);
-        $dados = Status::select('nome', 'descricao', 'posicao')->find(10);
-        $dados->image = asset('public/img/status-pagamento/recusado.png');
-        $dados->link = '<a href="javascript:void(0)" onclick="refazerPayment()" class="btn btn-primary btn-lg btn-icon icon-left shadow-none"><i class="mdi mdi-check"></i> Tentar novamente</a>';
-        $dados->estado = "bg-danger text-white";
-        $dados->url_redirect = $this->checkout->url_boleto;
-        return json_encode($dados);
-      }elseif($transaction->status == 'waiting_payment' || $transaction->status == 'analyzing' || $transaction->status == 'pending_review' || $transaction->status == 'processing'){
-        // Em análise
-        $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 1]);
-        Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url]);
-        $dados = Status::select('nome', 'descricao', 'posicao')->find(1);
-        $dados->image = asset('public/img/status-pagamento/analise.png');
-        $dados->link = '<a href="'.$transaction->boleto_url.'" class="text-decoration-none">Imprimir boleto para pagamento</a>';
-        $dados->estado = "bg-warning text-white";
-        $dados->url_redirect = $this->checkout->url_boleto;
-        return json_encode($dados);
+        if($pedido->transacao_pagarme == null){
+          PedidosStatus::create(['id_pedido' => $id, 'id_status' => 1]);
+        }
+   
+      // Retorno do status
+      if(!empty($transaction)){
+        if($transaction->status == 'authorized' || $transaction->status == 'paid'){
+          // Aprovado
+          $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 3]);
+          Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url]);
+          $dados = Status::select('nome', 'descricao', 'posicao')->find(3);
+          $dados->image = asset('public/img/status-pagamento/aprovado.png');
+          $dados->link = '<a href="'.route('checkout.acompanhamento.pedido', $pedido->codigo).'" target="_blank">Acompanhamento do seu pedido</a> &#183 <a href="'.route('checkout.create', $pedido->RelationProduto->link_produto).'" target="_blank"> Comprar novamente</a>';
+          $dados->estado = "bg-success text-white";
+          $dados->url_redirect = $this->checkout->url_boleto;
+          return json_encode($dados);
+        }elseif($transaction->status == 'refunded' || $transaction->status == 'refused' || $transaction->status == 'chargedback' || $transaction->status == 'pending_refund'){
+           // Recusado
+          $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 4]);
+          Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url]);
+          $dados = Status::select('nome', 'descricao', 'posicao')->find(4);
+          $dados->image = asset('public/img/status-pagamento/recusado.png');
+          $dados->link = '<a href="javascript:void(0)" onclick="refazerPayment()" class="btn btn-primary btn-lg btn-icon icon-left shadow-none"><i class="mdi mdi-check"></i> Tentar novamente</a>';
+          $dados->estado = "bg-danger text-white";
+          $dados->url_redirect = $this->checkout->url_boleto;
+          return json_encode($dados);
+        }elseif($transaction->status == 'waiting_payment' || $transaction->status == 'analyzing' || $transaction->status == 'pending_review' || $transaction->status == 'processing'){
+          // Em análise
+          $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 2]);
+          Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url]);
+          $dados = Status::select('nome', 'descricao', 'posicao')->find(2);
+          $dados->image = asset('public/img/status-pagamento/analise.png');
+          $dados->link = '<a href="'.route('checkout.acompanhamento.pedido', $pedido->codigo).'" target="_blank">Acompanhamento do seu pedido</a> &#183 <a href="'.route('checkout.create', $pedido->RelationProduto->link_produto).'" target="_blank"> Comprar novamente</a>';
+          $dados->estado = "bg-warning text-white";
+          $dados->url_redirect = $this->checkout->url_boleto;
+          return json_encode($dados);
+        }
+      }else{
+        return false;
       }
     }else{
       return false;
     }
-
   }
 
   // Detalhes do cliente
@@ -403,6 +423,17 @@ class CheckoutCtrl extends Controller
       Pedidos::find($id)->update(['desconto_aplicado' => 0]);
     }
     return response()->json(['success' => true]);
+  }
+
+  // Acompanhamento de pedido
+  public function Acompanhamento($codigo){
+    if(!empty($codigo)){
+      $pedido = Pedidos::where('codigo', $codigo)->first();
+      $status = Status::all();
+      return view('checkout.rastrear')->with('pedido', $pedido)->with('geral', $this->geral)->with('status', $status);
+    }else{
+      abort(404);
+    }
   }
 
 

@@ -1964,7 +1964,7 @@ body {
   background-color: #f4f6f9;
   font-size: 13px;
   font-weight: 400;
-  font-family: Rubik,sans-serif,apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial !important;
+  /*font-family: Rubik,sans-serif,apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial !important;*/
   color: #6c757d; 
 }
 
@@ -3424,7 +3424,7 @@ body:not(.sidebar-mini) .sidebar-style-2 .sidebar-menu li.active ul.dropdown-men
     position: relative;
     font-size: 11px;
     color: #fff;
-    line-height: 20px;
+    line-height: 18px;
     background-color: #01c89b;
     border: 3px solid #fff;
     z-index: 1;
@@ -3476,10 +3476,6 @@ body:not(.sidebar-mini) .sidebar-style-2 .sidebar-menu li.active ul.dropdown-men
     font-size: 50px;
     margin-left: 25%;
     color: #CCCCCC;
-  }
-
-  .progress-status{
-    border-color: #01c89b !important;
   }
 
   .custom-switch-input:checked ~ .indicator-blue{

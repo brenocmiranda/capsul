@@ -19,6 +19,7 @@ class CreatePedidosHasRastreamentoTable extends Migration
             $table->string('tipo');
             $table->double('valor_envio');
             $table->date('prazo_envio');
+            $table->integer('prazo');
             $table->string('cod_rastreamento')->nullable();
             $table->string('link_rastreamento')->nullable();
 

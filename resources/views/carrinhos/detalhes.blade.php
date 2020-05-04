@@ -2,10 +2,14 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="card mb-0">
-                <div class="card-header row pb-0">
+                <div class="card-header py-0" style="background-color: #f6f6f6;">
                     <div class="row col-12 my-4">
-                        <h3 class="col">Carrinho <span id="codigo"></span></h3>
-                        <button type="button" class="close ml-auto mb-auto" data-dismiss="modal" aria-label="Close"><svg width="14" height="14" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" data-svg="close-icon"><line fill="none" stroke="#000" stroke-width="1.1" x1="1" y1="1" x2="13" y2="13"></line><line fill="none" stroke="#000" stroke-width="1.1" x1="13" y1="1" x2="1" y2="13"></line></svg>
+                        <h3 class="col">Carrinho 
+                            <span id="codigo"></span>
+                            <span id="atualzacao"></span>
+                        </h3>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true"><i class="mdi mdi-close mdi-24px"></i></span>
                         </button>
                     </div>
                 </div>
@@ -17,15 +21,15 @@
                             </div>
                             <div class="mb-2">
                                 <i class="fa fa-user px-2"></i>
-                                <b id="cliente" class="text-capitalize"></b>
+                                <a href="javascript:void(0)" id="cliente" class="text-capitalize font-weight-bold"></a>
                             </div>
                             <div class="my-2">
                                 <i class="fa fa-envelope px-2"></i>
                                 <span id="email"></span>
                             </div>
-                            <div class="my-2">
-                                <i class="fa fa-phone px-2"></i>
-                                <span id="phone"></span>
+                            <div class="my-2 text-success">
+                                <i class="mdi mdi-whatsapp px-2"></i>
+                                <a href="javascript:void(0)" target="_blank" class="text-decoration-none text-success" id="phone"> </a>
                             </div>
                         </div>
                         <div class="col-6">
@@ -33,10 +37,10 @@
                                 <b class="text-uppercase">Valor Total</b>
                             </div>
                             <div>
-                                <b><h3> R$ <span id="valor-total"></span></h3></b>
+                                <b><h3 id="valorTotal"></h3></b>
                             </div>
                             <div class="my-3">
-                                <a href="javascript:void(0)" class="btn btn-primary"><i class="fa fa-shopping-cart"></i> Retornar ao carrinho</a>
+                                <a href="javascript:void(0)" class="btn btn-primary shadow-none font-weight-bold" id="linkCarrinho" target="_blank"><i class="mdi mdi-cart px-1"></i> Simular ao carrinho</a>
                             </div>
                         </div>
                     </div>
@@ -59,7 +63,7 @@
                                                 <td class="text-left">
                                                     <div class="row mt-3">
                                                         <div class="col-2">
-                                                            <img src="#" alt="" class="prod_resume">
+                                                            <img src="#" alt="" class="rounded prod_resume">
                                                         </div>
                                                         <div class="col-9 mx-2">
                                                             <a data-v-81a36fee="" href="#" class="product-title" target="_blank" id="nome-produto">
@@ -69,13 +73,13 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <p>1</p>
+                                                    <p id="quantidade">1</p>
                                                 </td>
                                                 <td>
-                                                    <p>R$ <span id="preco_venda"></span></p>
+                                                    <p id="precoVenda">R$</p>
                                                 </td>
                                                 <td>
-                                                    <p>R$ <span id="valor-subtotal"></span></p>
+                                                    <p id="valorSubtotal">R$</p>
                                                 </td>
                                             </tr>
                                         </tbody>

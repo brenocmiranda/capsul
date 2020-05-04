@@ -1,7 +1,7 @@
 <div class="main-sidebar">
   <aside id="sidebar-wrapper">
     <div class="sidebar-brand">
-      <a href="{{ route('home') }}"><img src="{{ asset('storage/app/system/capsul.png').'?'.rand() }}" alt="Capsul" style="max-height: 50px;"></a>
+      <a href="{{ route('home') }}"><img src="{{ asset('storage/app/system/capsul.png').'?'.rand() }}" alt="Capsul" style="max-height: 45px;"></a>
     </div>
     <div class="sidebar-brand sidebar-brand-sm">
       <a href="{{ route('home') }}"><img src="{{ asset('storage/app/system/icon.png').'?'.rand() }}" alt="Capsul" style="max-width: 32px;"></a>

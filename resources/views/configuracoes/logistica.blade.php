@@ -94,34 +94,23 @@ Configurações
                         </div>
                         <div class="row col">
                             <div class="form-group col-4">
-                                <label>Porcentagem adicional</label>
-                                <div class="input-group">
-                                    <input type="text" class="porcentagem form-control" name="porcentagem" maxlength="3">
-                                    <div class="input-group-append">
-                                        <div class="input-group-text py-0">
-                                            <b>%</b>
-                                        </div>
-                                    </div>
-                                </div>
+                                <label>Prazo de entrega</label>
+                                <div class="d-flex">
+                                    <input type="number" class="prazo_entrega form-control" name="prazo_entrega">
+                                    <label class="my-auto mx-2">dias</label>
+                                </div>   
                             </div>
                             <div class="form-group col-4">
                                 <label>Valor</label>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <div class="input-group-text py-0">
-                                            <b>R$</b>
+                                            <span>R$</span>
                                         </div>
                                     </div>
                                     <input type="text" class="currency form-control" name="valor">
                                 </div>   
                             </div>
-                        </div>
-                        <div class="form-group col-4">
-                            <label>Prazo de entrega</label>
-                            <div class="d-flex">
-                                <input type="number" class="prazo_entrega form-control" name="prazo_entrega">
-                                <label class="my-auto mx-2">dias</label>
-                            </div>   
                         </div>
                     </div>
                     <hr>
@@ -175,34 +164,23 @@ Configurações
                         </div>
                         <div class="row col">
                             <div class="form-group col-4">
-                                <label>Porcentagem adicional</label>
-                                <div class="input-group">
-                                    <input type="text" class="porcentagem form-control" name="porcentagem" maxlength="3">
-                                    <div class="input-group-append">
-                                        <div class="input-group-text py-0">
-                                            <b>%</b>
-                                        </div>
-                                    </div>
-                                </div>
+                                <label>Prazo de entrega</label>
+                                <div class="d-flex">
+                                    <input type="number" class="prazo_entrega form-control" name="prazo_entrega">
+                                    <label class="my-auto mx-2">dias</label>
+                                </div>   
                             </div>
                             <div class="form-group col-4">
                                 <label>Valor</label>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <div class="input-group-text py-0">
-                                            <b>R$</b>
+                                            <span>R$</span>
                                         </div>
                                     </div>
                                     <input type="text" class="currency form-control" name="valor">
                                 </div>   
                             </div>
-                        </div>
-                        <div class="form-group col-4">
-                            <label>Prazo de entrega</label>
-                            <div class="d-flex">
-                                <input type="number" class="prazo_entrega form-control" name="prazo_entrega">
-                                <label class="my-auto mx-2">dias</label>
-                            </div>   
                         </div>
                     </div>
                     <hr>

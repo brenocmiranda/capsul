@@ -23,22 +23,22 @@ Pedidos
         <div class="section-body">
             <div class="row">
                 <div class="col-12">
-                    <div class="card">
-                        <div class="card-body" style="padding-bottom: 0px !important">
-                            <div class="buttons d-flex">
-                                <button class="mx-auto border btn btn-1 btn-light shadow-none btn-filter" value="AGUARDANDO PAGAMENTO"><span>AGUARDAN. PAGAMENTO</span></button>
-                                <button class="mx-auto border btn btn-2 btn-light shadow-none btn-filter" value="PEDIDO AUTORIZADO"><span>PEDIDO AUTORIZADO</span></button>
-                                <button class="mx-auto border btn btn-3 btn-light shadow-none btn-filter" value="PAGAMENTO APROVADO"><span>PAGAMENTO APROVADO</span></button>
-                                <button class="mx-auto border btn btn-4 btn-light shadow-none btn-filter" value="PRODUTOS EM SEPARAÇÃO"><span>EM SEPARAÇÃO</span></button>
-                                <button class="mx-auto border btn btn-5 btn-light shadow-none btn-filter" value="FATURADO"><span>FATURADO</span></button>
-                                <button class="mx-auto border btn btn-6 btn-light shadow-none btn-filter" value="PRONTO PARA ENVIO"><span>PRONTO PARA ENVIO</span></button>
-                                <button class="mx-auto border btn btn-7 btn-light shadow-none btn-filter" value="EM TRANSPORTE"><span>EM TRANSPORTE</span></button>
-                                <button class="mx-auto border btn btn-8 btn-light shadow-none btn-filter" value="ENTREGUE"><span>ENTREGUE</span></button>
-                                <button class="mx-auto border btn btn-9 btn-light shadow-none btn-filter" value="CANCELADO"><span>CANCELADO</span></button>
-                            </div>
-                            <hr>
+                    <div class="">
+                        <div class="buttons d-flex">
+                            <button class="mx-auto border btn btn-1 btn-light shadow-none btn-filter" value="2"><span>AGUARDAN. PAGAMENTO</span></button>
+                            <button class="mx-auto border btn btn-3 btn-light shadow-none btn-filter" value="3"><span>PAGAMENTO APROVADO</span></button>
+                            <button class="mx-auto border btn btn-9 btn-light shadow-none btn-filter" value="4"><span>PAGAMENTO NÃO APROVADO</span></button>
+                            <button class="mx-auto border btn btn-2 btn-light shadow-none btn-filter" value="5"><span>PEDIDO AUTORIZADO</span></button>
+                            <button class="mx-auto border btn btn-4 btn-light shadow-none btn-filter" value="6"><span>EM SEPARAÇÃO</span></button>
+                            <button class="mx-auto border btn btn-5 btn-light shadow-none btn-filter" value="7"><span>FATURADO</span></button>
+                            <button class="mx-auto border btn btn-7 btn-light shadow-none btn-filter" value="8"><span>EM TRANSPORTE</span></button>
+                            <button class="mx-auto border btn btn-8 btn-light shadow-none btn-filter" value="9"><span>ENTREGUE</span></button>
+                            <button class="mx-auto border btn btn-9 btn-light shadow-none btn-filter" value="10"><span>CANCELADO</span></button>
                         </div>
+                        <hr>
+                    </div>
 
+                    <div class="card">
                         <div class="card-body">
                             <div class="table-responsive col-12">
                                 <table class="table table-striped text-center w-100" id="table">
@@ -49,7 +49,7 @@ Pedidos
                                             <th>Data</th>
                                             <th>Total</th>
                                             <th>Status</th>
-                                            <th>Entrega</th>
+                                            <th>Ações</th>
                                         </tr>
                                     </thead>
                                 </div>
@@ -373,16 +373,18 @@ Pedidos
                 { "data": "data","name":"data"},
                 { "data": "valor", "name":"valor"},
                 { "data": "status","name":"status"},
-                { "data": "entrega", "name":"entrega"},
+                { "data": "acoes", "name":"acoes"},
                 ],
             });
         }
         
         $(document).ready(function (){ 
             $('#table').DataTable({
+                sPaginationType: "simple_numbers",
                 deferRender: true,
-                order: [2, 'asc'],
+                order: true,
                 paging: true,
+                destroy: true,
                 select: true,
                 searching: true,
                 destroy: true,
@@ -394,19 +396,30 @@ Pedidos
                 { "data": "data","name":"data"},
                 { "data": "valor", "name":"valor"},
                 { "data": "status","name":"status"},
-                { "data": "entrega", "name":"entrega"},
+                { "data": "acoes", "name":"acoes"},
                 ],
             });
 
             $('.btn-filter').on('click', function(){
-                var table = $('#table').DataTable();
-                var filteredData = table.column(4).data().filter(function ( value, index ) {return value == this.value ? true : false;});
+                $('#table').dataTable({
+                    destroy: true,
+                    ajax: {
+                        "url": "{{ route('pedidos.data') }}",
+                        "data": {
+                            "status1": this.value,
+                        }
+                    },
+                    "columns": [ 
+                    { "data": "transacao","name":"transacao"},
+                    { "data": "cliente", "name":"cliente"},
+                    { "data": "data","name":"data"},
+                    { "data": "valor", "name":"valor"},
+                    { "data": "status","name":"status"},
+                    { "data": "acoes", "name":"acoes"},
+                    ],
+                });
             });
 
-            $('.btn-filter').dblclick(function(){
-                var table = $('#table').DataTable();
-                var filteredData = table.column(4).data().filter('');
-            });
         });
     </script>
     @endsection

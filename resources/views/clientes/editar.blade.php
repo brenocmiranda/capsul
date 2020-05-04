@@ -204,73 +204,66 @@ Editar cliente
 
                 <div class="tab-pane fade" id="pedidos" role="tabpanel" aria-labelledby="pedidos-tab">
                     <div class="card" id="card-2">
+                        <div class="card-header">
+                            <h5 class="section-title my-0">Últimos pedidos</h5>
+                        </div>
                         <div class="card-body">
-                            <div class="row mx-3">
-                                <h5 class="section-title my-3">Últimos pedidos</h5>
-                            </div>
-                            <hr>
-                            <div>
-                                <section id="lin_1">
-                                    <div class="table-responsive mt-3">
-                                        @if(count($pedidos) > 0)
-                                        <table class="table text-center">
-                                            <thead class="text-uppercase">
-                                                <tr>
-                                                    <th>Número do pedido</th>
-                                                    <th>Data</th>
-                                                    <th>Total</th>
-                                                    <th>Status</th>
-                                                    <th>Entrega</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-
-                                                @foreach($pedidos as $pedido)
-                                                <tr>
-                                                    <td class="p-0 ml-4">
-                                                        <div class="col ml-5 pr-0">
-                                                            <a href="{{route('pedidos.detalhes', $pedido->id)}}" class="d-flex text-decoration-none">
-                                                                @if($pedido->id_forma_pagamento == 1)  
-                                                                <div class="my-auto">
-                                                                    <img data-v-a542e072="" src="http://download.seaicons.com/icons/iconsmind/outline/512/Credit-Card-3-icon.png" width="30" class="uk-float-left icon-payment">
-                                                                </div>
-                                                                @else
-                                                                <div class="my-auto">
-                                                                    <img data-v-a542e072="" src="https://github.bubbstore.com/svg/billet.svg" width="40" class="uk-float-left icon-payment">
-                                                                </div>
-                                                                @endif
-                                                                <div class="text-center">
-                                                                    <label class="nome mx-3 pointer">{{$pedido->codigo}}</label>
-                                                                </div>
-                                                            </a>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                       <div class="col-12">
-                                                            {{date_format($pedido->created_at, "d/m/Y H:i:s")}}
-                                                        </div>
-                                                        <div class="col-12">
-                                                            {{$pedido->created_at->subMinutes(2)->diffForHumans()}}
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        R$ {{number_format($pedido->valor_compra, 2, ',', '.')}}
-                                                    </td>
-                                                    <td>
-                                                        <div class="badge badge-{{ ($pedido->RelationStatus->first()['posicao']==1 ? 'warning' : ($pedido->RelationStatus->first()['posicao']==2 || $pedido->RelationStatus->first()['posicao']==7 ? 'primary' : ($pedido->RelationStatus->first()['posicao']==3 || $pedido->RelationStatus->first()['posicao']==8 ? 'success' : ($pedido->RelationStatus->first()['posicao']==4 ? 'info' : ($pedido->RelationStatus->first()['posicao']==5 ? 'secondary' : ($pedido->RelationStatus->first()['posicao']==6 ? 'dark' : ($pedido->RelationStatus->first()['posicao']==9 ? 'danger' : '')))))))}}">{{strtoupper($pedido->RelationStatus->first()['nome'])}}</div>;
-                                                    </td>
-                                                    <td>
-                                                        <p>teste</p>
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                        @else
-                                        <div class="alert alert-light">Nenhum pedido encontrado.</div>
-                                        @endif
-                                    </div>
-                                </section>
+                            <div class="col-12 table-responsive mt-3">
+                                @if(count($pedidos) > 0)
+                                <table class="table text-center">
+                                    <thead class="text-uppercase">
+                                        <tr>
+                                            <th>Produtos</th>
+                                            <th>Data</th>
+                                            <th>Total</th>
+                                            <th>Status</th>
+                                            <th>N. do pedido</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($pedidos as $ped)
+                                        <tr>
+                                            <td class="ml-2">
+                                                <div class="row text-left">
+                                                    <div class="px-3 my-auto">
+                                                        <img src="{{ url('storage/app/'.$ped->RelationProduto->RelationImagensPrincipal->first()->caminho)}}" alt="Imagem atual" style="height: auto; width: 70px;" class="p-1 border rounded">
+                                                    </div>
+                                                    <div class="px-3 my-auto">
+                                                        <p class="nome m-0"><b>{{$ped->RelationProduto->nome}}</b></p>
+                                                        <label>{{$ped->RelationProduto->cod_sku}}</label>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-left">
+                                               <div class="col-12">
+                                                    {{date_format($ped->created_at, "d/m/Y H:i:s")}}
+                                                </div>
+                                                <div class="col-12 font-weight-bold">
+                                                    {{$ped->created_at->subMinutes(2)->diffForHumans()}}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                R$ {{number_format(($ped->valor_compra - $ped->desconto_aplicado + $ped->RelationRastreamento->valor_envio), 2, ',', '.')}}
+                                            </td>
+                                            <td>
+                                                <div class="status badge badge-{{
+                                                    ($ped->RelationStatus->last()->posicao==1 || $ped->RelationStatus->last()->posicao==7 ? 'dark' :
+                                                    ($ped->RelationStatus->last()->posicao==2 || $ped->RelationStatus->last()->posicao==6 || $ped->RelationStatus->last()->posicao==8 ? 'warning' : 
+                                                    ($ped->RelationStatus->last()->posicao==3 || $ped->RelationStatus->last()->posicao==5 || $ped->RelationStatus->last()->posicao==9 ? 'success' :
+                                                    ($ped->RelationStatus->last()->posicao==4 || $ped->RelationStatus->last()->posicao==10 ? 'danger' :  ''))))}}">
+                                                <span>{{strtoupper($ped->RelationStatus->last()->nome)}}</span>
+                                            </div>
+                                            </td>
+                                            <td>
+                                                <a href="{{route('pedidos.detalhes', $ped->id)}}" class="nome text-decoration-none">#{{$ped->codigo}}</a>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                                @else
+                                <div class="alert alert-light">O cliente não possui outros pedidos.</div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -291,8 +284,9 @@ Editar cliente
                                             <thead class="text-uppercase">
                                                 <tr>
                                                     <th>Produto</th>
-                                                    <th>Data</th>
+                                                    <th>Quantidade</th>
                                                     <th>Valor</th>
+                                                    <th>Data</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -315,15 +309,18 @@ Editar cliente
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <div class="col-12">
-                                                            {{date_format($carrinho->created_at, "d/m/Y H:i:s")}}
-                                                        </div>
-                                                        <div class="col-12">
-                                                            {{$carrinho->created_at->subMinutes(2)->diffForHumans()}}
-                                                        </div>
+                                                        {{$carrinho->quantidade}}
                                                     </td>
                                                     <td>
-                                                        R$ {{number_format($carrinho->valor_compra, 2, ',', '.')}}
+                                                        R$ {{number_format(($ped->valor_compra - $ped->desconto_aplicado + $ped->RelationRastreamento->valor_envio), 2, ',', '.')}}
+                                                    </td>
+                                                    <td class="text-center">
+                                                       <div class="col-12">
+                                                            {{date_format($carrinho->created_at, "d/m/Y H:i:s")}}
+                                                        </div>
+                                                        <div class="col-12 font-weight-bold">
+                                                            {{$carrinho->created_at->subMinutes(2)->diffForHumans()}}
+                                                        </div>
                                                     </td>
                                                 </tr>
                                                 @endforeach

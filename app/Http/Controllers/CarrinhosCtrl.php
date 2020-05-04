@@ -28,7 +28,7 @@ class CarrinhosCtrl extends Controller
     public function Lista(){
         return datatables()->of(Pedidos::WhereNull('transacao_pagarme')->get())
                     ->editColumn('produto', function(Pedidos $dados){ 
-                        return '<div class="row mx-auto py-2"><div class="my-auto mx-3"><img src="'.url("storage/app/".$dados->RelationProduto->RelationImagensPrincipal->first()['caminho']).'" alt="Imagem do produto" style="height: auto; width: 60px;"></div><a href="javascript:void(0)" id="detalhes" class="text-decoration-none"><div class="text-left col"><p class="my-auto nome">'.$dados->RelationProduto->nome.'</p></div></a></div>';
+                        return '<div class="d-flex my-2"><div class="my-auto col"><img src="'. (isset($dados->RelationProduto->RelationImagensPrincipal) ? asset('storage/app/'.$dados->RelationProduto->RelationImagensPrincipal->first()->caminho) : asset('public/img/product.png')).'" alt="Imagem atual" style="height: 55px; width: 60px;" class="rounded" ></div><div class="col-9 text-left my-auto"><a href="javascript:void(0)" class="text-decoration-none" id="detalhes"><p class="nome m-0">'.(strlen($dados->RelationProduto->nome) <= 40 ? $dados->RelationProduto->nome : substr($dados->RelationProduto->nome, 0, 41)."...").'</p></a><label class="mb-0">'.$dados->RelationProduto->cod_sku.'</label></div></div>';
                     })->editColumn('cliente', function(Pedidos $dados){
                         return '<p class="text-capitalize text-left font-weight-bolder mb-0">'.($dados->id_cliente != null ? strtolower($dados->RelationCliente->nome) : "<b>-</b>").'</p>';
                     })->editColumn('data', function(Pedidos $dados){
@@ -37,6 +37,10 @@ class CarrinhosCtrl extends Controller
                         return 'R$ '.number_format($dados->valor_compra, 2, ',', '.');
                     })->editColumn('telefone', function(Pedidos $dados){
                         return ($dados->id_cliente != null ? $dados->RelationTelefones->numero : "<b>--</b>");
-                    })->rawColumns(['produto', 'cliente','data','valor','telefone'])->make(true);
+                    })->editColumn('relation_produto', function(Pedidos $dados){
+                        return $dados->RelationProduto;
+                    })->editColumn('relation_cliente', function(Pedidos $dados){
+                        return $dados->RelationCliente;
+                    })->rawColumns(['produto', 'cliente','data','valor','telefone','relation_produto','relation_cliente'])->make(true);
     }
 }

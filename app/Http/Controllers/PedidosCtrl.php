@@ -21,11 +21,15 @@ use App\PedidosStatus;
 use App\PedidosNotas;
 use App\PedidosRastreamento;
 use App\ConfigCheckout;
+use App\ConfigGeral;
 use Carbon\Carbon;
 
 class PedidosCtrl extends Controller
 {   
     public function __construct(){
+        $this->checkout = ConfigCheckout::first();
+        $this->geral = ConfigGeral::first();
+        $this->pagarme = new PagarMe\Client($this->checkout->api_key);
         $this->middleware('auth');
     }
     
@@ -41,7 +45,7 @@ class PedidosCtrl extends Controller
         }
     }
     public function Lista(){
-        return datatables()->of(Pedidos::WhereNotNull('transacao_pagarme')->get())
+        return datatables()->of(Pedidos::WhereNotNull('transacao_pagarme')->orderBy('created_at', 'DESC')->get())
                     ->editColumn('transacao', function(Pedidos $dados){ 
                         return '<div>'.($dados->id_forma_pagamento == 1 ? '<img data-v-a542e072="" src="http://download.seaicons.com/icons/iconsmind/outline/512/Credit-Card-3-icon.png" width="30" class="uk-float-left icon-payment">' : '<img data-v-a542e072="" src="https://github.bubbstore.com/svg/billet.svg" width="40" class="uk-float-left icon-payment">').'</div>';
                     })->editColumn('cliente', function(Pedidos $dados){
@@ -49,33 +53,43 @@ class PedidosCtrl extends Controller
                     })->editColumn('data', function(Pedidos $dados){
                         return '<div class="text-left">'.date_format($dados->created_at, "d/m/Y H:i:s").'</div><div class="text-left font-weight-bold">'.$dados->created_at->subMinutes(2)->diffForHumans().'</div>';
                     })->editColumn('valor', function(Pedidos $dados){
-                        return 'R$ '.number_format($dados->valor_compra, 2, ',', '.');
+                        return 'R$ '.number_format( ($dados->valor_compra - $dados->desconto_aplicado + $dados->RelationRastreamento->valor_envio) , 2, ',', '.');
                     })->editColumn('status', function(Pedidos $dados){
-                        return '<div class="status badge badge-'.($dados->RelationStatus->last()['posicao']==1 ? 'warning' : ($dados->RelationStatus->last()['posicao']==2 || $dados->RelationStatus->last()['posicao']==7 ? 'primary' : ($dados->RelationStatus->last()['posicao']==3 || $dados->RelationStatus->last()['posicao']==8 ? 'success' : ($dados->RelationStatus->last()['posicao']==4 ? 'info' : ($dados->RelationStatus->last()['posicao']==5 ? 'secondary' : ($dados->RelationStatus->last()['posicao']==6 ? 'success' : ($dados->RelationStatus->last()['posicao']==9 ? 'danger' : ''))))))).'">'.strtoupper($dados->RelationStatus->last()['nome']).'</div>';
-                    })->editColumn('entrega', function(Pedidos $dados){
-                        return '<div class="text-'.($dados->RelationStatus->last()['posicao']==7 || $dados->RelationStatus->last()['posicao']==8 ? 'success' : 'danger').'"><a '.(isset($dados->cod_rastreio) ? 'href="http://www.websro.com.br/correios.php?P_COD_UNI='.$dados->cod_rastreio.'"' : '').' data-v-a542e072="" target="_blank" disabled="disabled" class="action-link holder-tooltip"><i data-v-a542e072="" class="fas fa-truck"></i> <span data-v-a542e072="" uk-tooltip="title: Rastrear pedido; pos: top; animation: none; cls: uk-active copy darker" class="tooltip" title="" aria-expanded="false"></span></a></div>';
-                    })->rawColumns(['transacao', 'cliente', 'data', 'valor', 'status', 'entrega'])->make(true);
+                        return '<div class="status badge badge-'.($dados->RelationStatus->last()->posicao==1 || $dados->RelationStatus->last()->posicao==7 ? 'dark' :
+                    ($dados->RelationStatus->last()->posicao==2 || $dados->RelationStatus->last()->posicao==6 || $dados->RelationStatus->last()->posicao==8 ? 'warning' : 
+                    ($dados->RelationStatus->last()->posicao==3 || $dados->RelationStatus->last()->posicao==5 || $dados->RelationStatus->last()->posicao==9 ? 'success' :
+                    ($dados->RelationStatus->last()->posicao==4 || $dados->RelationStatus->last()->posicao==10 ? 'danger' :  '')))).'">'.strtoupper($dados->RelationStatus->last()['nome']).'</div>';
+                    })->editColumn('status1', function(Pedidos $dados){
+                        return $dados->RelationStatus->last()->posicao;
+                    })->editColumn('acoes', function(Pedidos $dados){
+                        return '<div class="dropdown">
+                        <button class="btn btn-outline-secondary shadow-none dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="mdi mdi-cog mdi-18px"> </i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#"><i class="mdi mdi-printer px-1"></i> Imprimir pedido</a>
+                            <a class="dropdown-item" href="#"><i class="mdi mdi-file-alert-outline px-1"></i> Declaração de conteúdo</a>
+                        </div>
+                    </div>';
+                    })->rawColumns(['transacao', 'cliente', 'data', 'valor', 'status', 'acoes'])->make(true);
     }
     
-   
-
     // Detalhes do pedido
-    public function Detalhe($id){
+    public function Detalhes($id){
         if(Auth::user()->RelationGrupo->gerenciar_pedidos == 1){
             $pedido = Pedidos::find($id);
+            $pedidos = Pedidos::where('id_cliente', $pedido->id_cliente)->WhereNotNull('transacao_pagarme')->where('id', '<>', $id)->orderBy('created_at', 'desc')->paginate(6);
             $status = Status::all();
-            $historicos = PedidosStatus::where('id_pedido', $id)->get();
+            $statusPedido = PedidosStatus::where('id_pedido', $id)->get();
             // Retornando informações da transação
-            $dados = ConfigCheckout::first();
-            $pagarme = new PagarMe\Client($dados->api_key);
-            $transactions = $pagarme->transactions()->get(['id' => $pedido->transacao_pagarme]);
+            $transactions = $this->pagarme->transactions()->get(['id' => $pedido->transacao_pagarme]);
             // Movimentação entrega correios
             if(isset($pedido->RelationRastreamento->cod_rastreamento)){
                 $correios = Correios::rastrear($pedido->RelationRastreamento->cod_rastreamento);
             }else{
                 $correios = null;            
             }
-            return view('pedidos.detalhe_pedido')->with('pedido', $pedido)->with('status', $status)->with('transactions', $transactions)->with('historicos', $historicos)->with('correios', $correios);
+            return view('pedidos.detalhes')->with('pedido', $pedido)->with('status', $status)->with('transactions', $transactions)->with('statusPedido', $statusPedido)->with('correios', $correios)->with('pedidos', $pedidos);
         }else{
             return redirect(route('permission'));
         }
@@ -84,10 +98,8 @@ class PedidosCtrl extends Controller
     // Atualizar status
     public function AtualizarStatus(Request $request, $id){
         if(Auth::user()->RelationGrupo->gerenciar_pedidos == 1){
-            $status1 = PedidosStatus::create(['id_pedido' => $id, 'id_status' => $request->id_status, 'observacoes' => $request->observacoes]);
-            Pedidos::where('id', $id)->update(['id_status' => $status1->id]);
-            $status = Status::where('id', $request->id_status)->first();
-            return response()->json(['status' => $status, 'status1' => $status1]);   
+            PedidosStatus::create(['id_pedido' => $id, 'id_status' => $request->id_status, 'observacoes' => $request->observacoes]);
+            return response()->json(['success' => true]);   
         }else{
             return redirect(route('permission'));
         }  
@@ -97,22 +109,19 @@ class PedidosCtrl extends Controller
     public function AtualizarNota(Request $request, $id){
         if(Auth::user()->RelationGrupo->gerenciar_pedidos == 1){
             // Retorno dos dados do pedido
-            $pedido = Pedidos::where('id', $id)->first();
+            $pedido = Pedidos::find($id);
             // Verificações de existencia de nota
             if(isset($pedido->id_nota)){
-                PedidosNotas::where('id', $pedido->id_nota)->update(['numero_nota' => $request->numero_nota, 'data_emissao' => $request->data_emissao, 'numero_serie' => $request->numero_serie, 'chave' => $request->chave, 'url_nota' => $request->url_nota]);
+                PedidosNotas::find($pedido->id_nota)->update(['numero_nota' => $request->numero_nota, 'data_emissao' => $request->data_emissao, 'numero_serie' => $request->numero_serie, 'chave' => $request->chave, 'url_nota' => $request->url_nota]);
                 // Alterando status caso solicitado
                 if($request->alterar_status == 'on'){
-                    $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 5]);
-                    Pedidos::where('id', $id)->update(['id_status' => $status->id]);
+                    $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 7]);
                 }
             }else{
-                 $dados = PedidosNotas::create(['numero_nota' => $request->numero_nota, 'data_emissao' => $request->data_emissao, 'numero_serie' => $request->numero_serie, 'chave' => $request->chave, 'url_nota' => $request->url_nota]);
-                  Pedidos::where('id', $id)->update(['id_nota' => $dados->id]);
-                  // Alterando status caso solicitado
+                $dados = PedidosNotas::create(['numero_nota' => $request->numero_nota, 'data_emissao' => $request->data_emissao, 'numero_serie' => $request->numero_serie, 'chave' => $request->chave, 'url_nota' => $request->url_nota]);
+                Pedidos::where('id', $id)->update(['id_nota' => $dados->id]);
                 if($request->alterar_status == 'on'){
-                    $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 5]);
-                    Pedidos::where('id', $id)->update(['id_status' => $status->id]);
+                    $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 7]);
                 }
             }
             $nota = PedidosNotas::where('id', $pedido->id_nota)->first();
@@ -125,12 +134,8 @@ class PedidosCtrl extends Controller
     // Atualizar Endereço
     public function AtualizarEndereco(Request $request, $id){
         if(Auth::user()->RelationGrupo->gerenciar_pedidos == 1){
-            // Retorno dos dados do pedido
-            $pedido = Pedidos::where('id', $id)->first();
-            // Atualização do endereço do cliente
-            $endereco = Enderecos::where('id_cliente', $pedido->id_cliente)->update(['rua' => $request->endereco, 'bairro' => $request->bairro, 'numero' => $request->numero, 'complemento' => $request->complemento, 'cep' => str_replace("-", "",$request->cep),'destinatario' => $request->destinatario, 'cidade' => $request->cidade, 'estado' => $request->estado ]);
-            $endereco = Enderecos::where('id_cliente', $pedido->id_cliente)->first();
-            return response()->json($endereco);
+            $pedido = Pedidos::find($id);
+            $endereco = Enderecos::find($pedido->id_endereco)->update(['endereco' => $request->endereco, 'bairro' => $request->bairro, 'numero' => $request->numero, 'complemento' => $request->complemento, 'cep' => str_replace("-", "",$request->cep),'destinatario' => $request->destinatario, 'cidade' => $request->cidade, 'estado' => $request->estado]);
         }else{
             return redirect(route('permission'));
         }
@@ -139,17 +144,11 @@ class PedidosCtrl extends Controller
     // Atualizar Rastreamento
     public function AtualizarRastreamento(Request $request, $id){
         if(Auth::user()->RelationGrupo->gerenciar_pedidos == 1){
-            // Retorno dos dados do pedido
-            $pedido = Pedidos::where('id', $id)->first();
-            // Atualização dados de rastreamento
+            $pedido = Pedidos::find($id);
             $endereco = PedidosRastreamento::where('id', $pedido->id_rastreamento)->update(['cod_rastreamento' => $request->cod_rastreamento, 'link_rastreamento' => $request->link_rastreamento]);
-            // Alterando status caso solicitado
             if($request->alterar_status){
-                    $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 7]);
-                    Pedidos::where('id', $id)->update(['id_status' => $status->id]);
-                }
-            $rastreamento = PedidosRastreamento::where('id', $pedido->id_rastreamento)->first();
-            return $rastreamento;
+                $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 8]);
+            }
         }else{
             return redirect(route('permission'));
         }
@@ -159,41 +158,26 @@ class PedidosCtrl extends Controller
     public function CancelarTransacao($id){
         if(Auth::user()->RelationGrupo->gerenciar_pedidos == 1){
             // Retornando informações da transação
-            $dados = ConfigCheckout::first();
-            $pagarme = new PagarMe\Client($dados->api_key);
-            $transactions = $pagarme->transactions()->refund(['id' => $id]);
+            $transactions = $this->pagarme->transactions()->refund(['id' => $id]);
+            $pedido = Pedidos::where('transacao_pagarme', $id)->first();
+            PedidosStatus::create(['id_pedido' => $pedido->id, 'id_status' => 10]);
             return response()->json(['success' => true]);
         }else{
             return redirect(route('permission'));
         }
     }
 
-
-    // Dados de determinado CEP
-    public function DadosCorreios($cep){
-        return Correios::rastrear(str_replace('-', '', $cep));
+    // Imprimir pedido
+    public function Imprimir($id){
+        $pedido = Pedidos::find($id);
+        $transactions = $this->pagarme->transactions()->get(['id' => $pedido->transacao_pagarme]);
+        return view('pedidos.imprimir')->with('pedido', $pedido)->with('transactions', $transactions)->with('geral', $this->geral);
     }
-    // Calculo do valo do frete
-    public function CalculoFrete($id, $cep){
-        // Retorno dos dados do pedido
-        $pedido = Pedidos::where('id', $id)->first();
-        $dados = [
-        'tipo'              => 'sedex, pac', // Separar opções por vírgula (,) caso queira consultar mais de um (1) serviço. > Opções: `sedex`, `sedex_a_cobrar`, `sedex_10`, `sedex_hoje`, `pac`, 'pac_contrato', 'sedex_contrato' , 'esedex'
-        'formato'           => 'caixa', // opções: `caixa`, `rolo`, `envelope`
-        'cep_destino'       => '39510000', // Obrigatório
-        'cep_origem'        => '89062080', // Obrigatorio
-        //'empresa'         => '', // Código da empresa junto aos correios, não obrigatório.
-        //'senha'           => '', // Senha da empresa junto aos correios, não obrigatório.
-        'peso'              => $pedido->RelationProduto->peso, // Peso em kilos
-        'comprimento'       => $pedido->RelationProduto->comprimento, // Em centímetros
-        'altura'            => $pedido->RelationProduto->altura, // Em centímetros
-        'largura'           => $pedido->RelationProduto->largura, // Em centímetros
-        //'diametro'          => '0', // Em centímetros, no caso de rolo
-        // 'mao_propria'       => '1', // Náo obrigatórios
-        // 'valor_declarado'   => '1', // Náo obrigatórios
-        // 'aviso_recebimento' => '1', // Náo obrigatórios
-    ];
-        return Correios::cep($pedido->RelationEndereco->cep);
+
+    // Declaração de conteúdo
+    public function Declaracao($id){
+        $pedido = Pedidos::find($id);
+        return view('pedidos.imprimir')->with('pedido', $pedido);
     }
 
 
@@ -288,7 +272,7 @@ class PedidosCtrl extends Controller
             if($insere){
                 $aux = $dados[$key];
                 $aux->transacao = '<div><b>'.$aux->transacao_pagarme.'</b></div><div>'.($aux->id_forma_pagamento == 1 ? '<img data-v-a542e072="" src="http://download.seaicons.com/icons/iconsmind/outline/512/Credit-Card-3-icon.png" width="30" class="uk-float-left icon-payment">' : '<img data-v-a542e072="" src="https://github.bubbstore.com/svg/billet.svg" width="40" class="uk-float-left icon-payment">').'</div>';
-                $aux->cliente = '<div><a href="'.route('pedidos.detalhe', $aux->id).'" class="n_pedido text-decoration-none">'.$aux->codigo.'<p class="nome_pedido mb-0">'.$aux->RelationCliente['nome'].'</p></a></div>';
+                $aux->cliente = '<div><a href="'.route('pedidos.detalhes', $aux->id).'" class="n_pedido text-decoration-none">'.$aux->codigo.'<p class="nome_pedido mb-0">'.$aux->RelationCliente['nome'].'</p></a></div>';
                 $aux->data_pedido = date_format($aux->created_at, "d/m/Y H:i:s");
                 $aux->valor = 'R$ '.number_format($aux->valor_compra, 2, ',', '.');
                 $aux->status = '<div class="badge badge-'.($aux->RelationStatus->first()['posicao']==1 ? 'warning' : ($aux->RelationStatus->first()['posicao']==2 || $aux->RelationStatus->first()['posicao']==7 ? 'primary' : ($aux->RelationStatus->first()['posicao']==3 || $aux->RelationStatus->first()['posicao']==8 ? 'success' : ($aux->RelationStatus->first()['posicao']==4 ? 'info' : ($aux->RelationStatus->first()['posicao']==5 ? 'secondary' : ($aux->RelationStatus->first()['posicao']==6 ? 'success' : ($aux->RelationStatus->first()['posicao']==9 ? 'danger' : ''))))))).'">'.strtoupper($aux->RelationStatus->first()['nome']).'</div>';

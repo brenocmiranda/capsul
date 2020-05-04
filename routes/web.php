@@ -20,10 +20,11 @@ Route::group(['prefix' => ''], function(){
     // Checkout
     Route::group(['prefix' => 'checkout'], function (){
         Route::get('{link}', 'CheckoutCtrl@Create')->name('checkout.create');
+        Route::get('continuar/{codigo}', 'CheckoutCtrl@Continuar')->name('checkout.continuar');
         Route::post('form1/{id}', 'CheckoutCtrl@Form1')->name('checkout.form1');
         Route::post('form2/{id}', 'CheckoutCtrl@Form2')->name('checkout.form2');
-        Route::any('form3/{id}/', 'CheckoutCtrl@Form3')->name('checkout.form3');
-        Route::any('form4/{id}', 'CheckoutCtrl@Form4')->name('checkout.form4');
+        Route::post('form3/{id}/', 'CheckoutCtrl@Form3')->name('checkout.form3');
+        Route::post('form4/{id}', 'CheckoutCtrl@Form4')->name('checkout.form4');
         Route::get('detalhes/{documento}', 'CheckoutCtrl@DetalhesCliente')->name('checkout.clientes.detalhes');
         Route::post('endereco/{id}', 'CheckoutCtrl@UpdateEndereco')->name('checkout.endereco');
         Route::get('endereco/detalhes/{id}', 'CheckoutCtrl@DetalhesEndereco')->name('checkout.endereco.detalhes');
@@ -31,6 +32,7 @@ Route::group(['prefix' => ''], function(){
         Route::get('quantidade/{id}/{quantidade}', 'CheckoutCtrl@UpdateQuantidade')->name('checkout.quantidade');
         Route::get('parcelas/{valor}', 'CheckoutCtrl@ParcelasQuantidade')->name('checkout.parcelas');
         Route::get('descontos/{id}/{valor}', 'CheckoutCtrl@DescontosCheckout')->name('checkout.descontos');
+        Route::get('acompanhamento/{codigo}', 'CheckoutCtrl@Acompanhamento')->name('checkout.acompanhamento.pedido');
     });
 });
 
@@ -50,11 +52,14 @@ Route::group(['prefix' => 'pedidos'], function (){
     Route::group(['prefix' => ''], function (){
         Route::get('/', 'PedidosCtrl@Exibir')->name('pedidos.lista');
         Route::get('lista', 'PedidosCtrl@Lista')->name('pedidos.data');
-        Route::get('detalhes/{id}', 'PedidosCtrl@Detalhe')->name('pedidos.detalhes');
-        Route::post('status/{id}', 'PedidosCtrl@AtualizarStatus')->name('atualizar.status'); // Atualizar informações
-        Route::post('notaFiscal/{id}', 'PedidosCtrl@AtualizarNota')->name('atualizar.nota');  // Atualizar informações
-        Route::post('endereco/{id}', 'PedidosCtrl@AtualizarEndereco')->name('atualizar.endereco'); // Atualizar informações
-        Route::post('rastreamento/{id}', 'PedidosCtrl@AtualizarRastreamento')->name('atualizar.rastreamento'); // Atualizar informações
+        Route::get('detalhes/{id}', 'PedidosCtrl@Detalhes')->name('pedidos.detalhes');
+        Route::post('status/{id}', 'PedidosCtrl@AtualizarStatus')->name('atualizar.status'); 
+        Route::post('notaFiscal/{id}', 'PedidosCtrl@AtualizarNota')->name('atualizar.nota'); 
+        Route::post('endereco/{id}', 'PedidosCtrl@AtualizarEndereco')->name('atualizar.endereco'); 
+        Route::post('rastreamento/{id}', 'PedidosCtrl@AtualizarRastreamento')->name('atualizar.rastreamento'); 
+        Route::get('imprimir/{id}', 'PedidosCtrl@Imprimir')->name('pedidos.imprimir'); 
+        Route::get('declaracao/{id}', 'PedidosCtrl@Declaracao')->name('pedidos.declaracao'); 
+        Route::get('cancelar/{id}', 'PedidosCtrl@CancelarTransacao')->name('cancelar.transacao'); 
     });
 
     // Carrinhos abandonados
@@ -62,10 +67,8 @@ Route::group(['prefix' => 'pedidos'], function (){
         Route::get('', 'CarrinhosCtrl@Exibir')->name('carrinhos.lista');
         Route::get('lista', 'CarrinhosCtrl@Lista')->name('carrinhos.data');
     });
-    
+
     Route::post('filtros', 'PedidosCtrl@ListaFiltro')->name('pedidos.dataFiltro'); // Filtros
-    Route::get('cancelar/{id}', 'PedidosCtrl@CancelarTransacao')->name('cancelar.transacao'); // Pagar Me
-    Route::get('dadosCorreios/{id}', 'PedidosCtrl@DadosCorreios')->name('dados.correios'); // Correios 
 });
 
 // Módulo 4

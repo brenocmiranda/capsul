@@ -24,66 +24,67 @@ class CreateStatusTable extends Migration
         });
 
         DB::table('status')->insert(
-            array([   
+            array(
+                [   
+                'nome' => 'Pedido efetuado',
+                'descricao' => 'Olá, recebemos o seu pedido, aguardando o seu pagamento para dar continuidade nas operações.',
+                'posicao' => '1',
+                'created_at' =>  date("Y-m-d H:i:s"),
+                'updated_at' =>  date("Y-m-d H:i:s")
+                ],[   
                 'nome' => 'Aguardando pagamento',
                 'descricao' => 'Recebemos seu pedido. Somente quando recebermos a confirmação, em até 48h após o pagamento, seguiremos com o envio das suas compras. O prazo de entrega passa a ser contado somente após a confirmação do pagamento.',
-                'posicao' => '1',
-                'created_at' => '2019-12-04 00:00:00',
-                'updated_at' => '2019-12-04 22:18:40'
-                ],[
-                'nome' => 'Pedido autorizado',
-                'descricao' => 'Recebemos o seu pedido e estamos aguardando a confirmação do pagamento. Enviaremos um novo e-mail a cada mudança no andamento do seu pedido.',
                 'posicao' => '2',
-                'created_at' => '2019-12-04 00:00:00',
-                'updated_at' => '2019-12-04 22:18:40'
+                'created_at' =>  date("Y-m-d H:i:s"),
+                'updated_at' =>  date("Y-m-d H:i:s")
                 ],[
                 'nome' => 'Pagamento aprovado',
                 'descricao' => 'O pagamento do seu pedido foi aprovado. Agradecemos sua preferência por nossa loja. A partir de agora, você será notificado por e-mail sobre o andamento do seu pedido até a chegada no endereço escolhido',
                 'posicao' => '3',
-                'created_at' => '2019-12-04 00:00:00',
-                'updated_at' => '2019-12-04 22:18:40'
-                ],[
-                'nome' => 'Produtos em separação',
-                'descricao' => 'Seu pedido está sendo separado e embalado com todo carinho e cuidado especialmente para você. Assim que esta etapa for concluída, você receberé um e-mail informando o envio do produto e o código para que possa acompanhar a entrega.',
-                'posicao' => '4',
-                'created_at' => '2019-12-04 00:00:00',
-                'updated_at' => '2019-12-04 22:18:40'
-                ],[
-                'nome' => 'Faturado',
-                'descricao' => 'O seu pedido foi faturado.',
-                'posicao' => '5',
-                'created_at' => '2019-12-04 00:00:00',
-                'updated_at' => '2019-12-04 22:18:40'
-                ],[
-                'nome' => 'Pronto para envio',
-                'descricao' => 'Temos boas notícias! Seu pedido já está preparado para ser enviado. Em breve você receberá um e-mail com o código de rastreio.',
-                'posicao' => '6',
-                'created_at' => '2019-12-04 00:00:00',
-                'updated_at' => '2019-12-04 22:18:40'
-                ],[
-                'nome' => 'Em transporte',
-                'descricao' => 'O seu pedido foi encaminhado com sucesso. Segue abaixo o código de rastreio para que você possa acompanhar a entrega: Lembrando que pode demorar até 5 dias para atualizar o código pela primeira vez.',
-                'posicao' => '7',
-                'created_at' => '2019-12-04 00:00:00',
-                'updated_at' => '2019-12-04 22:18:40'
-                ],[
-                'nome' => 'Entregue',
-                'descricao' => 'Informamos que recebemos a confirmação de entrega do seu pedido.',
-                'posicao' => '8',
-                'created_at' => '2019-12-04 00:00:00',
-                'updated_at' => '2019-12-04 22:18:40'
-                ],[
-                'nome' => 'Cancelado',
-                'descricao' => 'O seu pedido foi cancelado.',
-                'posicao' => '9',
-                'created_at' => '2019-12-04 00:00:00',
-                'updated_at' => '2019-12-04 22:18:40'
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s")
                 ],[
                 'nome' => 'Pagamento não autorizado',
                 'descricao' => 'O seu pagamento não foi autorizado pelo meio de pagamento, tente novamente.',
+                'posicao' => '4',
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s")
+                ],[
+                'nome' => 'Pedido autorizado',
+                'descricao' => 'Recebemos o seu pedido e estamos aguardando a confirmação do pagamento. Enviaremos um novo e-mail a cada mudança no andamento do seu pedido.',
+                'posicao' => '5',
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s")
+                ],[
+                'nome' => 'Produtos em separação',
+                'descricao' => 'Seu pedido está sendo separado e embalado com todo carinho e cuidado especialmente para você. Assim que esta etapa for concluída, você receberé um e-mail informando o envio do produto e o código para que possa acompanhar a entrega.',
+                'posicao' => '6',
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s")
+                ],[
+                'nome' => 'Faturado',
+                'descricao' => 'O seu pedido foi faturado.',
+                'posicao' => '7',
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s")
+                ],[
+                'nome' => 'Em transporte',
+                'descricao' => 'O seu pedido foi encaminhado com sucesso. Segue abaixo o código de rastreio para que você possa acompanhar a entrega: Lembrando que pode demorar até 5 dias para atualizar o código pela primeira vez.',
+                'posicao' => '8',
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s")
+                ],[
+                'nome' => 'Entregue',
+                'descricao' => 'Informamos que recebemos a confirmação de entrega do seu pedido.',
+                'posicao' => '9',
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s")
+                ],[
+                'nome' => 'Cancelado',
+                'descricao' => 'O seu pedido foi cancelado.',
                 'posicao' => '10',
-                'created_at' => '2019-12-04 00:00:00',
-                'updated_at' => '2019-12-04 22:18:40'
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s")
                 ]
             )
         );

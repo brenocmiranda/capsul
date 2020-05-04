@@ -1,13 +1,12 @@
 <!-- Formas de pagamento-->
-<div class="tab-pane fade" id="payment" role="tabpanel" aria-labelledby="payment-tab">
+<div class="tab-pane fade {{(isset($pedido->id_endereco) && isset($pedido->id_rastreamento) && isset($pedido->id_cliente) && Request::segment(2) == 'continuar' ? 'show active' : '')}}" id="payment" role="tabpanel" aria-labelledby="payment-tab">
 	<div class="card">
-		<div class="card-body">
+		<div class="card-body p-0">
 			
-			@if($checkout->cumpom_desconto == 1)
-			<form class="row m-0" id="descontos">
-				<div class="col-12 mt-3">
-					<h6> Descontos </h6>
-					<hr class="mt-1">
+			@if($checkout->cupom_desconto == 1)
+			<form class="row m-0 px-4" id="descontos">
+				<div class="card-header mb-2">
+					<h5 class="section-title my-0">Descontos</h5>
 				</div>
 				<div class="col-12 form-group">
                     <label class="mb-0">Cupom </label>
@@ -22,18 +21,17 @@
 			@endif
 
 			<div class="row m-0 mb-2" id="step3"> 
-				<div class="col-12 mt-2">
-					<h6> Formas de pagamento </h6>
-					<hr class="mt-1">
+				<div class="card-header mb-2">
+					<h5 class="section-title my-0">Formas de pagamento</h5>
 				</div>
-				<ul class="col-12 nav nav-pills px-3" id="myTabPAG" role="tablist">
+				<ul class="col-12 nav nav-pills px-5" id="myTabPAG" role="tablist">
 					<li class="nav-item w-50 p-2">
 						<a class="nav-link h-100 shadow-none border rounded {{($checkout->pagamento_preferencial == 'cart_credit' ? 'active' : '')}}" id="cart-tab" data-toggle="tab" href="#cart" role="tab" aria-controls="cart" aria-selected="true">
 							<div class="row m-0 p-2 h-100" style="line-height: 20px;">
 								<div class="col-2 p-0 m-auto">
 									<i class="mdi mdi-credit-card-outline mdi-36px"></i>
 								</div>
-								<div class="col-10 p-3 m-auto">
+								<div class="col-10 px-3 m-auto">
 									<span class="font-weight-bold">Cartão de Crédito</span>
 									<div class="card-brands-payment cards text-truncate">
 										<img src="https://github.bubbstore.com/formas-de-pagamento/mastercard.svg?" height="15" alt="Mastercard" class="mr5">
@@ -43,6 +41,9 @@
 										<img src="https://github.bubbstore.com/formas-de-pagamento/diners.svg?" height="15" alt="Diners" class="mr5">
 									</div>
 								</div>
+								@if($checkout->desconto_cartao > 0)
+									<small class="bg-dark px-2 rounded text-white ml-auto font-weight-bold mr-n3 mb-n2 mt-2">{{$checkout->desconto_cartao}}% OFF</small>
+								@endif
 							</div>
 						</a>
 					</li>
@@ -52,19 +53,22 @@
 								<div class="col-2 p-0 m-auto">
 									<i class="mdi mdi-barcode mdi-36px"></i>
 								</div>
-								<div class="col-10 p-3 m-auto">
-									<span class="font-weight-bold">Boleto</span>
+								<div class="col-10 px-3 m-auto">
+									<span class="font-weight-bold">Boleto</span>									
 								</div>
+								@if($checkout->desconto_boleto > 0)
+									<small class="bg-dark px-2 rounded text-white ml-auto font-weight-bold mr-n3 mb-n2 mt-2">{{$checkout->desconto_boleto}}% OFF</small>
+								@endif
 							</div>
 						</a>
 					</li>
 				</ul>
 
-				<div class="tab-content col-12" id="myTabContent">
+				<div class="tab-content col-12 px-5" id="myTabContent">
 					<div class="tab-pane fade {{($checkout->pagamento_preferencial == 'cart_credit' ? 'show active' : '')}}" id="cart" role="tabpanel" aria-labelledby="cart-tab">
-						<form class="col-12 mt-3" id="card_credit">
+						<form class="col-12 mt-2 px-4" id="card_credit">
 							@csrf
-							<input type="hidden" name="card_hash" id="card_hash">
+							<input type="hidden" name="card_hash" id="card_hash" value="">
 							<div class="form-group mb-2">
 								<label class="col-md-12 mb-0">Número do cartão <span class="text-danger">*</span></label>
 								<div class="col-lg-12 col-md-12">
@@ -115,7 +119,7 @@
 									</select>
 								</div>
 							</div>
-							<div class="form-group mb-0">
+							<div class="form-group">
 								<div class="row">
 									<button class="btn btn-success btn-lg btn-icon icon-right btn-block shadow-none col-12 col-lg-6 mx-auto "><i class="mdi mdi-lock"></i> Comprar agora</button>
 								</div>
@@ -142,7 +146,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="form-group mb-0">
+							<div class="form-group">
 								<div class="row">
 									<button class="btn btn-success btn-lg btn-icon icon-right btn-block shadow-none col-12 col-lg-6 mx-auto"><i class="mdi mdi-lock"></i> Comprar agora</button>
 								</div>
@@ -152,7 +156,7 @@
 				</div>
 			</div>
 
-			<div class="my-4 col-12 mx-auto text-center" id="pedido-status" style="display:none;">
+			<div class="my-4 col-12 mx-auto text-center p-4" id="pedido-status" style="display:none;">
 				<div> 
 					<img src="" class="mx-auto col-4" id="pedido-image"> 
 				</div> 

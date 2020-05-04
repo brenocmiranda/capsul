@@ -33,7 +33,7 @@ Efetuar pedido
 				</header>
 			</div>
 
-			@if($produto->quantidade <= $produto->quantidade_minima && $checkout->text_topo_mostrar == 1)
+			@if($pedido->RelationProduto->quantidade <= $pedido->RelationProduto->quantidade_minima && $checkout->text_topo_mostrar == 1)
 			<div class="col-12 alert alert-primary text-center mx-auto p-2 mb-0">
 				<p><?=$checkout->texto_topo?></p>
 				<div class="row">
@@ -73,7 +73,11 @@ Efetuar pedido
 <script type="text/javascript">
 function freteUteis(id){
 	$.ajax({
-		url: "../checkout/frete/"+id,
+		@if(Request::segment(2) == "continuar")
+			url: "../frete/"+id,
+		@else
+			url: "../checkout/frete/"+id,
+		@endif
 		type: 'GET',
 		beforeSend: function () {
 			$('#modal-processamento').modal('show');
@@ -114,7 +118,11 @@ function updateEndereco(id){
 	$('#newEndereco').fadeIn().removeClass('d-none');
 	$('#newEndereco input[name=acao]').val(id);
 	$.ajax({
-		url: "../checkout/endereco/detalhes/"+id,
+		@if(Request::segment(2) == "continuar")
+			url: "../endereco/detalhes/"+id,
+		@else
+			url: "../checkout/endereco/detalhes/"+id,
+		@endif
 		type: 'GET',    
 		beforeSend: function () {
 			$('#modal-processamento').modal('show');
@@ -163,29 +171,11 @@ function atualizarQuantidade(valor){
 
 function atualizarDesconto(valor){
 	// Insere valores de desconto
-	valor_desconto = Number(valor);
+	valor_desconto = Number(valor) + Number({{(Request::segment(2) == "continuar" ? $pedido->desconto_aplicado : 0)}});
 	valor_atual = Number($('#carrinho #valor_total_input').val()) + valor_desconto;
 	$('#carrinho .valor_desconto').html('');
 	$('#carrinho .valor_desconto').html(valor_desconto.toLocaleString("pt-BR", { style: "currency" , currency:"BRL"}));
 	$('#carrinho #valor_desconto_input').val(valor_desconto);
-	$.ajax({
-		url: "../checkout/descontos/{{$pedido->id}}/"+valor_desconto,
-		type: 'GET',  
-		beforeSend: function () {
-			$('#modal-processamento').modal('show');
-		}, success: function(data){
-			atualizarTotal();
-			setTimeout(function(){
-				$('#modal-processamento').modal('hide');
-			}, 50);
-		}, error: function(data){ 
-			setTimeout(function(){ 
-				$('#modal-processamento').modal('hide');	
-			}, 50);
-		}
-	});
-
-	
 }
 
 function atualizarTotal(){
@@ -197,7 +187,11 @@ function atualizarTotal(){
 	$('#carrinho #valor_total_input').val(valor_atual);
 	// Retorna parcelas
 	$.ajax({
-		url: "../checkout/parcelas/"+valor_atual,
+		@if(Request::segment(2) == "continuar")
+			url: "../parcelas/"+valor_atual,
+		@else
+			url: "../checkout/parcelas/"+valor_atual,
+		@endif
 		type: 'GET',  
 		beforeSend: function () {
 			$('#modal-processamento').modal('show');
@@ -244,6 +238,10 @@ function refazerPayment(){
 		$('#pedido-status #pedido-nome').html('');
 		$('#pedido-status #pedido-message').html('');
 		$('#pedido-status #pedido-link').html('');
+		$("#step3 form#card_credit #card_holder_name").val('');
+		$("#step3 form#card_credit #card_expiration").val('');
+		$("#step3 form#card_credit #card_number").val('');
+		$("#step3 form#card_credit #card_cvv").val('');
 		$('#step3 #card_hash').val('');
 		$('#pedido-status').fadeOut();
 		$('#step3').fadeIn();
@@ -253,6 +251,13 @@ function refazerPayment(){
 }
 
 $(document).ready(function (){
+	// Desabilitando envio de form com enter
+	$('input').keypress(function (e) {
+        var code = null;
+        code = (e.keyCode ? e.keyCode : e.which);                
+        return (code == 13) ? false : true;
+   	});
+
 	// Mascaras 
 	@if($checkout->compras_pessoa == "todos")
 		var options = {
@@ -357,9 +362,13 @@ $(document).ready(function (){
 	    @else
 	        var documento = this.value.replace(".", "").replace(".", "").replace("/", "").replace("-", "");
 	    @endif
-		if(documento && (documento.length == 11 || documento.length == 14) && validator2.errorList.length == 0){
+		if(documento && (documento.length == 11 || documento.length == 14) && validator1.errorList.length == 0){
 			$.ajax({
-				url: "../checkout/detalhes/"+documento,
+				@if(Request::segment(2) == "continuar")
+					url: "../detalhes/"+documento,
+				@else
+					url: "../checkout/detalhes/"+documento,
+				@endif
 				type: 'GET',    
 				beforeSend: function () {
 					$('#modal-processamento').modal('show');
@@ -372,8 +381,15 @@ $(document).ready(function (){
 					$('#telefone').mask('(00) 00000-0000');
 					$('#data_nascimento').val(data.data_nascimento);
 					if(data.endereco){
+						if($('#myTab li a#enderecos-tab').hasClass("bg-success")){
+							$('.enderecos-list .chw').remove();
+							$('.envio').html('<label class="col-12">Selecione um endereço acima e veja as formas de envio disponíveis.</label>');
+							$('#enderecos-tab').addClass('bg-warning text-white');
+							$('#enderecos-tab').removeClass('bg-success');
+							$('#payment-tab').addClass('disabled');
+						}
 						$.each(data.endereco, function(e){
-							$('.enderecos-list').prepend('<div class="col-6 px-2 pb-2 end'+data.endereco[e].id+'" style="line-height: 19px;"> <div class="h-100 border rounded row m-0 p-3 text-left"> <div class="form-check w-100 col-12 pr-0"> <input type="radio" name="endereco" value="'+data.endereco[e].id+'" class="form-check-input" id="exampleRadios'+data.endereco[e].id+'" onclick="freteUteis('+data.endereco[e].id+')"> <label class="form-check-label" for="exampleRadios'+data.endereco[e].id+'"> <label class="d-block font-weight-bold mb-0">'+data.endereco[e].destinatario+'</label> <small class="d-block mb-0">'+data.endereco[e].endereco+', '+data.endereco[e].numero+', '+(data.endereco[e].complemento ? data.endereco[e].complemento+', ':'')+data.endereco[e].bairro+'</small> <small class="d-block mb-0">'+data.endereco[e].cidade+' - '+data.endereco[e].estado+'</small><small class="d-block mb-0">'+data.endereco[e].cep.substr(0, 5)+'-'+data.endereco[e].cep.substr(5, 8)+'</small> </label> </div><div class="w-100 text-right col-12 p-0 align-self-end"> <a href="javascript:void(0)" class="" onclick="updateEndereco('+data.endereco[e].id+')"> <i class="ml-auto mdi mdi-pencil"></i> <small>Editar</small> </a></div></div></div>'); });
+							$('.enderecos-list').prepend('<div class="chw col-6 px-2 pb-2 end'+data.endereco[e].id+'" style="line-height: 19px;"> <div class="h-100 border rounded row m-0 p-3 text-left"> <div class="form-check w-100 col-12 pr-0"> <input type="radio" name="endereco" value="'+data.endereco[e].id+'" class="form-check-input" id="exampleRadios'+data.endereco[e].id+'" onclick="freteUteis('+data.endereco[e].id+')"> <label class="form-check-label" for="exampleRadios'+data.endereco[e].id+'"> <label class="d-block font-weight-bold mb-0">'+data.endereco[e].destinatario+'</label> <small class="d-block mb-0">'+data.endereco[e].endereco+', '+data.endereco[e].numero+', '+(data.endereco[e].complemento ? data.endereco[e].complemento+', ':'')+data.endereco[e].bairro+'</small> <small class="d-block mb-0">'+data.endereco[e].cidade+' - '+data.endereco[e].estado+'</small><small class="d-block mb-0">'+data.endereco[e].cep.substr(0, 5)+'-'+data.endereco[e].cep.substr(5, 8)+'</small> </label> </div><div class="w-100 text-right col-12 p-0 align-self-end"> <a href="javascript:void(0)" class="" onclick="updateEndereco('+data.endereco[e].id+')"> <i class="ml-auto mdi mdi-pencil"></i> <small>Editar</small> </a></div></div></div>'); });
 					}
 					setTimeout(function(){
 						$('#modal-processamento').modal('hide');
@@ -632,6 +648,33 @@ $(document).ready(function (){
 	$("#step3 form#boleto .documento_titular").on('keyup', function(){
 		$('#field_errors_cpf_boleto').html('');
 	});
+	$("#step3 form#card_credit #card_number, #step3 form#card_credit #card_holder_name, #step3 form#card_credit #card_expiration, #step3 form#card_credit #card_cvv").keyup(function(e){
+		// Gerando CARD_HASH e implantando em form
+		if($("#step3 form#card_credit #card_number").val() && $("#step3 form#card_credit #card_holder_name").val() && $("#step3 form#card_credit #card_expiration").val() && $("#step3 form#card_credit #card_cvv").val()){
+			e.preventDefault();
+			var card = {} 
+			card.card_holder_name = $("#step3 form#card_credit #card_holder_name").val();
+			card.card_expiration_date = $("#step3 form#card_credit #card_expiration").val();
+			card.card_number = $("#step3 form#card_credit #card_number").val();
+			card.card_cvv = $("#step3 form#card_credit #card_cvv").val();
+			// pega os erros de validação nos campos do form e a bandeira do cartão
+			var cardValidations = pagarme.validate({card: card})
+			// adiciona bandeira no campo
+			$('#step3 form#card_credit #card_number').addClass(cardValidations.card.brand); 
+			// verificação de campos inválidos
+			if(!cardValidations.card.card_number){
+				$('#field_errors_number').html('Número de cartão incorreto.');
+			}else if(!$("#step3 form#card_credit #card_holder_name").val()){
+				$('#field_errors_name').html('Nome impresso no cartão inválido.');
+			}else if(!cardValidations.card.card_expiration_date){
+				$('#field_errors_date').html('Data de expiração inválida.');
+			}else if(!cardValidations.card.card_cvv){
+				$('#field_errors_cvv').html('Número CCV inválido.');
+			}else{
+				pagarme.client.connect({ encryption_key: "{{$checkout->api_criptografada}}" }).then(client => client.security.encrypt(card)).then(card_hash => $('#step3 form#card_credit #card_hash').val(card_hash));
+			}
+		}
+	});
 	$('#step3 form#card_credit').submit(function(e){
 		e.preventDefault();
 		var card = {} 
@@ -639,27 +682,10 @@ $(document).ready(function (){
 		card.card_expiration_date = $("#step3 form#card_credit #card_expiration").val();
 		card.card_number = $("#step3 form#card_credit #card_number").val();
 		card.card_cvv = $("#step3 form#card_credit #card_cvv").val();
-		// pega os erros de validação nos campos do form e a bandeira do cartão
 		var cardValidations = pagarme.validate({card: card})
-		// adiciona bandeira no campo
-		$('#step3 form#card_credit #card_number').addClass(cardValidations.card.brand); 
-		// verificação de campos inválidos
-		if(!cardValidations.card.card_number){
-			$('#field_errors_number').html('Número de cartão incorreto.');
-		}else if($("#step3 #card_holder_name").val() == ""){
-			$('#field_errors_name').html('Nome impresso no cartão inválido.');
-		}else if(!cardValidations.card.card_expiration_date){
-			$('#field_errors_date').html('Data de expiração inválida.');
-		}else if(!cardValidations.card.card_cvv){
-			$('#field_errors_cvv').html('Número CCV inválido.');
-		}else if(this.documento_titular.value.length != 14){
-			$('#field_errors_cpf_cart').html('Número de CPF incompleto.');
-		}else{
-			pagarme.client.connect({ encryption_key: "{{$checkout->api_criptografada}}" })
-			.then(client => client.security.encrypt(card))
-			.then(card_hash => $('#step3 form#card_credit #card_hash').val(card_hash));
-		  	// o próximo passo aqui é enviar o card_hash para seu servidor, e em seguida criar a transação/assinatura 
-		  	$.ajax({
+
+		if(this.documento_titular.value.length == 14 && cardValidations.card.card_number && $("#step3 form#card_credit #card_holder_name").val() && cardValidations.card.card_expiration_date && cardValidations.card.card_cvv){
+			$.ajax({
 			  	url: "{{route('checkout.form3', $pedido->id)}}",
 			  	type: 'POST',
 			  	data: new FormData(this),
@@ -668,7 +694,17 @@ $(document).ready(function (){
 			  	cache: false,
 			  	processData: false,    
 			  	beforeSend: function () {
-			  		$('#modal-processamento').modal('show');
+			  		$.ajax({
+						@if(Request::segment(2) == "continuar")
+							url: "../descontos/{{$pedido->id}}/"+$('#carrinho #valor_desconto_input').val(),
+						@else
+							url: "../checkout/descontos/{{$pedido->id}}/"+$('#carrinho #valor_desconto_input').val(),
+						@endif
+						type: 'GET',  
+						success: function(data){
+							$('#modal-processamento').modal('show');
+						}
+					});
 			  	}, success: function(data){
 			  		if(data){
 			  			$('#pedido-status #pedido-image').attr('src', data.image);
@@ -688,10 +724,20 @@ $(document).ready(function (){
 								window.open(data.url_redirect, '_blank');
 							}
 						}, 2000);
+						if(data.posicao != 3){
+				  			$.ajax({
+								@if(Request::segment(2) == "continuar")
+									url: "../descontos/{{$pedido->id}}/0",
+								@else
+									url: "../checkout/descontos/{{$pedido->id}}/0",
+								@endif
+								type: 'GET'
+							});
+				  		}
+				  		setTimeout(function(){
+							$('#modal-processamento').modal('hide');
+						}, 500);
 			  		}
-			  		setTimeout(function(){
-						$('#modal-processamento').modal('hide');
-					}, 100);
 			  	}, error: function(data){ 
 			  		setTimeout(function(){ 
 			  			$('#pedido-status').fadeOut();
@@ -711,6 +757,16 @@ $(document).ready(function (){
 			  		}, 100);
 			  	}
 		  	});
+		}else if(!cardValidations.card.card_number){
+				$('#field_errors_number').html('Número de cartão incorreto.');
+		}else if(!$("#step3 form#card_credit #card_holder_name").val()){
+				$('#field_errors_name').html('Nome impresso no cartão inválido.');
+		}else if(!cardValidations.card.card_expiration_date){
+				$('#field_errors_date').html('Data de expiração inválida.');
+		}else if(!cardValidations.card.card_cvv){
+				$('#field_errors_cvv').html('Número CCV inválido.');
+		}else{
+			$('#field_errors_cpf_cart').html('Número de CPF incompleto.');
 		}
 		return false;
 	});
@@ -726,7 +782,17 @@ $(document).ready(function (){
 				cache: false,
 				processData: false,    
 				beforeSend: function () {
-					$('#modal-processamento').modal('show');
+					$.ajax({
+						@if(Request::segment(2) == "continuar")
+							url: "../descontos/{{$pedido->id}}/"+$('#carrinho #valor_desconto_input').val(),
+						@else
+							url: "../checkout/descontos/{{$pedido->id}}/"+$('#carrinho #valor_desconto_input').val(),
+						@endif
+						type: 'GET',  
+						success: function(data){
+							$('#modal-processamento').modal('show');
+						}
+					});
 				}, success: function(data){
 					if(data){
 			  			$('#pedido-status #pedido-image').attr('src', data.image);
@@ -738,9 +804,9 @@ $(document).ready(function (){
 				  		$('#myTab li a#payment-tab').addClass("disabled");
 				  		$('#myTab li a#payment-tab').addClass(data.estado);
 				  		$('#myTab li a#payment-tab').removeClass("active");
-				  		$('#pedido-status').fadeIn();
-				  		$('#step3').fadeOut();
-				  		$('#descontos').fadeOut();
+				  		$('#pedido-status').fadeIn('fast');
+				  		$('#step3').fadeOut('fast');
+				  		$('#descontos').fadeOut('fast');
 				  		if(data.url_redirect && data.posicao == 1){
 				  			window.open(data.link, '_blank');
 				  		}
@@ -749,10 +815,20 @@ $(document).ready(function (){
 				  				window.open(data.url_redirect, '_blank');
 				  			}
 						}, 2000);
+						if(data.posicao != 3){
+				  			$.ajax({
+								@if(Request::segment(2) == "continuar")
+									url: "../descontos/{{$pedido->id}}/0",
+								@else
+									url: "../checkout/descontos/{{$pedido->id}}/0",
+								@endif
+								type: 'GET'
+							});
+				  		}
+				  		setTimeout(function(){
+							$('#modal-processamento').modal('hide');
+						}, 500);
 			  		}
-			  		setTimeout(function(){
-						$('#modal-processamento').modal('hide');
-					}, 100);
 				}, error: function(data){ 
 					setTimeout(function(){ 
 						$('#pedido-status').fadeOut();
@@ -784,7 +860,11 @@ $(document).ready(function (){
 		e.preventDefault();
 		if(this.value != ""){
 			$.ajax({
-				url: "../checkout/quantidade/{{$pedido->id}}/"+this.value,
+				@if(Request::segment(2) == "continuar")
+					url: "../quantidade/{{$pedido->id}}/"+this.value,
+				@else
+					url: "../checkout/quantidade/{{$pedido->id}}/"+this.value,
+				@endif
 				type: 'GET',  
 				beforeSend: function () {
 					$('#modal-processamento').modal('show');
