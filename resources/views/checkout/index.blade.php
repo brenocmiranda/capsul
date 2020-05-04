@@ -242,6 +242,7 @@ function refazerPayment(){
 		$("#step3 form#card_credit #card_expiration").val('');
 		$("#step3 form#card_credit #card_number").val('');
 		$("#step3 form#card_credit #card_cvv").val('');
+		$('#carrinho #quantidade').removeAttr('disabled');
 		$('#step3 #card_hash').val('');
 		$('#pedido-status').fadeOut();
 		$('#step3').fadeIn();
@@ -716,6 +717,7 @@ $(document).ready(function (){
 				  		$('#myTab li a#payment-tab').addClass("disabled");
 				  		$('#myTab li a#payment-tab').addClass(data.estado);
 				  		$('#myTab li a#payment-tab').removeClass("active");
+				  		$('#carrinho #quantidade').attr('disabled', 'disabled');
 				  		$('#pedido-status').fadeIn();
 				  		$('#step3').fadeOut();
 				  		$('#descontos').fadeOut();
@@ -804,9 +806,10 @@ $(document).ready(function (){
 				  		$('#myTab li a#payment-tab').addClass("disabled");
 				  		$('#myTab li a#payment-tab').addClass(data.estado);
 				  		$('#myTab li a#payment-tab').removeClass("active");
-				  		$('#pedido-status').fadeIn('fast');
-				  		$('#step3').fadeOut('fast');
-				  		$('#descontos').fadeOut('fast');
+				  		$('#carrinho #quantidade').attr('disabled', 'disabled');
+				  		$('#pedido-status').fadeIn();
+				  		$('#step3').fadeOut();
+				  		$('#descontos').fadeOut();
 				  		if(data.url_redirect && data.posicao == 1){
 				  			window.open(data.link, '_blank');
 				  		}
@@ -855,7 +858,7 @@ $(document).ready(function (){
 	
 
 	// Funções extras
-	$('#carrinho #quantidade').on('keyup', function(e){
+	$('#carrinho #quantidade').on('change', function(e){
 		// Alterando quantidade de items do carrinho
 		e.preventDefault();
 		if(this.value != ""){
@@ -869,13 +872,20 @@ $(document).ready(function (){
 				beforeSend: function () {
 					$('#modal-processamento').modal('show');
 				}, success: function(data){
-					atualizarQuantidade(data);
+					if(!data.dados){
+						atualizarQuantidade(data);
+					}else{
+						$('#carrinho #quantidade').val(data.quantidade);
+						atualizarQuantidade(data.dados);
+						$('#carrinho #quantidade').focus();
+						alert('Quantidade não permitida.');	
+					}
 					setTimeout(function(){
 						$('#modal-processamento').modal('hide');
 					}, 200);
 				}, error: function(data){ 
 					setTimeout(function(){ 
-						$('#modal-processamento').modal('hide');	
+						$('#modal-processamento').modal('hide');
 					}, 500);
 				}
 			});

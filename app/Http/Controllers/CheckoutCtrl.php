@@ -226,6 +226,7 @@ class CheckoutCtrl extends Controller
           // Aprovado
           $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 3]);
           Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1']);
+          Produtos::find($pedido->id_produto)->update(['quantidade' => ($pedido->RelationProduto->quantidade - $pedido->quantidade)]);
           $dados = Status::select('nome', 'descricao', 'posicao')->find(3);
           $dados->image = asset('public/img/status-pagamento/aprovado.png');
           $dados->link = '<a href="'.route('checkout.acompanhamento.pedido', $pedido->codigo).'" target="_blank">Acompanhamento do seu pedido</a> &#183 <a href="'.route('checkout.create', $pedido->RelationProduto->link_produto).'" target="_blank"> Comprar novamente</a>';
@@ -297,6 +298,7 @@ class CheckoutCtrl extends Controller
           // Aprovado
           $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 3]);
           Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url]);
+          Produtos::find($pedido->id_produto)->update(['quantidade' => ($pedido->RelationProduto->quantidade - $pedido->quantidade)]);
           $dados = Status::select('nome', 'descricao', 'posicao')->find(3);
           $dados->image = asset('public/img/status-pagamento/aprovado.png');
           $dados->link = '<a href="'.route('checkout.acompanhamento.pedido', $pedido->codigo).'" target="_blank">Acompanhamento do seu pedido</a> &#183 <a href="'.route('checkout.create', $pedido->RelationProduto->link_produto).'" target="_blank"> Comprar novamente</a>';
@@ -380,9 +382,14 @@ class CheckoutCtrl extends Controller
   // Cadastrando ou atualizar endereço do usuário
   public function UpdateQuantidade($id, $quantidade){
     $pedido = Pedidos::find($id);
-    $total = Pedidos::where('id', $id)->update(['valor_compra' => ($pedido->RelationProduto->preco_venda * $quantidade), 'quantidade' => $quantidade]);
-    $dados = Pedidos::find($id);
-    return response()->json($dados->valor_compra);
+    if($quantidade <= $pedido->RelationProduto->quantidade){
+      $total = Pedidos::where('id', $id)->update(['valor_compra' => ($pedido->RelationProduto->preco_venda * $quantidade), 'quantidade' => $quantidade]);
+      $dados = Pedidos::find($id);
+      return response()->json($dados->valor_compra);
+    }else{
+      $dados = Pedidos::find($id);
+      return response()->json(['quantidade' => $dados->quantidade, 'dados' => $dados->valor_compra]);
+    }   
   }
 
   // Retornando dados do endereço do usuário

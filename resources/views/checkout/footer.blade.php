@@ -6,7 +6,7 @@
 		</div>
 		<div class="card-body">
 
-			<div class="row px-3 mb-5">
+			<div class="row px-3 mb-4">
 				<div class="col-3 p-0">
 					<img class="rounded w-100" src="{{ (isset($pedido->RelationProduto->RelationImagensPrincipal) ? asset('storage/app/'.$pedido->RelationProduto->RelationImagensPrincipal->first()->caminho) : asset('public/img/product.png') ) }}" >
 				</div>
@@ -14,26 +14,36 @@
 					<label class="font-weight-bold">{{ $pedido->RelationProduto->nome }}</label>
 					<small class="d-block"><b>Código SKU: </b>{{ $pedido->RelationProduto->cod_sku }}</small>
 					<small class="d-block"><b>Marca: </b>{{ $pedido->RelationProduto->RelationMarcas->nome }}</small>
-
+					<!--
+					<div>
+						<label>Quantidade</label>
+						<input type="text" name="quantidade" id="quantidade" class="rounded text-center border col-2 p-0" value="{{($pedido->quantidade != 1 ? $pedido->quantidade : 1)}}" min="1" max="50">
+						<a href="javascript:void(0)" class="text-decoration-none rounded px-1">
+							<i class="mdi mdi-plus"></i>
+						</a>
+						<a href="javascript:void(0)" class="text-decoration-none rounded">
+							<i class="mdi mdi-minus"></i>
+						</a>
+					</div>-->
 				</div>
 			</div>
 
 			<div class="text-right col-12 p-0" id="carrinho">
 				<div class="row m-0">
-					<h6 class="px-2">Produto</h6>
+					<h6 class="pl-2">Produto</h6>
 					@if($checkout->quantidade_itens == 1) 
 						<div class="ml-auto">
-							<label>(Qtd.:</label>
-							<input type="text" name="quantidade" id="quantidade" class="text-center border-top-0 border-left-0 border-right-0 border-bottom w-25" value="{{($pedido->quantidade != 1 ? $pedido->quantidade : 1)}}">
-							<label>) x </label>
+							<label>Qtd.:</label>
+							<input type="number" name="quantidade" id="quantidade" class="rounded text-center border col-3 p-0" value="{{($pedido->quantidade != 1 ? $pedido->quantidade : 1)}}" min="1" max="50">
+							<label> x </label>
+							@if(Request::segment(2) == "continuar")
+								<label class="pl-1 valor_produto">R$ {{ number_format(($pedido->RelationProduto->preco_venda*$pedido->quantidade), 2 , ",", ".") }}</label>
+								<input type="hidden" id="valor_produto_input" value="{{$pedido->RelationProduto->preco_venda*$pedido->quantidade}}">
+							@else
+								<label class="valor_produto">R$ {{ number_format($pedido->RelationProduto->preco_venda, 2 , ",", ".") }}</label>
+								<input type="hidden" id="valor_produto_input" value="{{$pedido->RelationProduto->preco_venda}}">
+							@endif
 						</div>
-						@if(Request::segment(2) == "continuar")
-							<label class="pl-1 valor_produto">R$ {{ number_format(($pedido->RelationProduto->preco_venda*$pedido->quantidade), 2 , ",", ".") }}</label>
-							<input type="hidden" id="valor_produto_input" value="{{$pedido->RelationProduto->preco_venda*$pedido->quantidade}}">
-						@else
-							<label class="pl-1 valor_produto">R$ {{ number_format($pedido->RelationProduto->preco_venda, 2 , ",", ".") }}</label>
-							<input type="hidden" id="valor_produto_input" value="{{$pedido->RelationProduto->preco_venda}}">
-						@endif
 					@else
 						@if(Request::segment(2) == "continuar")
 							<label class="ml-auto valor_produto">R$ {{ number_format(($pedido->RelationProduto->preco_venda*$pedido->quantidade), 2 , ",", ".") }}</label>
