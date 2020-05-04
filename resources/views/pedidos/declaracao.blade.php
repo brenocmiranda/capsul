@@ -315,4 +315,12 @@
     </section>
 </div>
 
+@section('support')
+<script type="text/javascript">
+	$(document).ready(function (){
+		window.print();
+	});
+</script>
+@endsection
+
 @include('template.footer')
