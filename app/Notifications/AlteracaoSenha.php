@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class Notificacoes extends Notification
+class AlteracaoSenha extends Notification
 {
     use Queueable;
 
@@ -29,7 +29,7 @@ class Notificacoes extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -53,6 +53,13 @@ class Notificacoes extends Notification
      * @return array
      */
     public function toArray($notifiable)
+    {
+        return [
+            //
+        ];
+    }
+
+    public function toDatabase($notifiable)
     {
         return [
             //

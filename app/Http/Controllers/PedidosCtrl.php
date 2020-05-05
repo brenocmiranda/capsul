@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Routing\Controller;
-
+use Notification;
+use App\Notifications\AlteracaoStatus;
 use PagarMe;
 use Correios;
 use App\Produtos;
@@ -98,9 +99,12 @@ class PedidosCtrl extends Controller
     // Atualizar status
     public function AtualizarStatus(Request $request, $id){
         if(Auth::user()->RelationGrupo->gerenciar_pedidos == 1){
-            PedidosStatus::create(['id_pedido' => $id, 'id_status' => $request->id_status, 'observacoes' => $request->observacoes]);
+            $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => $request->id_status, 'observacoes' => $request->observacoes]);
+            
+            $pedido = Pedidos::find($id);
+            $pedido->RelationCliente->notify(new AlteracaoStatus($status));
+
             if($request->id_status == 3){
-                $pedido = Pedidos::find($id);
                 Produtos::find($pedido->id_produto)->update(['quantidade' => ($pedido->RelationProduto->quantidade - $pedido->quantidade)]);
             }
             return response()->json(['success' => true]);   

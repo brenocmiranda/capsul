@@ -292,7 +292,7 @@
 	            				<span> de </span>
 	            				<span class="text-center border-bottom border-dark px-5"><?php setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese'); date_default_timezone_set('America/Sao_Paulo'); echo  strftime('%B'); ?></span>
 	            				<span> de </span> 
-	            				<span class="text-center border-bottom border-dark px-5">{{date('Y')}}</span> 
+	            				<span class="text-center border-bottom border-dark px-4">{{date('Y')}}</span> 
 	            				<span class="text-center pl-2">______________________________________________</span>
 	            			</label>
 	            			<label class="ml-auto px-3">Assinatura do Declarante/Remetente</label>

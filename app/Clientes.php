@@ -2,10 +2,14 @@
 
 namespace App;
 
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Model;
 
 class Clientes extends Model
-{
+{   
+    use Notifiable;
+
     protected $table = 'clientes';
     protected $primaryKey = 'id';
     protected $fillable = ['id', 'created_at', 'updated_at', 'tipo', 'ativo', 'nome', 'email', 'documento', 'data_nascimento', 'observacoes', 'senha', 'id_grupo_cliente', 'id_lead'];

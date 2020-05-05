@@ -21,7 +21,7 @@
                                     <select class="form-control h-100" name="id_status" required>
                                         <option disabled="disabled">Selecione</option>
                                         @foreach($status as $status)
-                                        <option value="{{$status->id}}" {{($pedido->RelationStatus->last()['id'] == $status->id ? ' selected' : '')}}>{{$status->nome}}</option>
+                                        <option value="{{$status->id}}" {{($pedido->RelationStatus->last()->id == $status->id ? ' selected' : '')}}>{{$status->nome}}</option>
                                         @endforeach
                                     </select>
                                 </div>     

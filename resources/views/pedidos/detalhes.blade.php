@@ -26,7 +26,7 @@ Pedido #{{$pedido->codigo}}
                     ($pedido->RelationStatus->last()->posicao==2 || $pedido->RelationStatus->last()->posicao==6 || $pedido->RelationStatus->last()->posicao==8 ? 'warning' : 
                     ($pedido->RelationStatus->last()->posicao==3 || $pedido->RelationStatus->last()->posicao==5 || $pedido->RelationStatus->last()->posicao==9 ? 'success' :
                     ($pedido->RelationStatus->last()->posicao==4 || $pedido->RelationStatus->last()->posicao==10 ? 'danger' :  ''))))}}">
-                    {{strtoupper($pedido->RelationStatus->last()['nome'])}}
+                    {{strtoupper($pedido->RelationStatus->last()->nome)}}
                 </div>
                 @if($pedido->RelationStatus->last()->posicao != 10)
                 <div class="my-auto">

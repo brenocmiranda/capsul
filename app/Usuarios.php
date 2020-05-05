@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Usuarios extends Authenticatable
 {
+    use Notifiable;
+    
     protected $table = 'usuarios';
     protected $primaryKey = 'id';
     protected $fillable = ['id', 'nome', 'email', 'email_verified_at', 'password', 'ativo', '_token', 'remember_token', 'created_at', 'updated_at', 'id_grupo', 'id_imagem'];
