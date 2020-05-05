@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\Request;
 
 use App\Atividades;
-use App\ConfigCarrinhos;
 use App\ConfigCheckout;
 use App\ConfigEmails;
 use App\ConfigGeral;
@@ -33,38 +32,6 @@ class ConfiguracoesCtrl extends Controller
     // Configurações
     public function Configuracoes(){
         return view('configuracoes.configuracoes');
-    }
-
-    // Carrinhos Abandonados
-    public function Carrinhos(){
-        if(Auth::user()->RelationGrupo->visualizar_checkout == 1 || Auth::user()->RelationGrupo->gerenciar_checkout == 1){
-            $carrinhos = ConfigCarrinhos::first();
-        	return view('configuracoes.carrinhos')->with('carrinhos', $carrinhos);
-        }else{
-            return redirect(route('permission'));
-        }
-    }
-    public function CarrinhosAtualizar(Request $request){
-        $carrinhos = ConfigCarrinhos::find(1)->update([
-            'ativo' => (isset($request->ativo) ? 1 : 0), 
-            'enviar_cupom' => (isset($request->enviar_cupom) ? 's' : 'n'), 
-            'assunto' => $request->assunto, 
-            'sms' => $request->sms
-        ]);
-
-        Atividades::create([
-            'nome' => 'Atuailização de configurações',
-            'descricao' => 'Você atualizou as configurações de carrinhos abandonados.',
-            'icone' => 'mdi-cart-outline',
-            'url' => route('configuracoes.carrinhos'),
-            'id_usuario' => Auth::id()
-        ]);
-
-        \Session::flash('confirm', array(
-                'class' => 'success',
-                'mensagem' => 'Suas informações foram alteradas com sucesso.'
-            ));
-        return redirect()->route('configuracoes.carrinhos');
     }
 
     // Checkout
@@ -125,16 +92,21 @@ class ConfiguracoesCtrl extends Controller
         }
     }
     public function EmailsAtualizar(Request $request){
-        $checkout = ConfigEmails::find(1)->update([
-            'ativo' => (isset($request->ativo) ? 1 : 0), 
+
+        $emails = ConfigEmails::find(1)->update([
             'email_remetente' => $request->email_remetente, 
             'nome_remetente' => $request->nome_remetente, 
-            'avaliar_produto' => $request->avaliar_produto
+            'ativo_avaliacao' => (isset($request->ativo_avaliacao) ? 1 : 0), 
+            'avaliar_produto' => $request->avaliar_produto,
+            'ativo_carrinho' => (isset($request->ativo_carrinho) ? 1 : 0), 
+            'enviar_cupom' => (isset($request->enviar_cupom) ? 's' : 'n'), 
+            'assunto' => $request->assunto, 
+            'sms' => $request->sms
         ]);
 
         Atividades::create([
             'nome' => 'Atuailização de configurações',
-            'descricao' => 'Você atualizou as configurações de checkout.',
+            'descricao' => 'Você atualizou as configurações de e-mails.',
             'icone' => 'mdi-email-outline',
             'url' => route('configuracoes.emails'),
             'id_usuario' => Auth::id()
@@ -214,7 +186,6 @@ class ConfiguracoesCtrl extends Controller
             }
         }
         $checkout = ConfigGeral::find(1)->update([
-            'email_pedidos' => $request->email_pedidos, 
             'nome_loja' => $request->nome_loja, 
             'descricao_loja' => $request->descricao_loja, 
             'cep' => str_replace("-", "", $request->cep),

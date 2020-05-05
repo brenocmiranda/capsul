@@ -517,11 +517,21 @@ $(document).ready(function (){
         if (cep != "") {
             var validacep = /^[0-9]{8}$/;
             if(validacep.test(cep)) {
-                $.getJSON("https://viacep.com.br/ws/"+cep+"/json/?callback=?", function(dados) {
+                $.getJSON("https://ws.apicep.com/cep/"+cep+".json", function(dados) {
                 	if (!("erro" in dados)) {
-                        $(".country").html(dados.localidade+' - '+dados.uf);
-                        $("#cidade").val(dados.localidade);
-                        $("#estado").val(dados.uf);
+                        $(".country").html(dados.city+' - '+dados.state);
+                        if(dados.city){
+                            $('#cidade').val(dados.city.toUpperCase());
+                        }
+                        if(dados.state){
+                            $("#estado").val(dados.state.toUpperCase());
+                        }
+                        if(dados.district){
+                            $("#bairro").val(dados.district.toUpperCase());
+                        }
+                        if(dados.address){
+                            $("#endereco").val(dados.address.toUpperCase());
+                        }
                         $("#endereco").focus();
                     }else {
                         $(".country").html('<b class="text-danger"> CEP não localizado.</b');

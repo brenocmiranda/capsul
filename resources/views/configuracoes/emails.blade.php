@@ -12,9 +12,9 @@ Configurações
         <h1>Configurações</h1>
 
         <div class="section-header-breadcrumb">
-            <div class="breadcrumb-item"><a href="{{route('home')}}">Início</a></div>
-            <div class="breadcrumb-item"><a href="{{route('configuracoes')}}">Configurações</a></div>
-            <div class="breadcrumb-item active">E-mails transacionais</div>
+          <div class="breadcrumb-item"><a href="{{route('home')}}">Início</a></div>
+          <div class="breadcrumb-item"><a href="{{route('configuracoes')}}">Configurações</a></div>
+          <div class="breadcrumb-item active">E-mails transacionais</div>
         </div>
       </div>
     </div>
@@ -36,21 +36,12 @@ Configurações
 
             <div class="card">
               <div class="card-header">
-                <h3 class="section-title my-0">E-mails transacionais</h3>  
+                <h3 class="section-title my-0">Geral</h3>  
+                
               </div>
               <div class="card-body">
                 <div class="col-12">
                   <div class="mt-2 mb-5">
-                    <div class="form-group col-12">
-                      <label>Envio de e-mails <span class="text-danger">*</span></label>
-                      <div class="input-group m-2"> 
-                        <label class="custom-switch px-0">
-                          <input type="checkbox" name="ativo" class="custom-switch-input" {{($emails->ativo == 1 ? ' checked' : '')}}>
-                          <span class="custom-switch-indicator"></span>
-                          <span class="custom-switch-description"><b>Ativo</b></span>
-                        </label>
-                      </div>
-                    </div>
                     <div class="form-group col-6">
                       <label>E-mail do remetente <span class="text-danger">*</span></label>
                       <div class="input-group"> 
@@ -61,6 +52,69 @@ Configurações
                       <label>Nome do remetente <span class="text-danger">*</span></label>
                       <div class="input-group"> 
                         <input type="text" class="form-control" name="nome_remetente" value="{{$emails->nome_remetente}}" required>
+                      </div>
+                    </div>
+                    @if(Auth::user()->RelationGrupo->gerenciar_checkout == 1)
+                    <div class="form-group col-12">
+                      <label>Status do pedidos</label>
+                      <div class="input-group"> 
+                        <a href="{{route('configuracoes.status')}}">Gerencie as informações do status de pedidos disponíveis. </a>
+                      </div>
+                    </div>
+                    @endif
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="section-title my-0">Carrinhos abandonados</h3>  
+              </div>
+              <div class="card-body">
+                <div class="col-12">
+                  <div class="mt-2 mb-5">
+                    <div class="form-group col-12">
+                      <label class="custom-switch px-0">
+                        <input type="checkbox" name="ativo_carrinho" class="custom-switch-input" {{($emails->ativo_carrinho == 1 ? ' checked' : '')}}>
+                        <span class="custom-switch-indicator"></span>
+                        <span class="custom-switch-description"><b>Envio de e-mails</b></span>
+                      </label>
+                    </div>
+                    <div class="form-group col-12">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="customCheck1" name="enviar_cupom" {{($emails->enviar_cupom == 's' ? ' checked' : '')}}>
+                        <label class="custom-control-label" for="customCheck1">Enviar cupom de desconto no primeiro e-mail</label>
+                      </div>
+                    </div>
+                    <div class="form-group col-12">
+                      <label>Assunto do e-mail <span class="text-danger">*</span></label>
+                      <textarea class="summernote" name="assunto">{{$emails->assunto}}</textarea>
+                    </div>
+                    <div class="form-group col-12">
+                      <label>SMS</label>
+                      <textarea class="summernote" name="sms">{{$emails->assunto}}</textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="section-title my-0">Avaliação dos produtos</h3>  
+              </div>
+              <div class="card-body">
+                <div class="col-12">
+                  <div class="mt-2 mb-5">
+                    <div class="form-group col-12">
+                      <label>Envio de e-mails <span class="text-danger">*</span></label>
+                      <div class="input-group m-2"> 
+                        <label class="custom-switch px-0">
+                          <input type="checkbox" name="ativo_avaliacao" class="custom-switch-input" {{($emails->ativo_avaliacao == 1 ? ' checked' : '')}}>
+                          <span class="custom-switch-indicator"></span>
+                          <span class="custom-switch-description"><b>Ativo</b></span>
+                        </label>
                       </div>
                     </div>
                     <div class="form-group col">

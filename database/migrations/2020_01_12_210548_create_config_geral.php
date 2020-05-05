@@ -16,7 +16,6 @@ class CreateConfigGeral extends Migration
         Schema::create('config_geral', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
-            $table->string('email_pedidos');
             $table->string('nome_loja');
             $table->string('descricao_loja');
 
@@ -42,7 +41,7 @@ class CreateConfigGeral extends Migration
                 'email_pedidos' => 'suporte@capsulbrasil.com.br',
                 'nome_loja' => 'Grupo Capsul',
                 'descricao_loja' => 'Somos uma empresa que trabalha com os melhores produtos para os clientes mais exigentes e que merecem o santo graal de qualidade.',
-                'cep' => '35588-000',
+                'cep' => '35588000',
                 'endereco' => 'RUA TRAVESSA NOSA SENHORA DO CARMO',
                 'numero' => '35',
                 'bairro' => 'CENTRO',
@@ -50,7 +49,7 @@ class CreateConfigGeral extends Migration
                 'estado' => 'MG',
                 'complemento' => '',
                 'razao_social' => 'Capsul Brasil',
-                'cnpj' => '29.822.523/0001-03',
+                'cnpj' => '29822523000103',
                 'email' => 'contato@capsulbrasil.com',
                 'telefone' => '(37) 3351-5181',
                 'whatsapp' => '(37) 3351-5181',

@@ -26,7 +26,10 @@ Configurações
                       <div class="card-header">
                         <h3 class="section-title my-0">Usuários</h3>  
                         <div class="ml-auto">
+                          @if(Auth::user()->RelationGrupo->gerenciar_usuarios == 1)
                           <button type="button" class="btn btn-sm btn-primary mx-1" id="adicionar" data-toggle="modal" data-target="#modal-adicionar"><i class="fa fa-plus" aria-hidden="true"></i> Novo usuário</button>
+                          <a class="btn btn-sm btn-primary mx-1" href="{{route('configuracoes.grupos')}}"><i class="mdi mdi-account-multiple" aria-hidden="true"></i> Grupos</a>
+                          @endif
                         </div>
                       </div>
                       <div class="card-body">

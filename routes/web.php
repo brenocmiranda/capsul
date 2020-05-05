@@ -157,11 +157,6 @@ Route::group(['prefix' => 'configuracoes'], function (){
     Route::group(['prefix' => ''], function (){
         Route::get('', 'ConfiguracoesCtrl@Configuracoes')->name('configuracoes');
     });
-    // Carrinhos abandonados
-    Route::group(['prefix' => 'carrinhos'], function (){
-        Route::get('', 'ConfiguracoesCtrl@Carrinhos')->name('configuracoes.carrinhos');
-        Route::post('salvar', 'ConfiguracoesCtrl@CarrinhosAtualizar')->name('configuracoes.carrinhos.salvar');
-    });
     // Checkout
     Route::group(['prefix' => 'checkout'], function (){
         Route::get('', 'ConfiguracoesCtrl@Checkout')->name('configuracoes.checkout');

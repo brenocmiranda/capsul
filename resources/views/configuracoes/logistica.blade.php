@@ -26,7 +26,7 @@ Configurações
                         <div class="card-header">
                             <h3 class="section-title my-0">Logística</h3>
                             <div class="ml-auto">
-                                <button type="button" class="btn btn-sm btn-primary mx-1" id="adicionar" data-toggle="modal" data-target="#modal-adicionar"><i class="fa fa-plus" aria-hidden="true"></i> Novo</button>
+                                <button type="button" class="btn btn-sm btn-primary mx-1" id="adicionar" data-toggle="modal" data-target="#modal-adicionar"><i class="fa fa-plus" aria-hidden="true"></i> Nova condição</button>
                             </div>
                         </div>
                         <div class="card-body">

@@ -122,27 +122,26 @@
         <li class="nav-item dropdown {{(Request::segment(1) == 'configuracoes' ? 'active' : '')}}">
           <a href="{{route('configuracoes')}}" class="nav-link has-dropdown menu-border" data-toggle="dropdown"><i class="mdi mdi-cog-outline mdi-24px"></i> <span>Configurações</span></a>
           <ul class="dropdown-menu">                  
-            
             @if(Auth::user()->RelationGrupo->visualizar_checkout == 1 || Auth::user()->RelationGrupo->gerenciar_checkout == 1)
-              <li><a class="nav-link {{(Request::segment(2) == 'carrinhos' ? 'font-weight-bold' : '')}}" href="{{route('configuracoes.carrinhos')}}">Carrinhos abandonados</a></li>
-              <li><a class="nav-link {{(Request::segment(2) == 'checkout' ? 'font-weight-bold' : '')}}" href="{{route('configuracoes.checkout')}}">Checkout</a></li> 
+              <li><a class="nav-link {{(Request::segment(2) == 'checkout' ? 'font-weight-bold' : '')}}" href="{{route('configuracoes.checkout')}}">Carrinho</a></li> 
             @endif
 
             @if(Auth::user()->RelationGrupo->visualizar_geral == 1 || Auth::user()->RelationGrupo->gerenciar_geral == 1)
+             <li><a class="nav-link {{(Request::segment(2) == 'emails' || Request::segment(2) == 'status' ? 'font-weight-bold' : '')}}" href="{{route('configuracoes.emails')}}">E-mails transacionais</a></li>
               <li><a class="nav-link {{(Request::segment(2) == 'geral' ? 'font-weight-bold' : '')}}" href="{{route('configuracoes.geral')}}">Geral</a></li> 
-              <li><a class="nav-link {{(Request::segment(2) == 'emails' ? 'font-weight-bold' : '')}}" href="{{route('configuracoes.emails')}}">E-mails</a></li>
-              <li><a class="nav-link {{(Request::segment(2) == 'status' ? 'font-weight-bold' : '')}}" href="{{route('configuracoes.status')}}">Status</a></li> 
-            @endif
-
-            @if(Auth::user()->RelationGrupo->visualizar_usuarios == 1 || Auth::user()->RelationGrupo->gerenciar_usuarios == 1)
-              <li><a class="nav-link {{(Request::segment(2) == 'seguranca' ? 'font-weight-bold' : '')}}" href="{{route('configuracoes.seguranca')}}">Segurança</a></li> 
-              <li><a class="nav-link {{(Request::segment(2) == 'usuarios' ? 'font-weight-bold' : '')}}" href="{{ route('configuracoes.usuarios') }}">Usuários</a></li>
-              <li><a class="nav-link {{(Request::segment(2) == 'grupos' ? 'font-weight-bold' : '')}}" href="{{route('configuracoes.grupos')}}">Grupos de usuários</a></li> 
             @endif
 
             @if(Auth::user()->RelationGrupo->visualizar_logistica == 1 || Auth::user()->RelationGrupo->gerenciar_logistica == 1)
-              <li><a class="nav-link {{(Request::segment(2) == 'logistica' ? 'font-weight-bold' : '')}}" href="{{route('configuracoes.logistica')}}">Logística</a></li> 
               <li><a class="nav-link {{(Request::segment(2) == 'integracoes' ? 'font-weight-bold' : '')}}" href="{{route('configuracoes.integracoes')}}">Integrações</a></li> 
+              <li><a class="nav-link {{(Request::segment(2) == 'logistica' ? 'font-weight-bold' : '')}}" href="{{route('configuracoes.logistica')}}">Logística</a></li> 
+            @endif
+
+            @if(Auth::user()->RelationGrupo->visualizar_checkout == 1 || Auth::user()->RelationGrupo->gerenciar_checkout == 1)
+            <li><a class="nav-link {{(Request::segment(2) == 'seguranca' ? 'font-weight-bold' : '')}}" href="{{route('configuracoes.seguranca')}}">Segurança</a></li> 
+            @endif
+
+            @if(Auth::user()->RelationGrupo->visualizar_usuarios == 1 || Auth::user()->RelationGrupo->gerenciar_usuarios == 1)
+            <li><a class="nav-link {{(Request::segment(2) == 'usuarios' || Request::segment(2) == 'grupos' ? 'font-weight-bold' : '')}}" href="{{ route('configuracoes.usuarios') }}">Usuários</a></li>
             @endif
           </ul>
         </li>

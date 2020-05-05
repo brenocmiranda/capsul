@@ -277,32 +277,34 @@ Adicionar cliente
                         //Valida o formato do CEP.
                         if(validacep.test(cep)) {
                             //Consulta o webservice viacep.com.br/
-                            $.getJSON("https://viacep.com.br/ws/"+cep+"/json/?callback=?", function(dados) {
+                            $.getJSON("https://ws.apicep.com/cep/"+cep+".json", function(dados) {
                                 if (!("erro" in dados)) {
                                     $(".card:last-child .error").html('');
                                     //Atualiza os campos com os valores da consulta.
-                                    if(dados.localidade){
+                                    if(dados.city){
                                         $('.card:last-child .cidade').attr('disabled', 'disabled');
-                                        $('.card:last-child .cidade').val(dados.localidade.toUpperCase());
-                                        $(".card:last-child .cidade1").val(dados.localidade.toUpperCase());
+                                        $('.card:last-child .cidade').val(dados.city.toUpperCase());
+                                        $(".card:last-child .cidade1").val(dados.city.toUpperCase());
                                     }else{
                                         $(".card:last-child .cidade").removeAttr('disabled');
                                     }
-                                    if(dados.uf){
+                                    if(dados.state){
                                         $(".card:last-child .estado").attr('disabled', 'disabled');
-                                        $(".card:last-child .estado").val(dados.uf.toUpperCase());
-                                        $(".card:last-child .estado1").val(dados.uf.toUpperCase());
+                                        $(".card:last-child .estado").val(dados.state.toUpperCase());
+                                        $(".card:last-child .estado1").val(dados.state.toUpperCase());
                                     }else{
                                         $(".card:last-child .estado").removeAttr('disabled');
                                     }
-                                    if(dados.bairro){
+                                    if(dados.district){
                                         $(".card:last-child .bairro").attr('disabled', 'disabled');
-                                        $(".card:last-child .bairro").val(dados.bairro.toUpperCase());
-                                        $(".card:last-child .bairro1").val(dados.bairro.toUpperCase());
+                                        $(".card:last-child .bairro").val(dados.district.toUpperCase());
+                                        $(".card:last-child .bairro1").val(dados.district.toUpperCase());
                                     }else{
                                         $(".card:last-child .bairro").removeAttr('disabled');
                                     }
-
+                                    if(dados.address){
+                                        $(".card:last-child .endereco").val(dados.address.toUpperCase());
+                                    }
                                 }else {
                                     //CEP pesquisado não foi encontrado.
                                     $(".card:last-child .error").html('O seu CEP não pode ser encontrado!')

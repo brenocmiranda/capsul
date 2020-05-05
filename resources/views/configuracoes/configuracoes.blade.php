@@ -24,23 +24,12 @@ Configurações
           <div class="card">
             <div class="card-body">
               <div class="col-12 mx-5 my-4 pb-2">
-                <a href="{{route('configuracoes.carrinhos')}}" class="row text-decoration-none ">
-                  <div class="mx-3 my-auto border py-2 px-3 rounded h-100 text-center text-muted" style="font-size: 15px; width: 53px">
-                    <i class="mdi mdi-cart-outline mdi-24px"></i>
-                  </div>
-                  <div class="my-auto">
-                    <h6 class="mb-0">Carrinhos abandonados</h6>
-                    <label class="text-dark mb-0">Configure o assunto dos e-mails e SMS.</label>
-                  </div>
-                </a>
-              </div>
-              <div class="col-12 mx-5 my-4 pb-2">
                 <a href="{{route('configuracoes.checkout')}}" class="row text-decoration-none">
                   <div class="mx-3 my-auto border py-2 px-3 rounded h-100 text-center text-muted" style="font-size: 15px; width: 53px">
                     <i class="mdi mdi-credit-card-settings-outline mdi-24px" aria-hidden="true"></i>
                   </div>
                   <div class="my-auto">
-                    <h6 class="mb-0">Checkout</h6>
+                    <h6 class="mb-0">Carrinho de pagamento</h6>
                     <label class="text-dark mb-0">Gerencie o ambiente de pagamento disponibilizando seus meios de pagamento.</label>
                   </div>
                 </a>
@@ -106,7 +95,7 @@ Configurações
                     <i class="mdi mdi-state-machine mdi-24px"></i>
                   </div>
                   <div class="my-auto">
-                    <h6 class="mb-0">Status</h6>
+                    <h6 class="mb-0">Status do pedido</h6>
                     <label class="text-dark mb-0">Gerencie os estados que os pedidos podem atingir na plataforma.</label>
                   </div>
                 </a>
@@ -122,17 +111,7 @@ Configurações
                   </div>
                 </a>
               </div>
-              <div class="col-12 mx-5 my-4 pb-2">
-                <a href="{{route('configuracoes.grupos')}}" class="row text-decoration-none">
-                  <div class="mx-3 my-auto border py-2 px-3 rounded h-100 text-center text-muted" style="font-size: 15px; width: 53px">
-                    <i class="mdi mdi-account-group-outline mdi-24px"></i>
-                  </div>
-                  <div class="my-auto">
-                    <h6 class="mb-0">Grupos de usuários</h6>
-                    <label class="text-dark mb-0">Gerencie os grupos e as permissões que cada usuário terá na plataforma.</label>
-                  </div>
-                </a>
-              </div>
+
             </div>
           </div>
         </div>

@@ -50,12 +50,6 @@ Configurações
                         <input type="text" class="form-control" name="nome_loja" value="{{$geral->nome_loja}}" required>
                       </div>
                     </div>
-                    <div class="form-group col-7">
-                      <label>E-mail para recebimento dos pedidos <span class="text-danger">*</span></label>
-                      <div class="input-group"> 
-                        <input type="text" class="form-control" name="email_pedidos" value="{{$geral->email_pedidos}}" required>
-                      </div>
-                    </div>
                     <div class="form-group col-12 mb-0">
                       <label>Descrição da loja <span class="text-danger">*</span></label>
                       <textarea class="summernote" name="descricao_loja">{{$geral->descricao_loja}}</textarea>
@@ -201,32 +195,31 @@ Configurações
             //Valida o formato do CEP.
             if(validacep.test(cep)) {
                 //Consulta o webservice viacep.com.br/
-                $.getJSON("https://viacep.com.br/ws/"+cep+"/json/?callback=?", function(dados) {
+                $.getJSON("https://ws.apicep.com/cep/"+cep+".json", function(dados) {
                     if (!("erro" in dados)) {
                         $(".error").html('');
                         //Atualiza os campos com os valores da consulta.
-                        if(dados.localidade){
+                        if(dados.city){
                             $('.cidade').attr('disabled', 'disabled');
-                            $('.cidade').val(dados.localidade.toUpperCase());
-                            $(".cidade1").val(dados.localidade.toUpperCase());
+                            $('.cidade').val(dados.city.toUpperCase());
+                            $(".cidade1").val(dados.city.toUpperCase());
                         }else{
                             $(".cidade").removeAttr('disabled');
                         }
-                        if(dados.uf){
+                        if(dados.state){
                             $(".estado").attr('disabled', 'disabled');
-                            $(".estado").val(dados.uf.toUpperCase());
-                            $(".estado1").val(dados.uf.toUpperCase());
+                            $(".estado").val(dados.state.toUpperCase());
+                            $(".estado1").val(dados.state.toUpperCase());
                         }else{
                             $(".estado").removeAttr('disabled');
                         }
-                        if(dados.bairro){
+                        if(dados.district){
                             $(".bairro").attr('disabled', 'disabled');
-                            $(".bairro").val(dados.bairro.toUpperCase());
-                            $(".bairro1").val(dados.bairro.toUpperCase());
+                            $(".bairro").val(dados.district.toUpperCase());
+                            $(".bairro1").val(dados.district.toUpperCase());
                         }else{
                             $(".bairro").removeAttr('disabled');
                         }
-
                     }else {
                         //CEP pesquisado não foi encontrado.
                         $(".error").html('O seu CEP não pode ser encontrado!')

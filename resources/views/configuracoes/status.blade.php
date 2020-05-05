@@ -14,6 +14,7 @@ Configurações
         <div class="section-header-breadcrumb">
             <div class="breadcrumb-item"><a href="{{route('home')}}">Início</a></div>
             <div class="breadcrumb-item"><a href="{{route('configuracoes')}}">Configurações</a></div>
+            <div class="breadcrumb-item"><a href="{{route('configuracoes.emails')}}">E-mails transacionais</a></div>
             <div class="breadcrumb-item active">Status de pedidos</div>
         </div>
       </div>

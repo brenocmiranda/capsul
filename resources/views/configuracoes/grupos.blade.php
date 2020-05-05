@@ -14,7 +14,8 @@ Configurações
         <div class="section-header-breadcrumb">
             <div class="breadcrumb-item"><a href="{{route('home')}}">Início</a></div>
             <div class="breadcrumb-item"><a href="{{route('configuracoes')}}">Configurações</a></div>
-            <div class="breadcrumb-item active">Grupos de usuários</div>
+            <div class="breadcrumb-item"><a href="{{route('configuracoes.usuarios')}}">Usuários</a></div>
+            <div class="breadcrumb-item active">Grupos de permissões</div>
         </div>
       </div>
     </div>
@@ -24,7 +25,7 @@ Configurações
         <div class="col-12">
           <div class="card">
             <div class="card-header">
-              <h3 class="section-title my-0">Grupos de usuários</h3>  
+              <h3 class="section-title my-0">Grupos de permissões</h3>  
               <div class="ml-auto">
                 <button type="button" class="btn btn-sm btn-primary mx-1" id="adicionar" data-toggle="modal" data-target="#modal-adicionar"><i class="fa fa-plus" aria-hidden="true"></i> Novo grupo</button>
               </div>
@@ -211,7 +212,7 @@ Configurações
                 </div>
 
                 <div class="col-2 my-2">
-                  <label class="border-bottom"><small>Config. Checkout</small></label>
+                  <label class="border-bottom"><small>Config. Carrinho</small></label>
                   <div class="col-12 p-0">
                     <div class="custom-control custom-checkbox">
                       <input type="checkbox" class="custom-control-input" id="customCheck16" name="visualizar_checkout">

@@ -16,20 +16,28 @@ class CreateConfigEmails extends Migration
         Schema::create('config_emails', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
-            $table->boolean('ativo');
             $table->string('email_remetente');
             $table->string('nome_remetente');
+            $table->boolean('ativo_avaliacao');
             $table->integer('avaliar_produto');
+            $table->boolean('ativo_carrinho');
+            $table->enum('enviar_cupom',['s', 'n'])->default('n');
+            $table->string('assunto')->nullable();
+            $table->string('sms')->nullable();
             
             $table->timestamps();
         });
 
         DB::table('config_emails')->insert(
             array(
-                'ativo' => 1,
                 'email_remetente' => 'contato@grupocapsul.com',
                 'nome_remetente' => 'Grupo Capsul',
                 'avaliar_produto' => '3',
+                'ativo_avaliacao' => 1,
+                'ativo_carrinho' => 1,
+                'enviar_cupom' => 's',
+                'assunto' => 'Os produtos que você escolheu estão te esperando',
+                'sms' => 'Os produtos que você escolheu estão te esperando',
             )
         );
     }

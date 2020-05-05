@@ -339,7 +339,7 @@ Pedido #{{$pedido->codigo}}
                                                     @endif
                                                     </div>
                                                 @endif
-                                            @elseif( $pedido->RelationStatus->last()->posicao == 6 || $pedido->RelationStatus->last()->posicao == 7 && $todos->posicao <= 7)
+                                            @elseif( ($pedido->RelationStatus->last()->posicao == 6 || $pedido->RelationStatus->last()->posicao == 7) && $todos->posicao <= 7)
                                                 @if($todos->posicao != 2 && $todos->posicao != 4 && $todos->posicao != 7)
                                                     <div class="col-2 lin_resume">
                                                     <div class="lin_1 border-success"></div>
