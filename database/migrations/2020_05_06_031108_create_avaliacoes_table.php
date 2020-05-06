@@ -18,8 +18,8 @@ class CreateAvaliacoesTable extends Migration
             $table->bigIncrements('id');
             $table->string('produto');
             $table->string('satisfacao');
-            $table->string('recomedacao');
-            $table->text('observacoes');
+            $table->string('recomendacao');
+            $table->text('observacoes')->nullable();
 
             $table->bigInteger('id_pedido')->unsigned();
             $table->foreign('id_pedido')->references('id')->on('pedidos');

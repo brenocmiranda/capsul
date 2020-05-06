@@ -25,38 +25,47 @@ Avalição do pedido
 
 			<div class="section-body h-75">
 				<div class="container row m-auto h-100">
-					<form class="w-100 mt-4" method="POST" action="{{ route('avaliacao.pedido.salvar', $pedido->id) }}"  enctype="multipart/form-data">
-						<div class="card col-12 m-auto">
+					@if(Session::has('confirm'))
+					<div class="col-12 my-5">
+		            	<div class="text-center p-4 alert alert-{{ Session::get('confirm')['class'] }} alert-dismissible">
+		                	<h6>{{ Session::get('confirm')['mensagem'] }}</h6>
+		            	</div>
+		        	</div>
+		            @else
+		            <form class="col-12 mt-4" method="POST" action="{{ route('avaliacao.pedido.salvar', $pedido->id) }}"  enctype="multipart/form-data">
+		            @csrf
+		            	<div class="card col-12 m-auto">
 							<div class="card-body">
+					
 								<div class="col-12">
-									<p>
+									<div class="text-center">
 										<h4> Olá, {{ ucwords(strtolower(explode(" ", $pedido->RelationCliente->nome)[0])) }}</h4>
-										<h6 class="font-weight-normal pb-2">Agora é com você, gostariamos de saber a avaliação da sua compra com o {{$geral->nome_loja}}.</h6>
-									</p>
+										<h6 class="font-weight-normal pb-3">Agora é com você, gostariamos de saber a avaliação da sua compra com o {{$geral->nome_loja}}.</h6>
+									</div>
 									<div class="col-12 p-0">										
 										<div class="form-group">
 											<label>O que você achou do produto? <i class="text-danger">*</i></label>
 											<div class="row m-0">
 												<div class="form-check mx-2">
-													<input class="form-check-input" type="radio" name="produto" id="produto4" value="4">
+													<input class="form-check-input" type="radio" name="produto" id="produto4" value="1">
 													<label class="form-check-label" for="produto4">
 														Ruim
 													</label>
 												</div>
 												<div class="form-check mx-2">
-													<input class="form-check-input" type="radio" name="produto" id="produto3" value="3">
+													<input class="form-check-input" type="radio" name="produto" id="produto3" value="2">
 													<label class="form-check-label" for="produto3">
 														Regular
 													</label>
 												</div>
 												<div class="form-check mx-2">
-													<input class="form-check-input" type="radio" name="produto" id="produto2" value="2">
+													<input class="form-check-input" type="radio" name="produto" id="produto2" value="3">
 													<label class="form-check-label" for="produto2">
 														Bom
 													</label>
 												</div>
 												<div class="form-check mx-2">
-													<input class="form-check-input" type="radio" name="produto" id="produto1" value="1" checked>
+													<input class="form-check-input" type="radio" name="produto" id="produto1" value="4" checked>
 													<label class="form-check-label" for="produto1">
 														Ótimo
 													</label>
@@ -125,15 +134,15 @@ Avalição do pedido
 									</div>
 								</div>
 							
-								<hr>
+								<hr class="mx-4">
 		                
 				                <div class="col-12 text-center">
 				                    <button class="btn btn-success btn-lg col-3 mx-1 shadow-none">Enviar <i class="mdi mdi-arrow-right pl-2"></i></button>
 				                </div>
-
-			                </div>
-						</div>
-	                </form>
+				            </div>
+				        </div>
+		            </form>
+	                @endif
 				</div>
 				<footer class="text-right text-white fixed-bottom p-4 d-none d-md-block" style="z-index: -1;">
 					<label class="mb-0">Todos os direitos reservados ao {{$geral->nome_loja}}</label><br>

@@ -41,5 +41,9 @@ class Pedidos extends Model
     public function RelationRastreamento(){
         return $this->belongsTo(PedidosRastreamento::class, 'id_rastreamento', 'id');
     }
+
+    public function RelationAvaliacao(){
+        return $this->belongsTo(Avaliacoes::class,'id', 'id_pedido');
+    }
     
 }

@@ -2,23 +2,31 @@
 
 namespace App\Notifications;
 
+use App\PedidosStatus;
+use App\ConfigEmails;
+use App\ConfigGeral;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class AvaliacaoProduto extends Notification
+class AvaliacaoProduto extends Notification implements ShouldQueue
 {
     use Queueable;
+    private $status;
+    private $emails;
+    private $geral;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(PedidosStatus $statusNovo)
     {
-        //
+        $this->status = $statusNovo;
+        $this->emails = ConfigEmails::first();
+        $this->geral = ConfigGeral::first();
     }
 
     /**
@@ -29,7 +37,7 @@ class AvaliacaoProduto extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['mail','database'];
     }
 
     /**
@@ -41,9 +49,9 @@ class AvaliacaoProduto extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+                    ->from($this->emails->email_remetente, $this->emails->nome_remetente)
+                    ->subject('Agora é com você!')
+                    ->view('system.emails.avaliacao', ['geral' => $this->geral, 'status' => $this->status]);
     }
 
     /**
@@ -55,7 +63,20 @@ class AvaliacaoProduto extends Notification
     public function toArray($notifiable)
     {
         return [
-            //
+            'pedido' => $this->status->RelationPedido1,
+        ];
+    }
+
+    /**
+     * Get the array representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return array
+     */
+    public function toDatabase($notifiable)
+    {
+        return [
+            'pedido' => $this->status->RelationPedido1,
         ];
     }
 }

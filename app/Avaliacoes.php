@@ -8,5 +8,5 @@ class Avaliacoes extends Model
 {
     protected $table = 'avaliacoes';
     protected $primaryKey = 'id';
-    protected $fillable = ['id', 'produto', 'satisfacao', 'recomedacao', 'observacoes', 'id_pedido', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'produto', 'satisfacao', 'recomendacao', 'observacoes', 'id_pedido', 'created_at', 'updated_at'];
 }

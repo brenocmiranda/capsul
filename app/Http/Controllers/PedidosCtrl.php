@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Routing\Controller;
 use App\Notifications\AlteracaoStatus;
+use App\Notifications\AvaliacaoProduto;
 use PagarMe;
 use Correios;
 use App\Produtos;
@@ -22,6 +23,7 @@ use App\PedidosNotas;
 use App\PedidosRastreamento;
 use App\ConfigCheckout;
 use App\ConfigGeral;
+use App\ConfigEmails;
 use Carbon\Carbon;
 
 class PedidosCtrl extends Controller
@@ -29,6 +31,7 @@ class PedidosCtrl extends Controller
     public function __construct(){
         $this->checkout = ConfigCheckout::first();
         $this->geral = ConfigGeral::first();
+        $this->emails = ConfigEmails::first();
         $this->pagarme = new PagarMe\Client($this->checkout->api_key);
         $this->middleware('auth');
     }
@@ -105,14 +108,15 @@ class PedidosCtrl extends Controller
     public function AtualizarStatus(Request $request, $id){
         if(Auth::user()->RelationGrupo->gerenciar_pedidos == 1){
             $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => $request->id_status, 'observacoes' => $request->observacoes]);
-            
-            if($status->RelationStatus1->enviar == 1){
-                $status->RelationPedido1->RelationCliente->notify(new AlteracaoStatus($status));
-            }
             if($request->id_status == 3){
                 Produtos::find($status->RelationPedido1->id_produto)->update(['quantidade' => ($status->RelationPedido1->RelationProduto->quantidade - $pedido->quantidade)]);
             }
-
+            if($status->RelationStatus1->enviar == 1 && $request->id_status == 8 && $this->emails->ativo_avaliacao == 1){
+                $when = now()->addDays($this->emails->avaliar_produto);
+                $status->RelationPedido1->RelationCliente->notify((new AvaliacaoProduto($status))->delay($when));
+            }elseif($status->RelationStatus1->enviar == 1){
+                $status->RelationPedido1->RelationCliente->notify(new AlteracaoStatus($status));
+            }
             return response()->json(['success' => true]);   
         }else{
             return redirect(route('permission'));

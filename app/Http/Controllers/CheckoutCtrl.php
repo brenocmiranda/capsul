@@ -448,15 +448,33 @@ class CheckoutCtrl extends Controller
   public function Avaliacao($codigo){
     if(!empty($codigo)){
       $pedido = Pedidos::where('codigo', $codigo)->first();
-      return view('pedidos.avaliacao')->with('pedido', $pedido)->with('geral', $this->geral);
+      if(!$pedido->RelationAvaliacao){
+        return view('pedidos.avaliacao')->with('pedido', $pedido)->with('geral', $this->geral);
+      }else{
+        \Session::flash('confirm', array(
+                'class' => 'success',
+                'mensagem' => 'Essa compra já foi avaliada. Muito obrigado!'
+            ));
+        return view('pedidos.avaliacao')->with('geral', $this->geral);
+      }
     }else{
-      abort(404);
+      
     }
   }
   public function SalvarAvaliacao(Request $request, $id){
+      $avaliacao = Avaliacoes::create([
+          'produto' => $request->produto, 
+          'satisfacao' => $request->satisfacao, 
+          'recomendacao' => $request->recomendacao, 
+          'observacao' => (isset($request->observacao) ? $request->observacao : null),
+          'id_pedido' => $id
+        ]);
 
-      $pedido = Avaliacoes::create()
-      $status = Status::all();
+       \Session::flash('confirm', array(
+                'class' => 'success',
+                'mensagem' => 'Sua avaliação foi enviada com sucesso. Muito obrigado!'
+            ));
+      return view('pedidos.avaliacao')->with('geral', $this->geral);
   }
 
   // Caclulando dias úteis
