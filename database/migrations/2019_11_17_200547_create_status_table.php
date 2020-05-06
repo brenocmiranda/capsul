@@ -26,8 +26,8 @@ class CreateStatusTable extends Migration
         DB::table('status')->insert(
             array(
                 [   
-                'nome' => 'Pedido efetuado',
-                'descricao' => 'Olá, recebemos o seu pedido, aguardando o seu pagamento para dar continuidade nas operações.',
+                'nome' => 'Pedido autorizado',
+                'descricao' => 'Recebemos o seu pedido e estamos aguardando a confirmação do pagamento. Enviaremos um novo e-mail a cada mudança no andamento do seu pedido.',
                 'posicao' => '1',
                 'created_at' =>  date("Y-m-d H:i:s"),
                 'updated_at' =>  date("Y-m-d H:i:s")
@@ -50,39 +50,33 @@ class CreateStatusTable extends Migration
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s")
                 ],[
-                'nome' => 'Pedido autorizado',
-                'descricao' => 'Recebemos o seu pedido e estamos aguardando a confirmação do pagamento. Enviaremos um novo e-mail a cada mudança no andamento do seu pedido.',
-                'posicao' => '5',
-                'created_at' => date("Y-m-d H:i:s"),
-                'updated_at' => date("Y-m-d H:i:s")
-                ],[
                 'nome' => 'Produtos em separação',
                 'descricao' => 'Seu pedido está sendo separado e embalado com todo carinho e cuidado especialmente para você. Assim que esta etapa for concluída, você receberé um e-mail informando o envio do produto e o código para que possa acompanhar a entrega.',
-                'posicao' => '6',
+                'posicao' => '5',
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s")
                 ],[
                 'nome' => 'Faturado',
                 'descricao' => 'O seu pedido foi faturado.',
-                'posicao' => '7',
+                'posicao' => '6',
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s")
                 ],[
                 'nome' => 'Em transporte',
                 'descricao' => 'O seu pedido foi encaminhado com sucesso. Segue abaixo o código de rastreio para que você possa acompanhar a entrega: Lembrando que pode demorar até 5 dias para atualizar o código pela primeira vez.',
-                'posicao' => '8',
+                'posicao' => '7',
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s")
                 ],[
                 'nome' => 'Entregue',
                 'descricao' => 'Informamos que recebemos a confirmação de entrega do seu pedido.',
-                'posicao' => '9',
+                'posicao' => '8',
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s")
                 ],[
                 'nome' => 'Cancelado',
                 'descricao' => 'O seu pedido foi cancelado.',
-                'posicao' => '10',
+                'posicao' => '9',
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s")
                 ]

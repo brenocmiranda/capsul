@@ -33,7 +33,7 @@ Acompanhamento
 							<div class="col-12">
 								<div class="row text-center">
 									@foreach($status as $todos)
-										@if($todos->posicao != 10 && $pedido->RelationStatus->last()->posicao != 10)
+										@if($todos->posicao != 9 && $pedido->RelationStatus->last()->posicao != 9)
 											@if($pedido->RelationStatus->last()->posicao == 1 && $todos->posicao <= 1)
 												<div class="col-2 lin_resume">
 												<div class="lin_1 border-sucess"></div>
@@ -44,7 +44,7 @@ Acompanhamento
 												@if($todos->posicao == 1)
 													<label>{{date_format($pedido->created_at, 'd/m/Y')}}</label>
 												@endif
-												@if($todos->posicao == 9)
+												@if($todos->posicao == 8)
 													<label>{{date_format(date_create($pedido->RelationRastreamento->prazo_envio), 'd/m/Y')}}</label>
 												@endif
 												</div>
@@ -59,7 +59,7 @@ Acompanhamento
 													@if($todos->posicao == 1)
 														<label>{{date_format($pedido->created_at, 'd/m/Y')}}</label>
 													@endif
-													@if($todos->posicao == 9)
+													@if($todos->posicao == 8)
 														<label>{{date_format(date_create($pedido->RelationRastreamento->prazo_envio), 'd/m/Y')}}</label>
 													@endif
 													</div>
@@ -73,7 +73,7 @@ Acompanhamento
 													@if($todos->posicao == 1)
 														<label>{{date_format($pedido->created_at, 'd/m/Y')}}</label>
 													@endif
-													@if($todos->posicao == 9)
+													@if($todos->posicao == 8)
 														<label>{{date_format(date_create($pedido->RelationRastreamento->prazo_envio), 'd/m/Y')}}</label>
 													@endif
 													</div>
@@ -89,7 +89,7 @@ Acompanhamento
 													@if($todos->posicao == 1)
 														<label>{{date_format($pedido->created_at, 'd/m/Y')}}</label>
 													@endif
-													@if($todos->posicao == 9)
+													@if($todos->posicao == 8)
 														<label>{{date_format(date_create($pedido->RelationRastreamento->prazo_envio), 'd/m/Y')}}</label>
 													@endif
 													</div>
@@ -103,7 +103,7 @@ Acompanhamento
 													@if($todos->posicao == 1)
 														<label>{{date_format($pedido->created_at, 'd/m/Y')}}</label>
 													@endif
-													@if($todos->posicao == 9)
+													@if($todos->posicao == 8)
 														<label>{{date_format(date_create($pedido->RelationRastreamento->prazo_envio), 'd/m/Y')}}</label>
 													@endif
 													</div>
@@ -119,7 +119,7 @@ Acompanhamento
 													@if($todos->posicao == 1)
 														<label>{{date_format($pedido->created_at, 'd/m/Y')}}</label>
 													@endif
-													@if($todos->posicao == 9)
+													@if($todos->posicao == 8)
 														<label>{{date_format(date_create($pedido->RelationRastreamento->prazo_envio), 'd/m/Y')}}</label>
 													@endif
 													</div>
@@ -134,13 +134,13 @@ Acompanhamento
 													@if($todos->posicao == 1)
 														<label>{{date_format($pedido->created_at, 'd/m/Y')}}</label>
 													@endif
-													@if($todos->posicao == 9)
+													@if($todos->posicao == 8)
 														<label>{{date_format(date_create($pedido->RelationRastreamento->prazo_envio), 'd/m/Y')}}</label>
 													@endif
 													</div>
 												@endif
 											@elseif($pedido->RelationStatus->last()->posicao == 5 && $todos->posicao <= 5)
-												@if($todos->posicao != 3 && $todos->posicao != 1)
+												@if($todos->posicao != 2 && $todos->posicao != 4)
 													<div class="col-2 lin_resume">
 													<div class="lin_1 border-success"></div>
 													<div class="holder-icon bg-success">
@@ -150,13 +150,13 @@ Acompanhamento
 													@if($todos->posicao == 1)
 														<label>{{date_format($pedido->created_at, 'd/m/Y')}}</label>
 													@endif
-													@if($todos->posicao == 9)
+													@if($todos->posicao == 8)
 														<label>{{date_format(date_create($pedido->RelationRastreamento->prazo_envio), 'd/m/Y')}}</label>
 													@endif
 													</div>
 												@endif
-											@elseif(($pedido->RelationStatus->last()->posicao == 6 || $pedido->RelationStatus->last()->posicao == 7) && $todos->posicao <= 7)
-												@if($todos->posicao != 2 && $todos->posicao != 4 && $todos->posicao != 7)
+											@elseif(($pedido->RelationStatus->last()->posicao == 6) && $todos->posicao <= 6)
+												@if($todos->posicao != 2 && $todos->posicao != 4)
 													<div class="col-2 lin_resume">
 													<div class="lin_1 border-success"></div>
 													<div class="holder-icon bg-success">
@@ -166,13 +166,29 @@ Acompanhamento
 													@if($todos->posicao == 1)
 														<label>{{date_format($pedido->created_at, 'd/m/Y')}}</label>
 													@endif
-													@if($todos->posicao == 9)
+													@if($todos->posicao == 8)
+														<label>{{date_format(date_create($pedido->RelationRastreamento->prazo_envio), 'd/m/Y')}}</label>
+													@endif
+													</div>
+												@endif
+											@elseif($pedido->RelationStatus->last()->posicao == 7 && $todos->posicao <= 7)
+												@if($todos->posicao != 2 && $todos->posicao != 4)
+													<div class="col-2 lin_resume">
+													<div class="lin_1 border-success"></div>
+													<div class="holder-icon bg-success">
+														<i class="mdi mdi-check"></i>
+													</div>
+													<p class="mb-0 mt-2">{{$todos->nome}}</p>
+													@if($todos->posicao == 1)
+														<label>{{date_format($pedido->created_at, 'd/m/Y')}}</label>
+													@endif
+													@if($todos->posicao == 8)
 														<label>{{date_format(date_create($pedido->RelationRastreamento->prazo_envio), 'd/m/Y')}}</label>
 													@endif
 													</div>
 												@endif
 											@elseif($pedido->RelationStatus->last()->posicao == 8 && $todos->posicao <= 8)
-												@if($todos->posicao != 2 && $todos->posicao != 4 && $todos->posicao != 7)
+												@if($todos->posicao != 2 && $todos->posicao != 4)
 													<div class="col-2 lin_resume">
 													<div class="lin_1 border-success"></div>
 													<div class="holder-icon bg-success">
@@ -182,46 +198,28 @@ Acompanhamento
 													@if($todos->posicao == 1)
 														<label>{{date_format($pedido->created_at, 'd/m/Y')}}</label>
 													@endif
-													@if($todos->posicao == 9)
-														<label>{{date_format(date_create($pedido->RelationRastreamento->prazo_envio), 'd/m/Y')}}</label>
-													@endif
-													</div>
-												@endif
-											@elseif($pedido->RelationStatus->last()->posicao == 9 && $todos->posicao <= 9)
-												@if($todos->posicao != 2 && $todos->posicao != 4 && $todos->posicao != 7)
-													<div class="col-2 lin_resume">
-													<div class="lin_1 border-success"></div>
-													<div class="holder-icon bg-success">
-														<i class="mdi mdi-check"></i>
-													</div>
-													<p class="mb-0 mt-2">{{$todos->nome}}</p>
-													@if($todos->posicao == 1)
-														<label>{{date_format($pedido->created_at, 'd/m/Y')}}</label>
-													@endif
-													@if($todos->posicao == 9)
+													@if($todos->posicao == 8)
 														<label>{{date_format(date_create($pedido->RelationRastreamento->prazo_envio), 'd/m/Y')}}</label>
 													@endif
 													</div>
 												@endif
 											@else
-												@if($todos->posicao != 7)
-													<div class="col-2 lin_resume">
-													<div class="lin_1"></div>
-													<div class="holder-icon-no d-block mx-auto">
-														<i class="mdi"></i>
-													</div>
-													<p class="mb-0 mt-2">{{$todos->nome}}</p>
-													@if($todos->posicao == 1)
-														<label>{{date_format($pedido->created_at, 'd/m/Y')}}</label>
-													@endif
-													@if($todos->posicao == 9)
-														<label>{{date_format(date_create($pedido->RelationRastreamento->prazo_envio), 'd/m/Y')}}</label>
-													@endif
-													</div>
+												<div class="col-2 lin_resume">
+												<div class="lin_1"></div>
+												<div class="holder-icon-no d-block mx-auto">
+													<i class="mdi"></i>
+												</div>
+												<p class="mb-0 mt-2">{{$todos->nome}}</p>
+												@if($todos->posicao == 1)
+													<label>{{date_format($pedido->created_at, 'd/m/Y')}}</label>
 												@endif
+												@if($todos->posicao == 8)
+													<label>{{date_format(date_create($pedido->RelationRastreamento->prazo_envio), 'd/m/Y')}}</label>
+												@endif
+												</div>
 											@endif
 										@else
-											@if($pedido->RelationStatus->last()->posicao == 10)
+											@if($pedido->RelationStatus->last()->posicao == 9)
 												<div class="alert alert-danger col-12"> 
 													<label class="mb-0">Essa compra foi cancelada. Entre em contato com suporte para mais informações.</label>
 												</div>

@@ -4,9 +4,7 @@ namespace App\Notifications;
 
 use App\PedidosStatus;
 use App\ConfigEmails;
-use App\Pedidos;
-use App\Clientes;
-use App\Status;
+use App\ConfigGeral;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -17,6 +15,7 @@ class AlteracaoStatus extends Notification implements ShouldQueue
     use Queueable;
     private $status;
     private $emails;
+    private $geral;
 
     /**
      * Create a new notification instance.
@@ -27,6 +26,7 @@ class AlteracaoStatus extends Notification implements ShouldQueue
     {
         $this->status = $statusNovo;
         $this->emails = ConfigEmails::first();
+        $this->geral = ConfigGeral::first();
     }
 
     /**
@@ -51,10 +51,7 @@ class AlteracaoStatus extends Notification implements ShouldQueue
         return (new MailMessage)
                     ->from($this->emails->email_remetente, $this->emails->nome_remetente)
                     ->subject('Obaa! Novidades do seu pedido '.$this->status->RelationPedido1->codigo)
-                    ->greeting('Olá, '.ucwords(strtolower(explode(" ", $this->status->RelationPedido1->RelationCliente->nome)[0])).'!')
-                    ->line('Temos uma ótima notícia para você, seu pedido teve nova atualização, encontra-se em '.$this->status->RelationStatus1->nome)
-                    ->action('Acompanhe meu pedido', route('checkout.acompanhamento.pedido', $this->status->RelationPedido1->codigo))
-                    ->line($this->status->RelationStatus1->descricao);
+                    ->view('system.emails.status', ['geral' => $this->geral, 'status' => $this->status]);
     }
 
     /**
@@ -66,7 +63,7 @@ class AlteracaoStatus extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'pedido' => $this->status->id_pedido,
+            'pedido' => $this->status->RelationPedido1,
         ];
     }
 
@@ -79,7 +76,7 @@ class AlteracaoStatus extends Notification implements ShouldQueue
     public function toDatabase($notifiable)
     {
         return [
-            'pedido' => $this->status->id_pedido,
+            'pedido' => $this->status->RelationPedido1,
         ];
     }
 }

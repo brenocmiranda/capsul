@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Controller;
 use PagarMe;
 use Correios;
+use App\Avaliacoes;
 use App\Produtos;
 use App\PedidosStatus;
 use App\PedidosRastreamento;
@@ -437,12 +438,26 @@ class CheckoutCtrl extends Controller
     if(!empty($codigo)){
       $pedido = Pedidos::where('codigo', $codigo)->first();
       $status = Status::all();
-      return view('checkout.rastrear')->with('pedido', $pedido)->with('geral', $this->geral)->with('status', $status);
+      return view('pedidos.rastrear')->with('pedido', $pedido)->with('geral', $this->geral)->with('status', $status);
     }else{
       abort(404);
     }
   }
 
+  // Avaliação do pedido
+  public function Avaliacao($codigo){
+    if(!empty($codigo)){
+      $pedido = Pedidos::where('codigo', $codigo)->first();
+      return view('pedidos.avaliacao')->with('pedido', $pedido)->with('geral', $this->geral);
+    }else{
+      abort(404);
+    }
+  }
+  public function SalvarAvaliacao(Request $request, $id){
+
+      $pedido = Avaliacoes::create()
+      $status = Status::all();
+  }
 
   // Caclulando dias úteis
   public function addDiasUteis($str_data,$int_qtd_dias_somar = 7){

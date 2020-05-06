@@ -6,7 +6,7 @@ Route::group(['prefix' => ''], function(){
     Route::get('', 'UsuariosCtrl@Login')->name('login');
     Route::post('redirect', 'UsuariosCtrl@Redirecionar')->name('redirect');
     Route::post('forwading', 'UsuariosCtrl@Forwarding')->name('encaminhar.password');
-    Route::get('newpassword/{token}', 'UsuariosCtrl@NewPassword')->name('new.password');
+    Route::get('novoPswd/{token}', 'UsuariosCtrl@NewPassword')->name('new.password');
     Route::post('alterando', 'UsuariosCtrl@Alterar')->name('alterando.password');
     
     // Autenticado
@@ -32,7 +32,17 @@ Route::group(['prefix' => ''], function(){
         Route::get('quantidade/{id}/{quantidade}', 'CheckoutCtrl@UpdateQuantidade')->name('checkout.quantidade');
         Route::get('parcelas/{valor}', 'CheckoutCtrl@ParcelasQuantidade')->name('checkout.parcelas');
         Route::get('descontos/{id}/{valor}', 'CheckoutCtrl@DescontosCheckout')->name('checkout.descontos');
-        Route::get('acompanhamento/{codigo}', 'CheckoutCtrl@Acompanhamento')->name('checkout.acompanhamento.pedido');
+    });
+
+    // Acompanhamento
+    Route::group(['prefix' => 'acompanhamento'], function (){ 
+        Route::get('{codigo}', 'CheckoutCtrl@Acompanhamento')->name('acompanhamento.pedido');
+    });
+
+    // Avaliações
+    Route::group(['prefix' => 'avaliacao'], function (){ 
+        Route::get('{codigo}', 'CheckoutCtrl@Avaliacao')->name('avaliacao.pedido');
+        Route::post('salvar/{id}', 'CheckoutCtrl@SalvarAvaliacao')->name('avaliacao.pedido.salvar');
     });
 });
 

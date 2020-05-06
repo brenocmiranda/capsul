@@ -45,11 +45,9 @@ class NovoPedidoCliente extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject('Atualização do pedido: #'.$this->status->RelationPedido1->codigo)
-                    ->greeting('Olá, '.ucwords(strtolower(explode(" ", $this->status->RelationPedido1->RelationCliente->nome)[0])).'!')
-                    ->line('Temos uma ótima notícia para você, seu pedido teve o status alterado para: '.$this->status->RelationStatus1->nome)
-                    ->action('Acompanhe seu pedido', route('checkout.acompanhamento.pedido', $this->status->RelationPedido1->codigo))
-                    ->line($this->status->RelationStatus1->descricao);
+                    ->line('The introduction to the notification.')
+                    ->action('Notification Action', url('/'))
+                    ->line('Thank you for using our application!');
     }
 
     /**

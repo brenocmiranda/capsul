@@ -6,9 +6,8 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
-
 use Illuminate\Http\Request;
-
+use App\Notifications\CadastroUser;
 use App\Atividades;
 use App\ConfigCheckout;
 use App\ConfigEmails;
@@ -20,7 +19,6 @@ use App\Status;
 use App\UsuariosGrupos;
 use App\Usuarios;
 use App\Imagens;
-use Mail;
 
 class ConfiguracoesCtrl extends Controller
 {
@@ -417,19 +415,10 @@ class ConfiguracoesCtrl extends Controller
                 Usuarios::find($usuario->id)->update(['id_imagem' => $imagem->id]);
             }  
 
-            // Enviando e-mail de cadastro
-            $dados = Usuarios::find($usuario->id);
-            if(!empty($dados->email)){
-                Mail::send('system.emails.cadastro', ['user' => $dados, 'emails' => $this->emails], function ($m) use ($dados) {
-                    $m->from($this->emails->email_remetente, $this->emails->nome_remetente);
-                    $m->to($dados->email, $dados->nome)->subject('Cadastro no '.$this->emails->nome_remetente);
-                });               
-            }else{
-                 return false;
-            }
+            $usuario->notify(new CadastroUser($usuario));      
 
-            $dados->status = ($dados->ativo == 1 ? '<div class="text-success text-center"><i class="fas fa-circle"></i></div>' : '<div class="text-danger"><i class="fas fa-circle"></i></div>');
-            $dados->acoes = '<div class="mx-2 my-auto"> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-primary shadow-none" id="editar"> Editar </a> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-danger shadow-none" id="excluir"> Excluir </a> </div>'; 
+            $usuario->status = ($usuario->ativo == 1 ? '<div class="text-success text-center"><i class="fas fa-circle"></i></div>' : '<div class="text-danger"><i class="fas fa-circle"></i></div>');
+            $usuario->acoes = '<div class="mx-2 my-auto"> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-primary shadow-none" id="editar"> Editar </a> <a href="javascript: void(0)" class="mx-1 my-auto badge badge-danger shadow-none" id="excluir"> Excluir </a> </div>'; 
 
             Atividades::create([
                 'nome' => 'Atuailização de configurações',
@@ -439,7 +428,7 @@ class ConfiguracoesCtrl extends Controller
                 'id_usuario' => Auth::id()
             ]);
 
-            return response()->json($dados);      
+            return response()->json($usuario);      
         }catch (Exception $e) {
             $usuario = Usuarios::delete($usuario->id);
             $imagem = Imagens::delete($imagem->id);

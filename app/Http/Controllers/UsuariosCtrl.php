@@ -6,30 +6,22 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Routing\Controller;
-
-use Illuminate\Http\Request;
+use App\Notifications\RecuperacaoSenha;
+use App\Notifications\AlteracaoSenha;
 use App\Http\Requests\LoginRqt;
 use App\Http\Requests\PerfilRqt;
-
-use Mail;
+use Illuminate\Http\Request;
 use App\Atividades;
 use App\Usuarios;
-use App\Produtos;
-use App\Pedidos;
-use App\Clientes;
 use App\Imagens;
-use App\Emails;
 use App\Notificacoes;
-use App\ConfigCheckout;
 use App\ConfigGeral;
-use App\ConfigEmails;
 
 class UsuariosCtrl extends Controller
 {
 
 	public function __construct(){
       $this->geral = ConfigGeral::first();
-      $this->emails = ConfigEmails::first();
   	}
 
 	#-------------------------------------------------------------------
@@ -146,6 +138,10 @@ class UsuariosCtrl extends Controller
                             'id_imagem' => (isset($dados['id_imagem']) ? $dados['id_imagem'] : $usuario->id_imagem)
                         ]);
 
+        if(isset($dados['password_confirmation'])){
+        	$usuario->notify(new AlteracaoSenha($usuario));  
+        }
+
         \Session::flash('alteracao', array(
             'class' => 'success',
             'mensagem' => 'Informações alteradas com sucesso.'
@@ -193,10 +189,7 @@ class UsuariosCtrl extends Controller
 		if(!empty($request->email)){
 			$dados = Usuarios::where('email', $request->email)->first();
 			if(!empty($dados->first())){
-				Mail::send('system.emails.recuperacao', ['user' => $dados, 'emails' => $this->emails], function ($m) use ($dados) {
-					$m->from($this->emails->email_remetente, $this->emails->nome_remetente);
-					$m->to($dados->email, $dados->nome)->subject('Redefinição de senha');
-				});
+				$dados->notify(new RecuperacaoSenha($dados));
 				return response()->json(['success' => true]);
 			}else{
 				return false;

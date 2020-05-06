@@ -25,10 +25,10 @@ Configurações
           <form method="POST" action="{{ route('configuracoes.emails.salvar') }}" enctype="multipart/form-data">
             @csrf
 
-            @if(Session::has('confirm'))
-            <p class="py-2 alert alert-dismissible alert-{{ Session::get('confirm')['class'] }}  fade show" role="alert">
-              {{ Session::get('confirm')['mensagem'] }}
-              <button type="button" class="close text-dark" data-dismiss="alert" aria-label="Close">
+            @if(Session::has('alteracao'))
+            <p class="alert alert-{{ Session::get('alteracao')['class'] }} alert-dismissible">
+                {{ Session::get('alteracao')['mensagem'] }}
+                <button type="button" class="close h-100" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </p>

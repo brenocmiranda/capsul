@@ -141,7 +141,9 @@ Login
                     $('.carregamento').html('<div class="mx-auto text-center my-5"><div class="spinner-border my-3" role="status"><span class="sr-only"> Loading... </span></div><label class="col-12">Enviando e-mail de recuperação...</label></div>');
                 },
                 success: function(data){
+                  setTimeout(function(){
                     $('.carregamento').html('<div class="mx-auto text-center my-5 mt-3"><div class="col-sm-12 col-md-12 col-lg-12"><i class="col-sm-2 fa fa-check my-3 text-sucess" style="font-size:62px;"></i></div><h5>E-mail enviado com sucesso!</h5><label class="mx-4">Verifique o recebimento da mensagem na sua <b>caixa de entrada ou na área de spam</b>. Caso não esteja recebendo o e-mail de redefinição, entre em contato com o administrador.</label><div class="col-12 mt-5 text-center"><button type="button" class="btn btn-danger btn-lg shadow-none col-4" data-dismiss="modal" aria-label="Close">Fechar</button></div></div> ');
+                    }, 800);
                 }, error: function (data) {
                     setTimeout(function(){
                         $('#modal-recuperar #formRecuperar').removeClass('d-none');

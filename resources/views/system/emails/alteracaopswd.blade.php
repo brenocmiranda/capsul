@@ -350,31 +350,11 @@
 								<!-- Body content -->
 								<tr>
 									<td class="content-cell">
-										<h1> Seja bem-vindo, {{ ucwords(strtolower(explode(" ", $usuario->nome)[0])) }}!</h1>
-										<p>Acabamos de cadastrar as suas credências, para acessar a nossa plataforma pela primeira vez siga os passos abaixo:</p>
-
-										<p style="text-align:justify">
-											<p>Recebemos sua solicitação de recuperação de senha através da nossa plataforma, para prosseguir o processo siga as etapas abaixo:</p>
-											<div style="padding:0px 30px 0px 30px;">
-												<p>
-													<b>1.</b> Acesse  
-													<a href="{{route('login')}}"><b>a plataforma do {{$geral->nome_loja}}.</b></a></label>
-												</p>
-												<p>
-													<b>2.</b> 
-													Após acessar o endereço acima, na página de login você digitará as suas credênciais padrões para acesso a plataforma:
-												</p>
-												<p style="padding:0px 20px 0px 20px;"> 
-													<b>Login:</b> {{$usuario->email}}<br>
-													<b>Password:</b> capsul123
-												</p>
-												<p>
-													<b>3.</b> 
-													Como será o seu primeiro acesso, será necessário cadastrar novas senhas, respeitando as regras de segurança.
-												</p>
-											</div>
+										<h1> Olá, {{ ucwords(strtolower(explode(" ", $usuario->nome)[0])) }}!</h1>
+										<p>Detectamos a alteração das suas credências de acesso a nossa plataforma. </p>
+										<p>
+											<b>Caso não tenha sido você que realizou essas alterações, solicite a recuperação de senha imediatamente em <a href="{{route('login')}}" target="_blank">Esqueceu senha</a> ou entre em contato conosco pelo e-mail <b>{{ $geral->email }}</b>.</b>
 										</p>
-										
 										<p> Abraços, <br> {{$geral->nome_loja}}.
 										</td>
 									</td>

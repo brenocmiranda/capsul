@@ -79,19 +79,19 @@ Adicionar produto
                                 </div>
                                 <div class="selectgroup">
                                     <label class="selectgroup-item">
-                                      <input type="radio" name="tipo" value="fisico" class="selectgroup-input" checked="">
-                                      <span class="selectgroup-button px-4 py-1 h-100"><b>Produto Físico</b></span>
-                                  </label>
-                                  <label class="selectgroup-item">
-                                      <input type="radio" name="tipo" value="digital" class="selectgroup-input">
-                                      <span class="selectgroup-button px-4 py-1 h-100"><b>Produto Digital</b></span>
-                                  </label>
-                              </div>
-                          </div>
-                          <div class="form-group col-8">
-                            <label>Nome do produto <i class="text-danger">*</i></label>
-                            <input type="text" name="nome" class="produto form-control" required>
-                        </div>
+                                        <input type="radio" name="tipo" value="fisico" class="selectgroup-input" checked="">
+                                        <span class="selectgroup-button px-4 py-1 h-100"><b>Produto Físico</b></span>
+                                    </label>
+                                    <label class="selectgroup-item">
+                                        <input type="radio" name="tipo" value="digital" class="selectgroup-input">
+                                        <span class="selectgroup-button px-4 py-1 h-100"><b>Produto Digital</b></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group col-8">
+                                <label>Nome do produto <i class="text-danger">*</i></label>
+                                <input type="text" name="nome" class="produto form-control" required>
+                            </div>
                         <div class="form-group col-4">
                             <label>Marca <i class="text-danger">*</i></label>
                             <div class="input-group">

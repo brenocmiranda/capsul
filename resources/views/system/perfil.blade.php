@@ -25,7 +25,7 @@ Meu perfil
                     @if(Session::has('alteracao'))
                     <p class="alert alert-{{ Session::get('alteracao')['class'] }} alert-dismissible">
                         {{ Session::get('alteracao')['mensagem'] }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <button type="button" class="close h-100" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </p>
@@ -131,9 +131,9 @@ Meu perfil
         $('.senha1, .senha2').blur(function(){
             $('.senha1').removeClass('border-danger');
             if ($('.senha1').val() == $('.senha2').val() && $('.senha1').val() != ""){
-                $('.coincidem').html('<label class="text-success font-weight-bold">Suas senhas estão iguais. Corrija</label>');
+                $('.coincidem').html('<label class="text-success font-weight-bold">Suas senhas estão iguais.</label>');
              }else{
-                $('.coincidem').html('<label class="text-danger font-weight-bold">As senhas não coincidem!</label>');
+                $('.coincidem').html('<label class="text-danger font-weight-bold">As senhas não coincidem! Corrija-as.</label>');
                 $('.senha1').addClass('border-danger');
             }
         });

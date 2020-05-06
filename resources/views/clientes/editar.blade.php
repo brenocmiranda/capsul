@@ -247,10 +247,15 @@ Editar cliente
                                             </td>
                                             <td>
                                                 <div class="status badge badge-{{
-                                                    ($ped->RelationStatus->last()->posicao==1 || $ped->RelationStatus->last()->posicao==7 ? 'dark' :
-                                                    ($ped->RelationStatus->last()->posicao==2 || $ped->RelationStatus->last()->posicao==6 || $ped->RelationStatus->last()->posicao==8 ? 'warning' : 
-                                                    ($ped->RelationStatus->last()->posicao==3 || $ped->RelationStatus->last()->posicao==5 || $ped->RelationStatus->last()->posicao==9 ? 'success' :
-                                                    ($ped->RelationStatus->last()->posicao==4 || $ped->RelationStatus->last()->posicao==10 ? 'danger' :  ''))))}}">
+                                                ($ped->RelationStatus->last()->posicao==1 ? 'primary' :
+                                                ($ped->RelationStatus->last()->posicao==2 ? 'warning' : 
+                                                ($ped->RelationStatus->last()->posicao==3 ? 'success' :
+                                                ($ped->RelationStatus->last()->posicao==4 ? 'danger' :
+                                                ($ped->RelationStatus->last()->posicao==6 ? 'primary' :
+                                                ($ped->RelationStatus->last()->posicao==5 ? 'dark' : 
+                                                ($ped->RelationStatus->last()->posicao==7 ? 'info' : 
+                                                ($ped->RelationStatus->last()->posicao==8 ? 'success' :
+                                                ($ped->RelationStatus->last()->posicao==9 ? 'danger' : '')))))))))}}">
                                                 <span>{{strtoupper($ped->RelationStatus->last()->nome)}}</span>
                                             </div>
                                             </td>

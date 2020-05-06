@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Routing\Controller;
-use Notification;
 use App\Notifications\AlteracaoStatus;
 use PagarMe;
 use Correios;
@@ -56,10 +55,16 @@ class PedidosCtrl extends Controller
                     })->editColumn('valor', function(Pedidos $dados){
                         return 'R$ '.number_format( ($dados->valor_compra - $dados->desconto_aplicado + $dados->RelationRastreamento->valor_envio) , 2, ',', '.');
                     })->editColumn('status', function(Pedidos $dados){
-                        return '<div class="status badge badge-'.($dados->RelationStatus->last()->posicao==1 || $dados->RelationStatus->last()->posicao==7 ? 'dark' :
-                    ($dados->RelationStatus->last()->posicao==2 || $dados->RelationStatus->last()->posicao==6 || $dados->RelationStatus->last()->posicao==8 ? 'warning' : 
-                    ($dados->RelationStatus->last()->posicao==3 || $dados->RelationStatus->last()->posicao==5 || $dados->RelationStatus->last()->posicao==9 ? 'success' :
-                    ($dados->RelationStatus->last()->posicao==4 || $dados->RelationStatus->last()->posicao==10 ? 'danger' :  '')))).'">'.strtoupper($dados->RelationStatus->last()['nome']).'</div>';
+                        return '<div class="status badge badge-'.
+                                                ($dados->RelationStatus->last()->posicao==1 ? 'primary' :
+                                                ($dados->RelationStatus->last()->posicao==2 ? 'warning' : 
+                                                ($dados->RelationStatus->last()->posicao==3 ? 'success' :
+                                                ($dados->RelationStatus->last()->posicao==4 ? 'danger' :
+                                                ($dados->RelationStatus->last()->posicao==6 ? 'primary' :
+                                                ($dados->RelationStatus->last()->posicao==5 ? 'dark' : 
+                                                ($dados->RelationStatus->last()->posicao==7 ? 'info' : 
+                                                ($dados->RelationStatus->last()->posicao==8 ? 'success' :
+                                                ($dados->RelationStatus->last()->posicao==9 ? 'danger' : ''))))))))).'">'.strtoupper($dados->RelationStatus->last()['nome']).'</div>';
                     })->editColumn('status1', function(Pedidos $dados){
                         return $dados->RelationStatus->last()->posicao;
                     })->editColumn('acoes', function(Pedidos $dados){
@@ -101,12 +106,13 @@ class PedidosCtrl extends Controller
         if(Auth::user()->RelationGrupo->gerenciar_pedidos == 1){
             $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => $request->id_status, 'observacoes' => $request->observacoes]);
             
-            $pedido = Pedidos::find($id);
-            $pedido->RelationCliente->notify(new AlteracaoStatus($status));
-
-            if($request->id_status == 3){
-                Produtos::find($pedido->id_produto)->update(['quantidade' => ($pedido->RelationProduto->quantidade - $pedido->quantidade)]);
+            if($status->RelationStatus1->enviar == 1){
+                $status->RelationPedido1->RelationCliente->notify(new AlteracaoStatus($status));
             }
+            if($request->id_status == 3){
+                Produtos::find($status->RelationPedido1->id_produto)->update(['quantidade' => ($status->RelationPedido1->RelationProduto->quantidade - $pedido->quantidade)]);
+            }
+
             return response()->json(['success' => true]);   
         }else{
             return redirect(route('permission'));
