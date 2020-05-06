@@ -8,7 +8,7 @@ class Pedidos extends Model
 {
     protected $table = 'pedidos';
     protected $primaryKey = 'id';
-    protected $fillable = ['id', 'codigo', 'transacao_pagarme', 'link_boleto', 'desconto_aplicado', 'valor_compra', 'quantidade', 'ip_compra', 'id_produto', 'id_cliente', 'id_forma_pagamento', 'id_endereco', 'id_nota', 'id_rastreamento', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'codigo', 'transacao_pagarme', 'link_boleto', 'desconto_aplicado', 'valor_compra', 'quantidade', 'ip_compra', 'id_produto', 'id_cliente', 'id_forma_pagamento', 'id_endereco', 'id_nota', 'id_rastreamento', 'id_avaliacao', 'carrinho', 'created_at', 'updated_at'];
 
     public function RelationProduto(){
         return $this->belongsTo(Produtos::class, 'id_produto');
@@ -43,7 +43,7 @@ class Pedidos extends Model
     }
 
     public function RelationAvaliacao(){
-        return $this->belongsTo(Avaliacoes::class,'id', 'id_pedido');
+        return $this->belongsTo(Avaliacoes::class,'id_pedido', 'id');
     }
     
 }

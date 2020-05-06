@@ -416,7 +416,7 @@ Editar produto
                                     <div class="border p-3 col-6 rounded text-center">
                                         @if(!empty($produto->RelationImagensPrincipal->first()))
                                         <input type="hidden" name="imagem_principal_id" value="{{$produto->RelationImagensPrincipal->first()->id}}"> 
-                                        <img class="w-100 rounded" id="PreviewImage" src="{{ asset('storage/app/'.$produto->RelationImagensPrincipal->first()->caminho).'?'.rand() }}" style="height: 250px;">
+                                        <img class="w-100 rounded" id="PreviewImage" src="{{ asset('storage/app/'.$produto->RelationImagensPrincipal->first()->caminho).'?'.rand() }}" style="height: 16em;">
                                         @else
                                         <img class="w-100 rounded" id="PreviewImage" src="{{ asset('public/admin/img/system/product.png').'?'.rand() }}" style="height: 250px;">
                                         @endif
@@ -543,7 +543,7 @@ Editar produto
                     contentType: false,
                     success: function(data){ 
                         for (i = 0; i < data.length; i++) {
-                            $('div.preview').append('<div class="border m-2 rounded col-2 d-flex m-0" id="PreviewImage'+data[i].id+'"> <input type="hidden" name="imagens[]" value="'+data[i].id+'"> <img class="p-3 w-100" src="{{asset("storage/app")}}/'+data[i].caminho+'" style="height: 180px;"><a href="javascript:void(0)" onclick="removeImagem('+data[i].id+')" class="btn rounded-circle m-n2">x</a> </div>');
+                            $('div.preview').append('<div class="border m-2 rounded col-2 d-flex m-0" id="PreviewImage'+data[i].id+'"> <input type="hidden" name="imagens[]" value="'+data[i].id+'"> <img class="p-3 w-100" src="{{asset("storage/app")}}/'+data[i].caminho+'" style="height: 12em"><a href="javascript:void(0)" onclick="removeImagem('+data[i].id+')" class="btn rounded-circle m-n2">x</a> </div>');
                         } 
                         $('#addFotoGaleria').val('');   
                     }

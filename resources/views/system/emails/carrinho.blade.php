@@ -350,55 +350,50 @@
 								<!-- Body content -->
 								<tr>
 									<td class="content-cell">
-										<h1> Seja bem-vindo, {{ ucwords(strtolower(explode(" ", $usuario->nome)[0])) }}!</h1>
-										<p>Acabamos de cadastrar as suas credências, para acessar a nossa plataforma pela primeira vez siga os passos abaixo:</p>
-
-										<p style="text-align:justify">
-											<div style="padding:0px 30px 0px 30px;">
-												<p>
-													<b>1.</b> Acesse  
-													<a href="{{route('login')}}"><b>a plataforma do {{$geral->nome_loja}}.</b></a></label>
-												</p>
-												<p>
-													<b>2.</b> 
-													Após acessar o endereço acima, na página de login você digitará as suas credênciais padrões para acesso a plataforma:
-												</p>
-												<p style="padding:0px 20px 0px 20px;"> 
-													<b>Login:</b> {{$usuario->email}}<br>
-													<b>Password:</b> capsul123
-												</p>
-												<p>
-													<b>3.</b> 
-													Como será o seu primeiro acesso, será necessário cadastrar novas senhas, respeitando as regras de segurança.
-												</p>
-											</div>
+										<h1> Olá, {{ ucwords(strtolower(explode(" ", $pedido->RelationCliente->nome)[0])) }}!</h1>
+										<p><?=$emails->assunto?></p>
+										<p><a href="{{route('checkout.continuar', $pedido->codigo)}}" target="_blank">Voltar ao carrinho</a></p>
+										<p>
+											<table>
+												<tr>
+													<td>
+														<img src="{{ url('storage/app/'.$pedido->RelationProduto->RelationImagensPrincipal->first()->caminho) }}" alt="Produto" style="height: auto; width: 70px; border: 1px solid silver; border-radius: 6px; padding: 5px; margin-right: 10px">
+													</td>
+													<td>
+														<label>{{$pedido->RelationProduto->nome}}</label>
+														<br>
+														<small><b>Marca:</b> {{$pedido->RelationProduto->RelationMarcas->nome}}</small>
+														<br>
+														<small><b>Valor:</b> R$ {{ number_format($pedido->valor_compra,2, ",", ".") }}</small>
+													</td>
+												</tr>
+											</table>
 										</p>
-										
+
 										<p> Abraços, <br> {{$geral->nome_loja}}.
 										</td>
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
+									</tr>
+								</table>
+							</td>
+						</tr>
 
-					<tr>
-						<td>
-							<table class="footer" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
-								<tr>
-									<td class="content-cell" align="center">
-										<b>Equipe de suporte do {{ $geral->nome_loja }}!</b><br>
-										<label>{{ $geral->email }}</label><br>
-										<a href="{{ config('app.url') }}" target="_blank">{{ config('app.url') }}</a><br>
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
+						<tr>
+							<td>
+								<table class="footer" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
+									<tr>
+										<td class="content-cell" align="center">
+											<b>Equipe de suporte do {{ $geral->nome_loja }}!</b><br>
+											<label>{{ $geral->email }}</label><br>
+											<a href="{{ config('app.url') }}" target="_blank">{{ config('app.url') }}</a><br>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
 
-				</table>
-			</td>
-		</tr>
-	</table>
-</body>
-</html>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</body>
+	</html>

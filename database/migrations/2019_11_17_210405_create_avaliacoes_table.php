@@ -21,8 +21,6 @@ class CreateAvaliacoesTable extends Migration
             $table->string('recomendacao');
             $table->text('observacoes')->nullable();
 
-            $table->bigInteger('id_pedido')->unsigned();
-            $table->foreign('id_pedido')->references('id')->on('pedidos');
             $table->timestamps();
         });
     }

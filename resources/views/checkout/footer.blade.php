@@ -11,7 +11,7 @@
 					<img class="rounded w-100" src="{{ (isset($pedido->RelationProduto->RelationImagensPrincipal) ? asset('storage/app/'.$pedido->RelationProduto->RelationImagensPrincipal->first()->caminho) : asset('public/img/product.png') ) }}" >
 				</div>
 				<div class="col-9 text-left">
-					<label class="font-weight-bold">{{ $pedido->RelationProduto->nome }}</label>
+					<h6 class="font-weight-bold">{{ $pedido->RelationProduto->nome }}</h6>
 					<small class="d-block"><b>Código SKU: </b>{{ $pedido->RelationProduto->cod_sku }}</small>
 					<small class="d-block"><b>Marca: </b>{{ $pedido->RelationProduto->RelationMarcas->nome }}</small>
 					<!--

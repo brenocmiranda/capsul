@@ -1,12 +1,13 @@
 <?php
 namespace App\Http\Controllers;
 
+use PagarMe;
+use Correios;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Controller;
-use PagarMe;
-use Correios;
+use App\Notifications\CarrinhoAbandonado;
 use App\Avaliacoes;
 use App\Produtos;
 use App\PedidosStatus;
@@ -18,6 +19,7 @@ use App\Telefones;
 use App\Enderecos;
 use App\ConfigCheckout;
 use App\ConfigGeral;
+use App\ConfigEmails;
 use App\ConfigLogistica;
 use App\ConfigSeguranca;
 use App\Status;
@@ -28,6 +30,7 @@ class CheckoutCtrl extends Controller
       $this->checkout = ConfigCheckout::first();
       $this->geral = ConfigGeral::first();
       $this->seguranca = ConfigSeguranca::all();
+      $this->emails = ConfigEmails::first();
       $this->pagarme = new PagarMe\Client($this->checkout->api_key);
   }
 
@@ -96,7 +99,12 @@ class CheckoutCtrl extends Controller
         $telefone = Telefones::where('id_cliente', $dados->id)->update([
           'numero' => str_replace("(", "+55", str_replace(") ", "", str_replace("-", "", $FormRequest->telefone)))
         ]);
-        $pedido = Pedidos::find($id)->update(['id_cliente' => $dados->id]);
+        
+        Pedidos::find($id)->update(['id_cliente' => $dados->id]);
+        if($this->emails->ativo_carrinho){
+          $pedido = Pedidos::find($id);
+          $pedido->RelationCliente->notify((new CarrinhoAbandonado($pedido))->delay(now()->addMinutes(20)));
+        }  
     }else{
         // Cliente não cadaastrado
         $lead = Leads::create([
@@ -127,7 +135,12 @@ class CheckoutCtrl extends Controller
           'id_cliente' => $cliente->id, 
           'numero' => str_replace("(", "+55", str_replace(") ", "", str_replace("-", "", $FormRequest->telefone)))
         ]);
-        $pedido = Pedidos::find($id)->update(['id_cliente' => $cliente->id]);
+
+        Pedidos::find($id)->update(['id_cliente' => $cliente->id]);
+        if($this->emails->ativo_carrinho){
+          $pedido = Pedidos::find($id);
+          $pedido->RelationCliente->notify((new CarrinhoAbandonado($pedido))->delay(now()->addMinutes(20)));
+        }     
     }  
     return response()->json(['success' => true]);
   }
@@ -462,19 +475,19 @@ class CheckoutCtrl extends Controller
     }
   }
   public function SalvarAvaliacao(Request $request, $id){
-      $avaliacao = Avaliacoes::create([
-          'produto' => $request->produto, 
-          'satisfacao' => $request->satisfacao, 
-          'recomendacao' => $request->recomendacao, 
-          'observacao' => (isset($request->observacao) ? $request->observacao : null),
-          'id_pedido' => $id
-        ]);
+    $avaliacao = Avaliacoes::create([
+        'produto' => $request->produto, 
+        'satisfacao' => $request->satisfacao, 
+        'recomendacao' => $request->recomendacao, 
+        'observacao' => (isset($request->observacao) ? $request->observacao : null),
+      ]);
+    Pedidos::find($id)->update(['id_avaliacao' => $avaliacao->id]);
 
-       \Session::flash('confirm', array(
-                'class' => 'success',
-                'mensagem' => 'Sua avaliação foi enviada com sucesso. Muito obrigado!'
-            ));
-      return view('pedidos.avaliacao')->with('geral', $this->geral);
+     \Session::flash('confirm', array(
+              'class' => 'success',
+              'mensagem' => 'Sua avaliação foi enviada com sucesso. Muito obrigado!'
+          ));
+    return view('pedidos.avaliacao')->with('geral', $this->geral);
   }
 
   // Caclulando dias úteis

@@ -50,7 +50,7 @@ class CadastroUser extends Notification implements ShouldQueue
     {
         return (new MailMessage)
                 ->from($this->emails->email_remetente, $this->emails->nome_remetente)
-                ->subject('Cadastro de credênciais')
+                ->subject('Ebaa! Suas credênciais de acesso')
                 ->view('system.emails.cadastro', ['geral' => $this->geral, 'usuario' => $this->usuario]);
     }
 

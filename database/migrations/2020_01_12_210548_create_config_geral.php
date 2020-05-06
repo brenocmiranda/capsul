@@ -38,7 +38,6 @@ class CreateConfigGeral extends Migration
 
         DB::table('config_geral')->insert(
             array(
-                'email_pedidos' => 'suporte@capsulbrasil.com.br',
                 'nome_loja' => 'Grupo Capsul',
                 'descricao_loja' => 'Somos uma empresa que trabalha com os melhores produtos para os clientes mais exigentes e que merecem o santo graal de qualidade.',
                 'cep' => '35588000',

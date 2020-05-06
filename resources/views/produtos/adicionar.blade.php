@@ -380,7 +380,7 @@ Adicionar produto
                             <div class="row mt-3">
                                 <div class="col-7">
                                     <div class="border p-3 col-6 rounded text-center">
-                                        <img class="w-100" id="PreviewImage" src="{{ asset('public/img/product.png').'?'.rand() }}" style="height: 250px;">
+                                        <img class="w-100" id="PreviewImage" src="{{ asset('public/img/product.png').'?'.rand() }}" style="height: 16em;">
                                         <input type="file" class="px-0 col-12 position-absolute mx-auto h-100 pointer" style="opacity: 0; top: 0%; left: 0%" accept="image/*" name="imagem_principal" id="imagem_principal" onchange="image(this);" title="Selecione sua imagem">
                                     </div>
                                 </div>
@@ -391,7 +391,7 @@ Adicionar produto
                             <h6 class="col-12 row mb-0">Selecione as demais imagens</h6>
                             <small>Formatos de imagem aceitos: .png, .jpg ou .svg</small>
                             <div class="row col-12 mt-3 preview">
-                                <div class="border m-2 rounded col-2 row m-0" style="height: 180px;">
+                                <div class="border m-2 rounded col-2 row m-0" style="height: 12em;">
                                     <i class="mdi mdi-plus mdi-36px m-auto"></i>
                                     <input type="file" class="px-0 col-12 position-absolute mx-auto h-100 pointer" style="opacity: 0; top: 0%; left: 0%" accept=".png, .jpg, .jpeg" id="addFotoGaleria" accept="image/*" title="Selecione mais imagens do produto" multiple>
                                 </div>
@@ -427,9 +427,9 @@ Adicionar produto
 @endsection
 
 @section('modal')
-@include('produtos.extras.marcas')
-@include('produtos.extras.categorias')
-@include('produtos.extras.variantes')
+    @include('produtos.extras.marcas')
+    @include('produtos.extras.categorias')
+    @include('produtos.extras.variantes')
 @endsection
 
 @section('support')
@@ -495,7 +495,7 @@ Adicionar produto
                     contentType: false,
                     success: function(data){ 
                         for (i = 0; i < data.length; i++) {
-                            $('div.preview').append('<div class="border m-2 rounded col-2 d-flex m-0" id="PreviewImage'+data[i].id+'"> <input type="hidden" name="imagens[]" value="'+data[i].id+'"> <img class="p-3 w-100" src="{{asset("storage/app")}}/'+data[i].caminho+'" style="height: 180px;"><a href="javascript:void(0)" onclick="removeImagem('+data[i].id+')" class="btn btn-light rounded-circle m-n2 border" style="height: 36px;">x</a> </div>');
+                            $('div.preview').append('<div class="border m-2 rounded col-2 d-flex m-0" id="PreviewImage'+data[i].id+'"> <input type="hidden" name="imagens[]" value="'+data[i].id+'"> <img class="p-3 w-100" src="{{asset("storage/app")}}/'+data[i].caminho+'" style="height: 12em;"><a href="javascript:void(0)" onclick="removeImagem('+data[i].id+')" class="btn btn-light rounded-circle m-n2 border" style="height: 36px;">x</a> </div>');
                         } 
                         $('#addFotoGaleria').val('');   
                     }

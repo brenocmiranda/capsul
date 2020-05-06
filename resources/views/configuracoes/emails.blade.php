@@ -93,7 +93,7 @@ Configurações
                     </div>
                     <div class="form-group col-12">
                       <label>SMS</label>
-                      <textarea class="summernote" name="sms">{{$emails->assunto}}</textarea>
+                      <textarea class="summernote" name="sms">{{$emails->sms}}</textarea>
                     </div>
                   </div>
                 </div>
