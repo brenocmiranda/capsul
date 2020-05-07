@@ -6,9 +6,12 @@ use App\Pedidos;
 use App\ConfigEmails;
 use App\ConfigGeral;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Queue\InteractsWithQueue;
+use App\Events\PodcastWasPurchased;
 
 class CarrinhoAbandonado extends Notification implements ShouldQueue
 {
@@ -30,6 +33,19 @@ class CarrinhoAbandonado extends Notification implements ShouldQueue
     }
 
     /**
+     * Execute the job.
+     *
+     * @param  AudioProcessor  $processor
+     * @return void
+     */
+    public function handle()
+    {
+        if($this->pedido->RelationStatus->last()->posicao != 4){
+            $this->delete();
+        }
+    }
+
+    /**
      * Get the notification's delivery channels.
      *
      * @param  mixed  $notifiable
@@ -37,7 +53,7 @@ class CarrinhoAbandonado extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['mail','database'];
+        return ['mail'];
     }
 
     /**

@@ -103,7 +103,7 @@ class CheckoutCtrl extends Controller
         Pedidos::find($id)->update(['id_cliente' => $dados->id]);
         if($this->emails->ativo_carrinho){
           $pedido = Pedidos::find($id);
-          $pedido->RelationCliente->notify((new CarrinhoAbandonado($pedido))->delay(now()->addMinutes(20)));
+          $pedido->RelationCliente->notify((new CarrinhoAbandonado($pedido))->delay(now()->addMinutes(2)));
         }  
     }else{
         // Cliente não cadaastrado
@@ -139,7 +139,7 @@ class CheckoutCtrl extends Controller
         Pedidos::find($id)->update(['id_cliente' => $cliente->id]);
         if($this->emails->ativo_carrinho){
           $pedido = Pedidos::find($id);
-          $pedido->RelationCliente->notify((new CarrinhoAbandonado($pedido))->delay(now()->addMinutes(20)));
+          $pedido->RelationCliente->notify((new CarrinhoAbandonado($pedido))->delay(now()->addMinutes(2)));
         }     
     }  
     return response()->json(['success' => true]);
@@ -243,7 +243,7 @@ class CheckoutCtrl extends Controller
           Produtos::find($pedido->id_produto)->update(['quantidade' => ($pedido->RelationProduto->quantidade - $pedido->quantidade)]);
           $dados = Status::select('nome', 'descricao', 'posicao')->find(3);
           $dados->image = asset('public/img/status-pagamento/aprovado.png');
-          $dados->link = '<a href="'.route('checkout.acompanhamento.pedido', $pedido->codigo).'" target="_blank">Acompanhamento do seu pedido</a> &#183 <a href="'.route('checkout.create', $pedido->RelationProduto->link_produto).'" target="_blank"> Comprar novamente</a>';
+          $dados->link = '<a href="'.route('acompanhamento.pedido', $pedido->codigo).'" target="_blank">Acompanhamento do seu pedido</a> &#183 <a href="'.route('checkout.create', $pedido->RelationProduto->link_produto).'" target="_blank"> Comprar novamente</a>';
           $dados->estado = "bg-success text-white";
           $dados->url_redirect = $this->checkout->url_cartao;
           return json_encode($dados);
@@ -263,7 +263,7 @@ class CheckoutCtrl extends Controller
           Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1']);
           $dados = Status::select('nome', 'descricao', 'posicao')->find(2);
           $dados->image = asset('public/img/status-pagamento/analise.png');
-          $dados->link = '<a href="'.route('checkout.acompanhamento.pedido', $pedido->codigo).'" target="_blank">Acompanhamento do seu pedido</a> &#183 <a href="'.route('checkout.create', $pedido->RelationProduto->link_produto).'" target="_blank"> Comprar novamente</a>';
+          $dados->link = '<a href="'.route('acompanhamento.pedido', $pedido->codigo).'" target="_blank">Acompanhamento do seu pedido</a> &#183 <a href="'.route('checkout.create', $pedido->RelationProduto->link_produto).'" target="_blank"> Comprar novamente</a>';
           $dados->estado = "bg-warning text-white";
           $dados->url_redirect = $this->checkout->url_cartao;
           return json_encode($dados);
@@ -315,7 +315,7 @@ class CheckoutCtrl extends Controller
           Produtos::find($pedido->id_produto)->update(['quantidade' => ($pedido->RelationProduto->quantidade - $pedido->quantidade)]);
           $dados = Status::select('nome', 'descricao', 'posicao')->find(3);
           $dados->image = asset('public/img/status-pagamento/aprovado.png');
-          $dados->link = '<a href="'.route('checkout.acompanhamento.pedido', $pedido->codigo).'" target="_blank">Acompanhamento do seu pedido</a> &#183 <a href="'.route('checkout.create', $pedido->RelationProduto->link_produto).'" target="_blank"> Comprar novamente</a>';
+          $dados->link = '<a href="'.route('acompanhamento.pedido', $pedido->codigo).'" target="_blank">Acompanhamento do seu pedido</a> &#183 <a href="'.route('checkout.create', $pedido->RelationProduto->link_produto).'" target="_blank"> Comprar novamente</a>';
           $dados->estado = "bg-success text-white";
           $dados->url_redirect = $this->checkout->url_boleto;
           return json_encode($dados);
@@ -335,7 +335,7 @@ class CheckoutCtrl extends Controller
           Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url]);
           $dados = Status::select('nome', 'descricao', 'posicao')->find(2);
           $dados->image = asset('public/img/status-pagamento/analise.png');
-          $dados->link = '<a href="'.route('checkout.acompanhamento.pedido', $pedido->codigo).'" target="_blank">Acompanhamento do seu pedido</a> &#183 <a href="'.route('checkout.create', $pedido->RelationProduto->link_produto).'" target="_blank"> Comprar novamente</a>';
+          $dados->link = '<a href="'.route('acompanhamento.pedido', $pedido->codigo).'" target="_blank">Acompanhamento do seu pedido</a> &#183 <a href="'.route('checkout.create', $pedido->RelationProduto->link_produto).'" target="_blank"> Comprar novamente</a>';
           $dados->estado = "bg-warning text-white";
           $dados->url_redirect = $this->checkout->url_boleto;
           return json_encode($dados);
