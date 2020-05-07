@@ -30,20 +30,8 @@ class CarrinhoAbandonado extends Notification
         $this->pedido = $pedidoNovo;
         $this->emails = ConfigEmails::first();
         $this->geral = ConfigGeral::first();
-        
-    }
 
-    /**
-     * Execute the job.
-     *
-     * @param  AudioProcessor  $processor
-     * @return void
-     */
-    public function handle()
-    {
-        if($this->pedido->RelationStatus->last()->posicao != 4){
-            $this->delete();
-        }
+        Pedidos::find($this->pedido->id)->update(['carrinho_abandonado' => $this]);        
     }
 
     /**
@@ -65,7 +53,8 @@ class CarrinhoAbandonado extends Notification
      */
     public function toMail($notifiable)
     {   
-        Pedidos::find($this->pedido->id)->update(['carrinho_abandonado' => $this]);
+        
+
         return (new MailMessage)
             ->from($this->emails->email_remetente, $this->emails->nome_remetente)
             ->subject('Ops! Você esqueceu desses itens')
