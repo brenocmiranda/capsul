@@ -10,8 +10,9 @@ use Illuminate\Support\Facades\Queue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Queue\InteractsWithQueue;
 
-class CarrinhoAbandonado extends Notification
+class CarrinhoAbandonado extends Notification implements ShouldQueue
 {
     use Queueable;
     private $pedido;
@@ -28,6 +29,19 @@ class CarrinhoAbandonado extends Notification
         $this->pedido = $pedidoNovo;
         $this->emails = ConfigEmails::first();
         $this->geral = ConfigGeral::first(); 
+    }
+
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle($notifiable)
+    {
+        if($pedido->carrinho_abandonado == 0){
+          $this->delete();
+        }
     }
 
 

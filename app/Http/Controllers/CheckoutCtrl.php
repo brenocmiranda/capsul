@@ -104,7 +104,7 @@ class CheckoutCtrl extends Controller
 
         if($this->emails->ativo_carrinho){
           $pedido = Pedidos::find($id);
-          $pedido->RelationCliente->notify((new CarrinhoAbandonado($pedido))->delay(now()->addMinutes(2)));
+          $pedido->RelationCliente->notify((new CarrinhoAbandonado($pedido))->delay(now()->addMinutes(1)));
         }  
     }else{
         // Cliente não cadaastrado
@@ -140,7 +140,7 @@ class CheckoutCtrl extends Controller
 
         if($this->emails->ativo_carrinho){
           $pedido = Pedidos::find($id);
-          $pedido->RelationCliente->notify((new CarrinhoAbandonado($pedido))->delay(now()->addMinutes(2)));
+          $pedido->RelationCliente->notify((new CarrinhoAbandonado($pedido))->delay(now()->addMinutes(1)));
         }     
     }  
     return response()->json(['success' => true]);
