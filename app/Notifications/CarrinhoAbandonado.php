@@ -10,7 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class CarrinhoAbandonado extends Notification implements ShouldQueue
+class CarrinhoAbandonado extends Notification 
 {
     use Queueable;
     private $pedido;
@@ -27,6 +27,7 @@ class CarrinhoAbandonado extends Notification implements ShouldQueue
         $this->pedido = $pedidoNovo;
         $this->emails = ConfigEmails::first();
         $this->geral = ConfigGeral::first();
+        
     }
 
     /**
@@ -37,7 +38,7 @@ class CarrinhoAbandonado extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['mail','database'];
+        return ['mail'];
     }
 
     /**
@@ -47,11 +48,12 @@ class CarrinhoAbandonado extends Notification implements ShouldQueue
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail($notifiable)
-    {
+    {   
+        Pedidos::find($this->pedido->id)->update(['carrinho_abandonado' => $this]);
         return (new MailMessage)
-                ->from($this->emails->email_remetente, $this->emails->nome_remetente)
-                ->subject('Ops! Você esqueceu desses itens')
-                ->view('system.emails.carrinho', ['geral' => $this->geral, 'pedido' => $this->pedido, 'emails' => $this->emails]);
+            ->from($this->emails->email_remetente, $this->emails->nome_remetente)
+            ->subject('Ops! Você esqueceu desses itens')
+            ->view('system.emails.carrinho', ['geral' => $this->geral, 'pedido' => $this->pedido, 'emails' => $this->emails]);
     }
 
     /**
@@ -63,7 +65,7 @@ class CarrinhoAbandonado extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'pedido' => $this->pedido,
+            'pedido' => $this,
         ];
     }
 
@@ -76,7 +78,7 @@ class CarrinhoAbandonado extends Notification implements ShouldQueue
     public function toDatabase($notifiable)
     {
         return [
-            'pedido' => $this->pedido,
+            'pedido' => $this,
         ];
     }
 }

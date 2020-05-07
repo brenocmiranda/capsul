@@ -20,7 +20,7 @@ class NovoPedidoCliente extends Notification
      *
      * @return void
      */
-    public function __construct(PedidosStatus $aStatus)
+    public function __construct(Pedidos $aStatus)
     {
         $this->status = $aStatus;
     }
