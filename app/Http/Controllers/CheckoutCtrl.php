@@ -103,7 +103,11 @@ class CheckoutCtrl extends Controller
         Pedidos::find($id)->update(['id_cliente' => $dados->id]);
         if($this->emails->ativo_carrinho){
           $pedido = Pedidos::find($id);
+<<<<<<< HEAD
           $pedido->RelationCliente->notify((new CarrinhoAbandonado($pedido))->delay(now()->addMinutes(2)));
+=======
+          $pedido->RelationCliente->notify((new CarrinhoAbandonado($pedido))->delay(now()->addMinutes(10)));
+>>>>>>> 1ac036601343953eadc673d44d2431b6bffeb324
         }  
     }else{
         // Cliente não cadaastrado
@@ -139,7 +143,11 @@ class CheckoutCtrl extends Controller
         Pedidos::find($id)->update(['id_cliente' => $cliente->id]);
         if($this->emails->ativo_carrinho){
           $pedido = Pedidos::find($id);
+<<<<<<< HEAD
           $pedido->RelationCliente->notify((new CarrinhoAbandonado($pedido))->delay(now()->addMinutes(2)));
+=======
+          $pedido->RelationCliente->notify((new CarrinhoAbandonado($pedido))->delay(now()->addMinutes(10)));
+>>>>>>> 1ac036601343953eadc673d44d2431b6bffeb324
         }     
     }  
     return response()->json(['success' => true]);

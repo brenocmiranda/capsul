@@ -316,7 +316,7 @@ Adicionar produto
                     <div class="card-header">
                         <h5 class="section-title my-0">Peso e Dimensões</h5>
                     </div>
-                    <div class="card-body row">
+                    <div class="card-body row m-0">
                         <div class="row col-8">
                             <div class="form-group col-6">
                                 <label>Peso <i class="text-danger">*</i></label>
