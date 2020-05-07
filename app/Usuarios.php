@@ -12,7 +12,8 @@ class Usuarios extends Authenticatable
     
     protected $table = 'usuarios';
     protected $primaryKey = 'id';
-    protected $fillable = ['id', 'nome', 'email', 'email_verified_at', 'password', 'ativo', '_token', 'remember_token', 'created_at', 'updated_at', 'id_grupo', 'id_imagem'];
+    protected $fillable = ['id', 'nome', 'email', 'email_verified_at',  'ativo', 'created_at', 'updated_at', 'id_grupo', 'id_imagem'];
+    protected $hidden = ['_token', 'remember_token','password'];
 
     public function RelationImagens(){
         return $this->belongsTo(Imagens::class, 'id_imagem');

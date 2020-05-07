@@ -10,10 +10,8 @@ use Illuminate\Support\Facades\Queue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Queue\InteractsWithQueue;
-use App\Events\PodcastWasPurchased;
 
-class CarrinhoAbandonado extends Notification 
+class CarrinhoAbandonado extends Notification
 {
     use Queueable;
     private $pedido;
@@ -26,13 +24,12 @@ class CarrinhoAbandonado extends Notification
      * @return void
      */
     public function __construct(Pedidos $pedidoNovo)
-    {
+    {   
         $this->pedido = $pedidoNovo;
         $this->emails = ConfigEmails::first();
-        $this->geral = ConfigGeral::first();
-
-        Pedidos::find($this->pedido->id)->update(['carrinho_abandonado' => $this]);        
+        $this->geral = ConfigGeral::first(); 
     }
+
 
     /**
      * Get the notification's delivery channels.
@@ -53,12 +50,10 @@ class CarrinhoAbandonado extends Notification
      */
     public function toMail($notifiable)
     {   
-        
-
         return (new MailMessage)
             ->from($this->emails->email_remetente, $this->emails->nome_remetente)
-            ->subject('Ops! Você esqueceu desses itens')
-            ->view('system.emails.carrinho', ['geral' => $this->geral, 'pedido' => $this->pedido, 'emails' => $this->emails]);
+            ->subject('Ops! Você esqueceu desses itens :(')
+            ->view('system.emails.carrinho', ['geral' => $this->geral, 'pedido' => $this->pedido, 'emails' => $this->emails]);    
     }
 
     /**
@@ -81,7 +76,7 @@ class CarrinhoAbandonado extends Notification
      * @return array
      */
     public function toDatabase($notifiable)
-    {
+    {    
         return [
             'pedido' => $this,
         ];

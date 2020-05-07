@@ -3,27 +3,33 @@
 namespace App\Notifications;
 
 use App\Pedidos;
-use App\PedidosStatus;
-use App\Status;
+use App\ConfigEmails;
+use App\ConfigGeral;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NovoPedidoCliente extends Notification
+class NovoPedidoCliente extends Notification implements ShouldQueue
 {
     use Queueable;
     private $pedido;
+    private $emails;
+    private $geral;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Pedidos $aStatus)
-    {
-        $this->status = $aStatus;
+    public function __construct(Pedidos $pedidoNovo)
+    {   
+        $this->pedido = $pedidoNovo;
+        $this->emails = ConfigEmails::first();
+        $this->geral = ConfigGeral::first(); 
     }
+
 
     /**
      * Get the notification's delivery channels.
@@ -43,11 +49,11 @@ class NovoPedidoCliente extends Notification
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail($notifiable)
-    {
+    {   
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->from($this->emails->email_remetente, $this->emails->nome_remetente)
+            ->subject('A gente recebeu o seu pedido :)')
+            ->view('system.emails.pedido', ['geral' => $this->geral, 'pedido' => $this->pedido, 'emails' => $this->emails]);    
     }
 
     /**
@@ -59,7 +65,20 @@ class NovoPedidoCliente extends Notification
     public function toArray($notifiable)
     {
         return [
-            //
+            'pedido' => $this,
+        ];
+    }
+
+    /**
+     * Get the array representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return array
+     */
+    public function toDatabase($notifiable)
+    {    
+        return [
+            'pedido' => $this,
         ];
     }
 }

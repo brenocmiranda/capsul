@@ -26,6 +26,17 @@ class CreateConfigLogisticasTable extends Migration
 
             $table->timestamps();
         });
+
+        DB::table('config_logisticas')->insert(
+            array(
+                'nome' => 'Envio normal',
+                'cep_inicial' => 00000000,
+                'cep_final' => 99999999,
+                'porcetagem_adicional' => null,
+                'valor' => 29.99,
+                'prazo_entrega' => 20,
+            )
+        );
     }
 
     /**

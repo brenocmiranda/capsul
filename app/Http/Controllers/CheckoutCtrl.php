@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Controller;
-use App\Notifications\CarrinhoAbandonado;
+use App\Jobs\ProcessPodcast;
 use App\Avaliacoes;
 use App\Produtos;
 use App\PedidosStatus;
@@ -52,7 +52,8 @@ class CheckoutCtrl extends Controller
           'codigo' => preg_replace("/[^0-9]/", "", substr(uniqid(date('HisYmd')), -11)), 
           'valor_compra' => $produto->preco_venda,
           'quantidade' => 1,
-          'ip_compra' => $_SERVER['REMOTE_ADDR']
+          'ip_compra' => $_SERVER['REMOTE_ADDR'],
+          'carrinho_abandonado' => 1
         ]);
         return view('checkout.index')->with('pedido', $pedido)->with('checkout', $this->checkout)->with('geral', $this->geral);
       }else{
@@ -99,12 +100,11 @@ class CheckoutCtrl extends Controller
         $telefone = Telefones::where('id_cliente', $dados->id)->update([
           'numero' => str_replace("(", "+55", str_replace(") ", "", str_replace("-", "", $FormRequest->telefone)))
         ]);
-        
         Pedidos::find($id)->update(['id_cliente' => $dados->id]);
+
         if($this->emails->ativo_carrinho){
           $pedido = Pedidos::find($id);
-          $pedido->RelationCliente->notify((new CarrinhoAbandonado($pedido))->delay(now()->addMinutes(2)));
-
+          ProcessPodcast::dispatch($pedido);
         }  
     }else{
         // Cliente não cadaastrado
@@ -136,11 +136,12 @@ class CheckoutCtrl extends Controller
           'id_cliente' => $cliente->id, 
           'numero' => str_replace("(", "+55", str_replace(") ", "", str_replace("-", "", $FormRequest->telefone)))
         ]);
-
         Pedidos::find($id)->update(['id_cliente' => $cliente->id]);
+
         if($this->emails->ativo_carrinho){
           $pedido = Pedidos::find($id);
-          $pedido->RelationCliente->notify((new CarrinhoAbandonado($pedido))->delay(now()->addMinutes(2)));
+          ProcessPodcast::dispatch($pedido);
+          
         }     
     }  
     return response()->json(['success' => true]);
@@ -240,7 +241,7 @@ class CheckoutCtrl extends Controller
         if($transaction->status == 'authorized' || $transaction->status == 'paid'){
           // Aprovado
           $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 3]);
-          Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1']);
+          Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1', 'carrinho_abandonado' => 0]);
           Produtos::find($pedido->id_produto)->update(['quantidade' => ($pedido->RelationProduto->quantidade - $pedido->quantidade)]);
           $dados = Status::select('nome', 'descricao', 'posicao')->find(3);
           $dados->image = asset('public/img/status-pagamento/aprovado.png');
@@ -261,7 +262,7 @@ class CheckoutCtrl extends Controller
         }elseif($transaction->status == 'waiting_payment' || $transaction->status == 'analyzing' || $transaction->status == 'pending_review' || $transaction->status == 'processing'){
           // Em análise
           $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 2]);
-          Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1']);
+          Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1', 'carrinho_abandonado' => 0]);
           $dados = Status::select('nome', 'descricao', 'posicao')->find(2);
           $dados->image = asset('public/img/status-pagamento/analise.png');
           $dados->link = '<a href="'.route('acompanhamento.pedido', $pedido->codigo).'" target="_blank">Acompanhamento do seu pedido</a> &#183 <a href="'.route('checkout.create', $pedido->RelationProduto->link_produto).'" target="_blank"> Comprar novamente</a>';
@@ -312,7 +313,7 @@ class CheckoutCtrl extends Controller
         if($transaction->status == 'authorized' || $transaction->status == 'paid'){
           // Aprovado
           $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 3]);
-          Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url]);
+          Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url, 'carrinho_abandonado' => 0]);
           Produtos::find($pedido->id_produto)->update(['quantidade' => ($pedido->RelationProduto->quantidade - $pedido->quantidade)]);
           $dados = Status::select('nome', 'descricao', 'posicao')->find(3);
           $dados->image = asset('public/img/status-pagamento/aprovado.png');
@@ -333,7 +334,7 @@ class CheckoutCtrl extends Controller
         }elseif($transaction->status == 'waiting_payment' || $transaction->status == 'analyzing' || $transaction->status == 'pending_review' || $transaction->status == 'processing'){
           // Em análise
           $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 2]);
-          Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url]);
+          Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url, 'carrinho_abandonado' => 0]);
           $dados = Status::select('nome', 'descricao', 'posicao')->find(2);
           $dados->image = asset('public/img/status-pagamento/analise.png');
           $dados->link = '<a href="'.route('acompanhamento.pedido', $pedido->codigo).'" target="_blank">Acompanhamento do seu pedido</a> &#183 <a href="'.route('checkout.create', $pedido->RelationProduto->link_produto).'" target="_blank"> Comprar novamente</a>';

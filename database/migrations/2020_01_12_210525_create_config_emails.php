@@ -36,7 +36,7 @@ class CreateConfigEmails extends Migration
                 'ativo_avaliacao' => 1,
                 'ativo_carrinho' => 1,
                 'enviar_cupom' => 's',
-                'assunto' => 'Os produtos que você escolheu estão te esperando',
+                'assunto' => 'Os produtos que você escolheu estão te esperando, são as últimas unidades, aproveite!',
                 'sms' => 'Os produtos que você escolheu estão te esperando',
             )
         );

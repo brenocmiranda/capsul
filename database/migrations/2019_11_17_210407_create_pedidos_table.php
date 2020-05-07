@@ -23,7 +23,7 @@ class CreatePedidosTable extends Migration
             $table->double('valor_compra');
             $table->integer('quantidade')->default(1);
             $table->string('ip_compra');
-            $table->string('carrinho_abandonado')->nullable();
+            $table->boolean('carrinho_abandonado')->default(1);
             
             $table->bigInteger('id_produto')->unsigned();
             $table->foreign('id_produto')->references('id')->on('produtos');

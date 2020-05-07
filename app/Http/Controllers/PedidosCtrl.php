@@ -39,7 +39,7 @@ class PedidosCtrl extends Controller
     // Lista pedidos
     public function Exibir(){
         if(Auth::user()->RelationGrupo->visualizar_pedidos == 1 || Auth::user()->RelationGrupo->gerenciar_pedidos == 1){
-            $pedidos = Pedidos::WhereNotNull('transacao_pagarme')->count();
+            $pedidos = Pedidos::where('carrinho_abandonado', 0)->count();
             $status = Status::all();
             $formas = FormaPagamentos::all();
             return view('pedidos.lista')->with('formaPagamentos', $formas)->with('status', $status)->with('pedidos', $pedidos);
@@ -48,7 +48,7 @@ class PedidosCtrl extends Controller
         }
     }
     public function Lista(){
-        return datatables()->of(Pedidos::WhereNotNull('transacao_pagarme')->orderBy('created_at', 'DESC')->get())
+        return datatables()->of(Pedidos::where('carrinho_abandonado', 0)->orderBy('created_at', 'DESC')->get())
                     ->editColumn('transacao', function(Pedidos $dados){ 
                         return '<div>'.($dados->id_forma_pagamento == 1 ? '<img data-v-a542e072="" src="http://download.seaicons.com/icons/iconsmind/outline/512/Credit-Card-3-icon.png" width="30" class="uk-float-left icon-payment">' : '<img data-v-a542e072="" src="https://github.bubbstore.com/svg/billet.svg" width="40" class="uk-float-left icon-payment">').'</div>';
                     })->editColumn('cliente', function(Pedidos $dados){
