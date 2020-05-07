@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Controller;
-use App\Jobs\ProcessPodcast;
+use App\Notifications\CarrinhoAbandonado;
 use App\Avaliacoes;
 use App\Produtos;
 use App\PedidosStatus;
@@ -104,7 +104,7 @@ class CheckoutCtrl extends Controller
 
         if($this->emails->ativo_carrinho){
           $pedido = Pedidos::find($id);
-          ProcessPodcast::dispatch($pedido);
+          $pedido->RelationCliente->notify((new CarrinhoAbandonado($pedido))->delay(now()->addMinutes(2)));
         }  
     }else{
         // Cliente não cadaastrado
@@ -140,8 +140,7 @@ class CheckoutCtrl extends Controller
 
         if($this->emails->ativo_carrinho){
           $pedido = Pedidos::find($id);
-          ProcessPodcast::dispatch($pedido);
-          
+          $pedido->RelationCliente->notify((new CarrinhoAbandonado($pedido))->delay(now()->addMinutes(2)));
         }     
     }  
     return response()->json(['success' => true]);
