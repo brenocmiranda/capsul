@@ -356,7 +356,7 @@
 										<p>Agora, é só esperar a aprovação do pagamento, tá?</p>
 
 										<div align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
-											<a href="{{route('acompanhamento.pedido', $status->RelationPedido1->codigo)}}" target="_blank" class="btn button-primary">
+											<a href="{{route('acompanhamento.pedido', $pedido->codigo)}}" target="_blank" class="button button-primary">
 												<h5 style="margin: 0;">Acompanhar meu pedido</h5>
 											</a>					
 										</div>

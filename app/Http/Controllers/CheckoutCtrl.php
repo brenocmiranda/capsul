@@ -8,6 +8,9 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Controller;
 use App\Notifications\CarrinhoAbandonado;
+use App\Notifications\NovoPedidoCliente;
+use App\Notifications\NovoPedidoAdmin;
+use App\Notifications\AlteracaoStatus;
 use App\Avaliacoes;
 use App\Produtos;
 use App\PedidosStatus;
@@ -102,10 +105,12 @@ class CheckoutCtrl extends Controller
         ]);
         Pedidos::find($id)->update(['id_cliente' => $dados->id]);
 
+        /*
         if($this->emails->ativo_carrinho){
           $pedido = Pedidos::find($id);
           $pedido->RelationCliente->notify((new CarrinhoAbandonado($pedido))->delay(now()->addMinutes(1)));
         }  
+        */
     }else{
         // Cliente não cadaastrado
         $lead = Leads::create([
@@ -138,10 +143,11 @@ class CheckoutCtrl extends Controller
         ]);
         Pedidos::find($id)->update(['id_cliente' => $cliente->id]);
 
+        /*
         if($this->emails->ativo_carrinho){
           $pedido = Pedidos::find($id);
           $pedido->RelationCliente->notify((new CarrinhoAbandonado($pedido))->delay(now()->addMinutes(1)));
-        }     
+        }*/  
     }  
     return response()->json(['success' => true]);
   }
@@ -233,6 +239,8 @@ class CheckoutCtrl extends Controller
       Pedidos::find($id)->update(['ip_compra' => $transaction->ip]);
       if($pedido->transacao_pagarme == null){
         PedidosStatus::create(['id_pedido' => $id, 'id_status' => 1]);
+        $pedido->RelationCliente->notify(new NovoPedidoCliente($pedido));
+        $this->emails->notify(new NovoPedidoAdmin($pedido));
       }
       
       // Retorno do status
@@ -240,6 +248,7 @@ class CheckoutCtrl extends Controller
         if($transaction->status == 'authorized' || $transaction->status == 'paid'){
           // Aprovado
           $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 3]);
+          $pedido->RelationCliente->notify((new AlteracaoStatus($status))->delay(now()->addMinutes(5)));
           Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1', 'carrinho_abandonado' => 0]);
           Produtos::find($pedido->id_produto)->update(['quantidade' => ($pedido->RelationProduto->quantidade - $pedido->quantidade)]);
           $dados = Status::select('nome', 'descricao', 'posicao')->find(3);
@@ -251,6 +260,7 @@ class CheckoutCtrl extends Controller
         }elseif($transaction->status == 'refunded' || $transaction->status == 'refused' || $transaction->status == 'chargedback' || $transaction->status == 'pending_refund'){
            // Recusado
           $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 4]);
+          $pedido->RelationCliente->notify((new AlteracaoStatus($status))->delay(now()->addMinutes(5)));
           Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1']);
           $dados = Status::select('nome', 'descricao', 'posicao')->find(4);
           $dados->image = asset('public/img/status-pagamento/recusado.png');
@@ -261,6 +271,7 @@ class CheckoutCtrl extends Controller
         }elseif($transaction->status == 'waiting_payment' || $transaction->status == 'analyzing' || $transaction->status == 'pending_review' || $transaction->status == 'processing'){
           // Em análise
           $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 2]);
+          $pedido->RelationCliente->notify((new AlteracaoStatus($status))->delay(now()->addMinutes(5)));
           Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '1', 'carrinho_abandonado' => 0]);
           $dados = Status::select('nome', 'descricao', 'posicao')->find(2);
           $dados->image = asset('public/img/status-pagamento/analise.png');
@@ -305,6 +316,8 @@ class CheckoutCtrl extends Controller
         Pedidos::find($id)->update(['ip_compra' => $transaction->ip]);
         if($pedido->transacao_pagarme == null){
           PedidosStatus::create(['id_pedido' => $id, 'id_status' => 1]);
+          $pedido->RelationCliente->notify(new NovoPedidoCliente($pedido));
+          $this->emails->notify(new NovoPedidoAdmin($pedido));
         }
    
       // Retorno do status
@@ -312,6 +325,7 @@ class CheckoutCtrl extends Controller
         if($transaction->status == 'authorized' || $transaction->status == 'paid'){
           // Aprovado
           $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 3]);
+          $pedido->RelationCliente->notify((new AlteracaoStatus($status))->delay(now()->addMinutes(5)));
           Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url, 'carrinho_abandonado' => 0]);
           Produtos::find($pedido->id_produto)->update(['quantidade' => ($pedido->RelationProduto->quantidade - $pedido->quantidade)]);
           $dados = Status::select('nome', 'descricao', 'posicao')->find(3);
@@ -323,6 +337,7 @@ class CheckoutCtrl extends Controller
         }elseif($transaction->status == 'refunded' || $transaction->status == 'refused' || $transaction->status == 'chargedback' || $transaction->status == 'pending_refund'){
            // Recusado
           $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 4]);
+          $pedido->RelationCliente->notify((new AlteracaoStatus($status))->delay(now()->addMinutes(5)));
           Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url]);
           $dados = Status::select('nome', 'descricao', 'posicao')->find(4);
           $dados->image = asset('public/img/status-pagamento/recusado.png');
@@ -333,6 +348,7 @@ class CheckoutCtrl extends Controller
         }elseif($transaction->status == 'waiting_payment' || $transaction->status == 'analyzing' || $transaction->status == 'pending_review' || $transaction->status == 'processing'){
           // Em análise
           $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 2]);
+          $pedido->RelationCliente->notify((new AlteracaoStatus($status))->delay(now()->addMinutes(5)));
           Pedidos::find($id)->update(['transacao_pagarme' => $transaction->id, 'id_forma_pagamento' => '2', 'link_boleto' => $transaction->boleto_url, 'carrinho_abandonado' => 0]);
           $dados = Status::select('nome', 'descricao', 'posicao')->find(2);
           $dados->image = asset('public/img/status-pagamento/analise.png');

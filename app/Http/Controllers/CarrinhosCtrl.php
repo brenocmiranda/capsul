@@ -19,14 +19,14 @@ class CarrinhosCtrl extends Controller
     //  Listar carrinhos abandonados
     public function Exibir(){
         if(Auth::user()->RelationGrupo->visualizar_pedidos == 1 || Auth::user()->RelationGrupo->gerenciar_pedidos == 1){
-            $carrinhos = Pedidos::where('carrinho_abandonado', 1)->count();
+            $carrinhos = Pedidos::where('carrinho_abandonado', 1)->whereNotNull('id_cliente')->count();
             return view('carrinhos.lista')->with('carrinhos', $carrinhos);
         }else{
             return redirect(route('permission'));
         }
     }
     public function Lista(){
-        return datatables()->of(Pedidos::where('carrinho_abandonado', 1)->get())
+        return datatables()->of(Pedidos::where('carrinho_abandonado', 1)->whereNotNull('id_cliente')->get())
                     ->editColumn('produto', function(Pedidos $dados){ 
                         return '<div class="d-flex my-2"><div class="my-auto col"><img src="'. (isset($dados->RelationProduto->RelationImagensPrincipal) ? asset('storage/app/'.$dados->RelationProduto->RelationImagensPrincipal->first()->caminho) : asset('public/img/product.png')).'" alt="Imagem atual" style="height: 55px; width: 60px;" class="rounded" ></div><div class="col-9 text-left my-auto"><a href="javascript:void(0)" class="text-decoration-none" id="detalhes"><p class="nome m-0">'.(strlen($dados->RelationProduto->nome) <= 40 ? $dados->RelationProduto->nome : substr($dados->RelationProduto->nome, 0, 41)."...").'</p></a><label class="mb-0">'.$dados->RelationProduto->cod_sku.'</label></div></div>';
                     })->editColumn('cliente', function(Pedidos $dados){

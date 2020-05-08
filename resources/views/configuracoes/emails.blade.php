@@ -25,9 +25,9 @@ Configurações
           <form method="POST" action="{{ route('configuracoes.emails.salvar') }}" enctype="multipart/form-data">
             @csrf
 
-            @if(Session::has('alteracao'))
-            <p class="alert alert-{{ Session::get('alteracao')['class'] }} alert-dismissible">
-                {{ Session::get('alteracao')['mensagem'] }}
+            @if(Session::has('confirm'))
+            <p class="alert alert-{{ Session::get('confirm')['class'] }} alert-dismissible">
+                {{ Session::get('confirm')['mensagem'] }}
                 <button type="button" class="close h-100" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>

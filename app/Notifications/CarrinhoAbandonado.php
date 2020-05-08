@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Queue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Queue\InteractsWithQueue;
 
 class CarrinhoAbandonado extends Notification implements ShouldQueue
 {
@@ -31,20 +30,6 @@ class CarrinhoAbandonado extends Notification implements ShouldQueue
         $this->geral = ConfigGeral::first(); 
     }
 
-
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle($notifiable)
-    {
-        if($pedido->carrinho_abandonado == 0){
-          $this->delete();
-        }
-    }
-
-
     /**
      * Get the notification's delivery channels.
      *
@@ -63,11 +48,19 @@ class CarrinhoAbandonado extends Notification implements ShouldQueue
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail($notifiable)
-    {   
-        return (new MailMessage)
+    {       
+        if($this->pedido->carrinho_abandonado == 0){
+            return (new MailMessage)
             ->from($this->emails->email_remetente, $this->emails->nome_remetente)
-            ->subject('Ops! Você esqueceu desses itens :(')
-            ->view('system.emails.carrinho', ['geral' => $this->geral, 'pedido' => $this->pedido, 'emails' => $this->emails]);    
+            ->subject('Oba!! A gente recebeu seu pedido :)')
+            ->view('system.emails.pedido', ['geral' => $this->geral, 'pedido' => $this->pedido, 'emails' => $this->emails]); 
+        }else{
+            return (new MailMessage)
+                ->from($this->emails->email_remetente, $this->emails->nome_remetente)
+                ->subject('Ops! Você esqueceu desses itens :(')
+                ->view('system.emails.carrinho', ['geral' => $this->geral, 'pedido' => $this->pedido, 'emails' => $this->emails]); 
+        }
+           
     }
 
     /**

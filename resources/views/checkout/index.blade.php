@@ -1,5 +1,5 @@
 @section('title')
-Efetuar pedido
+{{$pedido->RelationProduto->nome}}
 @endsection
 
 @include('template.header')
