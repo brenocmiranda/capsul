@@ -51,7 +51,7 @@ class CarrinhoAbandonado extends Notification implements ShouldQueue
     {       
         if($this->pedido->carrinho_abandonado == 0){
             return (new MailMessage)
-            ->from($this->emails->email_remetente, $this->emails->nome_remetente)
+            ->from($this->emails->email, $this->emails->nome_remetente)
             ->subject('Oba!! A gente recebeu seu pedido :)')
             ->view('system.emails.pedido', ['geral' => $this->geral, 'pedido' => $this->pedido, 'emails' => $this->emails]); 
         }else{

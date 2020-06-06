@@ -92,7 +92,7 @@ class ConfiguracoesCtrl extends Controller
     public function EmailsAtualizar(Request $request){
 
         $emails = ConfigEmails::find(1)->update([
-            'email_remetente' => $request->email_remetente, 
+            'email' => $request->email, 
             'nome_remetente' => $request->nome_remetente, 
             'ativo_avaliacao' => (isset($request->ativo_avaliacao) ? 1 : 0), 
             'avaliar_produto' => $request->avaliar_produto,

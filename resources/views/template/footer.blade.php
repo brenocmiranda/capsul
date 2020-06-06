@@ -45,7 +45,17 @@
       var aux = data.split('-');
       data = aux[2]+'/'+aux[1]+'/'+aux[0];
       return data;
-      }
+    }
+
+    $(document).ready(function (){
+      $.ajax({
+          url: '{{ route("notificacoes") }}',
+          type: 'GET',
+          success: function(data){
+              console.log(data);
+          }
+      });
+    });
   </script>
 
   @yield('support')

@@ -49,7 +49,7 @@ class RecuperacaoSenha extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                ->from($this->emails->email_remetente, $this->emails->nome_remetente)
+                ->from($this->emails->email, $this->emails->nome_remetente)
                 ->subject('Redefinição de senha')
                 ->view('system.emails.recuperacao', ['geral' => $this->geral, 'usuario' => $this->usuario]);
     }

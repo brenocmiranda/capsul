@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Routing\Controller;
+use Illuminate\Notifications\Notifiable;
 use App\Notifications\RecuperacaoSenha;
 use App\Notifications\AlteracaoSenha;
 use App\Http\Requests\LoginRqt;
@@ -231,5 +232,17 @@ class UsuariosCtrl extends Controller
 		));
 		return redirect(route('login'));
 	}
+
+
+	// Todas as notificações do usuário
+    public function Notificacoes(){
+        $user = Usuarios::find(Auth::id());
+		foreach ($user->notifications as $notification) {
+		    $dados = $notification->type;
+		}
+		return $dados;
+    }
+
+	
 
 }		

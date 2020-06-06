@@ -137,7 +137,7 @@ Editar cliente
                             <div class="card" id="card-{{$key+2}}">
                                 <div class="card-header py-0">
                                     <h5 class="section-title d-flex">
-                                        <input type="text" name="nomeEndereco[]" class="border-0" placeholder="Nome do seu endereço" value="{{$endereco->nome}}" required>
+                                        <input type="text" name="nomeEndereco[]" class="border-0" placeholder="Nome do seu endereço" value="{{$endereco->nome}}">
                                     </h5>
                                     <a href="javascript:void(0)" onclick="removeCard({{$key+2}})" class="ml-auto" title="Remover endereço">
                                         <i class="mdi mdi-close mdi-24px"></i>
@@ -351,7 +351,7 @@ Editar cliente
     <div class="card">
         <div class="card-header py-0">
             <h5 class="section-title d-flex">
-                <input type="text" name="nomeEndereco[]" class="border-0" placeholder="Nome do seu endereço" required>
+                <input type="text" name="nomeEndereco[]" class="border-0" placeholder="Nome do seu endereço">
             </h5>
             <a href="javascript:void(0)" class="ml-auto" title="Remover endereço">
                 <i class="mdi mdi-close mdi-24px"></i>

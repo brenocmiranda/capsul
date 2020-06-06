@@ -16,7 +16,7 @@ class CreateConfigEmails extends Migration
         Schema::create('config_emails', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
-            $table->string('email_remetente');
+            $table->string('email');
             $table->string('nome_remetente');
             $table->boolean('ativo_avaliacao');
             $table->integer('avaliar_produto');
@@ -30,7 +30,7 @@ class CreateConfigEmails extends Migration
 
         DB::table('config_emails')->insert(
             array(
-                'email_remetente' => 'contato@grupocapsul.com',
+                'email' => 'contato@grupocapsul.com',
                 'nome_remetente' => 'Grupo Capsul',
                 'avaliar_produto' => '3',
                 'ativo_avaliacao' => 1,

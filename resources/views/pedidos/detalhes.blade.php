@@ -36,7 +36,7 @@ Pedido #{{$pedido->codigo}}
                 </div>
                 @if($pedido->RelationStatus->last()->posicao != 10)
                 <div class="my-auto">
-                    <a href="javascript:void(0)"data-toggle="modal" data-target="#modal-status" class="ml-4">Atualizar status</a>
+                    <a href="javascript:void(0)" data-toggle="modal" data-target="#modal-status" class="ml-4">Atualizar status</a>
                 </div>
                 @endif
                 <div class="ml-auto">
@@ -444,7 +444,7 @@ Pedido #{{$pedido->codigo}}
                                                                     <a href="{{ route('produtos.editar', $pedido->RelationProduto->id) }}" class="text-decoration-none">
                                                                         <p class="n_pedido my-auto not-espaco"><b>{{$pedido->RelationProduto->nome}}</b></p>
                                                                     </a>
-                                                                    <label><b>SKU:</b>{{$pedido->RelationProduto->cod_sku}}</label>
+                                                                    <label><b>SKU: </b>{{$pedido->RelationProduto->cod_sku}}</label>
                                                                 </div>
                                                             </div>
                                                         </td>
@@ -643,17 +643,19 @@ Pedido #{{$pedido->codigo}}
                             <div class="row">
                                 <div class="row m-0 col-12">
                                     <div class="col-6 border rounded p-4 h-100">
-                                       <p class="mb-0">Forma de entrega</p>
-                                       <label class="not-espaco text-uppercase font-weight-bold">{{(isset($pedido->RelationRastreamento->tipo) ? $pedido->RelationRastreamento->tipo : "Nenhum") }}</label>
+                                        <p class="mb-0">Forma de entrega</p>
+                                        <label class="not-espaco text-uppercase font-weight-bold">{{(isset($pedido->RelationRastreamento->tipo) ? $pedido->RelationRastreamento->tipo : "Nenhum") }}</label>
 
-                                       <p class="mb-0">Código de rastreamento</p> 
-                                       <label id="cod_ratreamento" class="not-espaco font-weight-bold">{{(isset($pedido->RelationRastreamento->cod_rastreamento) ? $pedido->RelationRastreamento->cod_rastreamento : "Não cadastrado") }}</label>
+                                        <p class="mb-0">Código de rastreamento</p> 
+                                        <label id="cod_ratreamento" class="not-espaco font-weight-bold">{{(isset($pedido->RelationRastreamento->cod_rastreamento) ? $pedido->RelationRastreamento->cod_rastreamento : "Não cadastrado") }}</label>
 
-                                       <p class="mb-0">Link de rastreamento</p> 
-                                       <label id="link_rastreamento" class="not-espaco font-weight-bold">{{(isset($pedido->RelationRastreamento->link_rastreamento) ? $pedido->RelationRastreamento->link_rastreamento : "Não cadastrado") }}</label>
+                                        <p class="mb-0">Link de rastreamento</p> 
+                                        <label id="link_rastreamento" class="not-espaco font-weight-bold">
+                                            <a href="{{(isset($pedido->RelationRastreamento->link_rastreamento) ? $pedido->RelationRastreamento->link_rastreamento : 'javascript:void(0)') }}" target="_blank">{{(isset($pedido->RelationRastreamento->link_rastreamento) ? $pedido->RelationRastreamento->link_rastreamento : "Não cadastrado") }}</a>
+                                        </label>
                                    </div>
                                    <div class="col-6">
-                                    @if(isset($correios))
+                                    @if(!empty($correios))
                                     <div class="table-responsive px-4 pt-3 rounded valor border">
                                         <table class="table table-sm">
                                             <thead>
@@ -731,12 +733,15 @@ Pedido #{{$pedido->codigo}}
                                         </td>
                                         <td class="align-middle">
                                             <div class="my-auto status badge badge-{{
-                                                ($historico->RelationStatus1->posicao==1 || $historico->RelationStatus1->posicao==7 ? 'dark' :
-                                                ($historico->RelationStatus1->posicao==2 || $historico->RelationStatus1->posicao==6 || $historico->RelationStatus1->posicao==8 ? 'warning' : 
-                                                ($historico->RelationStatus1->posicao==3 || $historico->RelationStatus1->posicao==5 || $historico->RelationStatus1->posicao==9 ? 'success' :
-                                                ($historico->RelationStatus1->posicao==4 || $historico->RelationStatus1->posicao==10 ? 'danger' :  ''))))
-
-                                            }}">{{strtoupper($historico->RelationStatus1['nome'])}}
+                                                ($historico->RelationStatus1->posicao==1 ? 'primary' :
+                                                ($historico->RelationStatus1->posicao==2 ? 'warning' : 
+                                                ($historico->RelationStatus1->posicao==3 ? 'success' :
+                                                ($historico->RelationStatus1->posicao==4 ? 'danger' :
+                                                ($historico->RelationStatus1->posicao==6 ? 'primary' :
+                                                ($historico->RelationStatus1->posicao==5 ? 'dark' : 
+                                                ($historico->RelationStatus1->posicao==7 ? 'info' : 
+                                                ($historico->RelationStatus1->posicao==8 ? 'success' :
+                                                ($historico->RelationStatus1->posicao==9 ? 'danger' : '')))))))))}}">{{strtoupper($historico->RelationStatus1->nome)}}
                                             </div>
                                         </td>
                                         <td class="align-middle">
@@ -837,27 +842,31 @@ Pedido #{{$pedido->codigo}}
                 <div class="tab-pane fade" id="emails" role="tabpanel" aria-labelledby="emails-tab">
                     <div class="card">
                         <div class="card-body">
-                            <div class="alert alert-light">
-                                <div class="row align-items-center align-content-center justify-content-center">
-                                    <div class="col-2 text-center">
-                                        <i class="mdi mdi-email-outline mdi-48px mdi-dark mdi-inactive"></i>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="holder-left">
-                                            <a href="javascript:">
-                                                <span>{{$pedido->RelationCliente->nome}}, falta pouco!</span>
-                                            </a> 
-                                            <span>há um dia</span>
-                                            <div>Para: 
-                                                <span class="font-weight-bold">{{$pedido->RelationCliente->email}}</span>
+                            @foreach($statusPedido as $historico)
+                                <div class="alert alert-white border text-dark">
+                                    <div class="row align-items-center align-content-center justify-content-center">
+                                        <div class="col-2 text-center">
+                                            <i class="mdi mdi-email-outline mdi-48px mdi-dark mdi-inactive row align-items-center align-content-center justify-content-center"></i>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="holder-left">
+                                                <a href="javascript:void(0)" class="text-primary" data-toggle="modal" data-target="#modal-{{$historico->id}}">
+                                                    <span>{{ $historico->RelationStatus1->nome }}!</span>
+                                                </a> 
+                                                <span>{{$historico->created_at->subMinutes(2)->diffForHumans()}}</span>
+                                                <div>Para: 
+                                                    <span class="font-weight-bold">{{$pedido->RelationCliente->email}}</span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-4 my-auto pr-5 text-right">
-                                        <button type="submit" class="btn btn-outline-dark">Reenviar e-mail</button>
+                                        <div class="col-4 my-auto pr-5 text-right">
+                                            @if($pedido->RelationStatus->last()->id == $historico->id_status)
+                                            <button type="submit" class="btn btn-outline-dark" id="reenviarEmail">Reenviar e-mail</button>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -872,6 +881,60 @@ Pedido #{{$pedido->codigo}}
     @include('pedidos.extras.status')
     @include('pedidos.extras.nota')
     @include('pedidos.extras.rastreamento')
+    @foreach($statusPedido as $historico)
+    <div class="modal fade" id="modal-{{$historico->id}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel{{$historico->id}}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 600px;">
+            <div class="modal-content">
+                <div class="card mb-0">
+                    <div class="card-header d-block col-12">
+                        <div class="col-12 d-flex py-2">
+                            <h4 class="titulo_modal titulo_modal">{{$historico->RelationStatus1->nome}}</h4>
+                            <button type="button" class="ml-auto close" data-dismiss="modal" aria-label="Close"><svg width="14" height="14" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" data-svg="close-icon"><line fill="none" stroke="#000" stroke-width="1.1" x1="1" y1="1" x2="13" y2="13"></line><line fill="none" stroke="#000" stroke-width="1.1" x1="13" y1="1" x2="1" y2="13"></line></svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="border rounded">
+                            <div class="col-12 p-3 text-center" style="background-color: #f5f5f5">
+                                <a href="{{ config('app.url') }}">
+                                    <img src="{{ asset('storage/app/system/capsul.png').'?'.rand() }}" alt="Imagem logo" height="40">
+                                </a>
+                            </div>
+
+                            <div class="px-5 pt-3 content-cell">
+                                <h3> Olá, {{ ucwords(strtolower(explode(" ", $pedido->RelationCliente->nome)[0])) }}!</h3>
+                                <p>Temos uma ótima notícia para você, seu pedido teve uma nova atualização.</p>
+
+                                <div class="lin_resume mb-3" align="center">
+                                    <div align="center" style="margin-bottom: 5px">
+                                        <img src="{{asset('public/img/emails/alterarStatus.png')}}" width="250">
+                                    </div>
+                                    <h5 style="text-align: center!important;">{{$historico->RelationStatus1->nome}}</h5>
+                                    <div align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                                        <a href="{{route('acompanhamento.pedido', $historico->RelationPedido1->codigo)}}" target="_blank">
+                                            <label style="margin: 0;">Acompanhar meu pedido</label>
+                                        </a>                    
+                                    </div>
+                                </div>
+
+                                <p> {{$historico->RelationStatus1->descricao}} </p>
+
+                                <p> Abraços, <br> {{$geral->nome_loja}}.</p>
+                            </div>
+                            
+                            <div class="p-3 text-center" style="background-color: #f5f5f5">
+                                <b class="d-block">Equipe de suporte do {{ $geral->nome_loja }}!</b>
+                                <label class="d-block mb-0">{{ $geral->email }}</label>
+                                <a href="{{ config('app.url') }}" target="_blank">{{ config('app.url') }}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endforeach
 @endsection
 
 @section('support')
@@ -1080,6 +1143,21 @@ Pedido #{{$pedido->codigo}}
                             location.reload();
                         }, error: function (data) {
                             alert("Erro! Procure o administrador.");
+                        }
+                    });
+                }
+            });
+
+            $('#reenviarEmail').on('click', function(e){
+                e.preventDefault();
+                if(confirm("Tem certeza que deseja reenviar esse e-mail?")){
+                    $.ajax({
+                        url: '{{ route("reenviar.email", $pedido->RelationStatus->last()->id) }}',
+                        type: 'GET',
+                        success: function(data){
+                            alert("O e-mail foi enviado para o cliente com sucesso!");
+                        }, error: function (data) {
+                            alert("Erro! Entre em contato com o administrador.");
                         }
                     });
                 }

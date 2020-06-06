@@ -43,9 +43,9 @@ Configurações
                 <div class="col-12">
                   <div class="mt-2 mb-5">
                     <div class="form-group col-6">
-                      <label>E-mail do remetente <span class="text-danger">*</span></label>
+                      <label>E-mail remetente <span class="text-danger">*</span></label>
                       <div class="input-group"> 
-                        <input type="text" class="form-control" name="email_remetente" value="{{$emails->email_remetente}}" required>
+                        <input type="text" class="form-control" name="email" value="{{$emails->email}}" required>
                       </div>
                     </div>
                     <div class="form-group col-5">

@@ -331,7 +331,7 @@
 		}
 	</style>
 
-	<table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+	<table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border: 1px solid #eaeef2;border-radius: 10px;">
 		<tr>
 			<td align="center">
 				<table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
@@ -352,7 +352,7 @@
 									<td class="content-cell">
 										<h1> Olá, {{ ucwords(strtolower(explode(" ", $pedido->RelationCliente->nome)[0])) }}!</h1>
 
-										<p>A gente acabou de receber seu pedido <b>{{$pedido->codigo}}</b>, ebaa!!</p>
+										<p>A gente acabou de receber seu pedido de nº <b>{{$pedido->codigo}}</b>, ebaa!!</p>
 										<p>Agora, é só esperar a aprovação do pagamento, tá?</p>
 
 										<div align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
@@ -360,11 +360,14 @@
 												<h5 style="margin: 0;">Acompanhar meu pedido</h5>
 											</a>					
 										</div>
+										
+										<h5 style="margin-bottom: 2px;">Resumo da compra</h5>
+										<hr>
 										<p>
 											<table>
 												<tr>
 													<td>
-														<img src="{{ url('storage/app/'.$pedido->RelationProduto->RelationImagensPrincipal->first()->caminho) }}" alt="Produto" style="height: auto; width: 70px; border: 1px solid silver; border-radius: 6px; padding: 5px; margin-right: 10px">
+														<img src="{{ url('storage/app/'.$pedido->RelationProduto->RelationImagensPrincipal->first()->caminho) }}" alt="Produto" style="height: auto; width: 70px; border-radius: 6px; padding: 5px; margin-right: 10px">
 													</td>
 													<td>
 														<label>{{$pedido->RelationProduto->nome}}</label>
@@ -376,31 +379,29 @@
 												</tr>
 											</table>
 										</p>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
 
-										<p> Abraços, <br> {{$geral->nome_loja}}.
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
+					<tr>
+						<td>
+							<table class="footer" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
+								<tr>
+									<td class="content-cell" align="center">
+										<b>Equipe de suporte do {{ $geral->nome_loja }}!</b><br>
+										<label>{{ $geral->email }}</label><br>
+										<a href="{{ config('app.url') }}" target="_blank">{{ config('app.url') }}</a><br>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
 
-						<tr>
-							<td>
-								<table class="footer" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
-									<tr>
-										<td class="content-cell" align="center">
-											<b>Equipe de suporte do {{ $geral->nome_loja }}!</b><br>
-											<label>{{ $geral->email }}</label><br>
-											<a href="{{ config('app.url') }}" target="_blank">{{ config('app.url') }}</a><br>
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-
-					</table>
-				</td>
-			</tr>
-		</table>
-	</body>
-	</html>
+				</table>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

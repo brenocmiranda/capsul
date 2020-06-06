@@ -12,7 +12,7 @@ class Usuarios extends Authenticatable
     
     protected $table = 'usuarios';
     protected $primaryKey = 'id';
-    protected $fillable = ['id', 'nome', 'email', 'email_verified_at',  'ativo', 'created_at', 'updated_at', 'id_grupo', 'id_imagem'];
+    protected $fillable = ['id', 'nome', 'email', '_token', 'remember_token', 'password', 'email_verified_at',  'ativo', 'created_at', 'updated_at', 'id_grupo', 'id_imagem'];
     protected $hidden = ['_token', 'remember_token','password'];
 
     public function RelationImagens(){

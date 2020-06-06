@@ -49,7 +49,7 @@ class AlteracaoStatus extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->from($this->emails->email_remetente, $this->emails->nome_remetente)
+                    ->from($this->emails->email, $this->emails->nome_remetente)
                     ->subject('Obaa! Novidades do seu pedido '.$this->status->RelationPedido1->codigo)
                     ->view('system.emails.status', ['geral' => $this->geral, 'status' => $this->status]);
     }

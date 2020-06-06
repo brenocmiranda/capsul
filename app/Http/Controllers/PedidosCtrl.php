@@ -76,6 +76,7 @@ class PedidosCtrl extends Controller
                             <i class="mdi mdi-cog mdi-18px"> </i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="'.route('pedidos.detalhes', $dados->id).'" target="_blank"><i class="mdi mdi-account-details-outline px-1"></i> Detalhes do pedido</a>
                             <a class="dropdown-item" href="'.route('pedidos.imprimir', $dados->id).'" target="_blank"><i class="mdi mdi-printer px-1"></i> Imprimir pedido</a>
                             <a class="dropdown-item" href="'.route('pedidos.declaracao', $dados->id).'" target="_blank"><i class="mdi mdi-file-alert-outline px-1"></i> Declaração de conteúdo</a>
                         </div>
@@ -98,7 +99,7 @@ class PedidosCtrl extends Controller
             }else{
                 $correios = null;            
             }
-            return view('pedidos.detalhes')->with('pedido', $pedido)->with('status', $status)->with('transactions', $transactions)->with('statusPedido', $statusPedido)->with('correios', $correios)->with('pedidos', $pedidos);
+            return view('pedidos.detalhes')->with('pedido', $pedido)->with('status', $status)->with('transactions', $transactions)->with('statusPedido', $statusPedido)->with('correios', $correios)->with('pedidos', $pedidos)->with('geral', $this->geral);
         }else{
             return redirect(route('permission'));
         }
@@ -109,6 +110,7 @@ class PedidosCtrl extends Controller
         if(Auth::user()->RelationGrupo->gerenciar_pedidos == 1){
             $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => $request->id_status, 'observacoes' => $request->observacoes]);
             if($request->id_status == 3){
+                $pedido = Pedidos::find($id);
                 Produtos::find($status->RelationPedido1->id_produto)->update(['quantidade' => ($status->RelationPedido1->RelationProduto->quantidade - $pedido->quantidade)]);
             }
             if($status->RelationStatus1->enviar == 1 && $request->id_status == 8 && $this->emails->ativo_avaliacao == 1){
@@ -132,14 +134,20 @@ class PedidosCtrl extends Controller
             if(isset($pedido->id_nota)){
                 PedidosNotas::find($pedido->id_nota)->update(['numero_nota' => $request->numero_nota, 'data_emissao' => $request->data_emissao, 'numero_serie' => $request->numero_serie, 'chave' => $request->chave, 'url_nota' => $request->url_nota]);
                 // Alterando status caso solicitado
-                if($request->alterar_status == 'on'){
-                    $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 7]);
+                if($request->alterar_status == 'on' && $pedido->RelationStatus->last()->id_status != 6){
+                    $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 6]);
+                    if($status->RelationStatus1->enviar == 1){
+                        $status->RelationPedido1->RelationCliente->notify(new AlteracaoStatus($status));
+                    }
                 }
             }else{
                 $dados = PedidosNotas::create(['numero_nota' => $request->numero_nota, 'data_emissao' => $request->data_emissao, 'numero_serie' => $request->numero_serie, 'chave' => $request->chave, 'url_nota' => $request->url_nota]);
-                Pedidos::where('id', $id)->update(['id_nota' => $dados->id]);
-                if($request->alterar_status == 'on'){
-                    $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 7]);
+                Pedidos::find($id)->update(['id_nota' => $dados->id]);
+                if($request->alterar_status == 'on' && $pedido->RelationStatus->last()->id_status != 6){
+                    $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 6]);
+                    if($status->RelationStatus1->enviar == 1){
+                        $status->RelationPedido1->RelationCliente->notify(new AlteracaoStatus($status));
+                    }
                 }
             }
             $nota = PedidosNotas::where('id', $pedido->id_nota)->first();
@@ -164,8 +172,11 @@ class PedidosCtrl extends Controller
         if(Auth::user()->RelationGrupo->gerenciar_pedidos == 1){
             $pedido = Pedidos::find($id);
             $endereco = PedidosRastreamento::where('id', $pedido->id_rastreamento)->update(['cod_rastreamento' => $request->cod_rastreamento, 'link_rastreamento' => $request->link_rastreamento]);
-            if($request->alterar_status){
-                $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 8]);
+            if($request->alterar_status && $pedido->RelationStatus->last()->id_status != 7){
+                $status = PedidosStatus::create(['id_pedido' => $id, 'id_status' => 7]);
+                if($status->RelationStatus1->enviar == 1){
+                    $status->RelationPedido1->RelationCliente->notify(new AlteracaoStatus($status));
+                }
             }
         }else{
             return redirect(route('permission'));
@@ -178,8 +189,13 @@ class PedidosCtrl extends Controller
             // Retornando informações da transação
             $transactions = $this->pagarme->transactions()->refund(['id' => $id]);
             $pedido = Pedidos::where('transacao_pagarme', $id)->first();
+
             Produtos::find($pedido->id_produto)->update(['quantidade' => ($pedido->quantidade + $pedido->RelationProduto->quantidade)]);
-            PedidosStatus::create(['id_pedido' => $pedido->id, 'id_status' => 10]);
+            $status = PedidosStatus::create(['id_pedido' => $pedido->id, 'id_status' => 9]);
+            if($status->RelationStatus1->enviar == 1){
+                $status->RelationPedido1->RelationCliente->notify(new AlteracaoStatus($status));
+            }
+            
             return response()->json(['success' => true]);
         }else{
             return redirect(route('permission'));
@@ -199,6 +215,12 @@ class PedidosCtrl extends Controller
         return view('pedidos.declaracao')->with('pedido', $pedido)->with('geral', $this->geral);
     }
 
+    // Declaração de conteúdo
+    public function ReenviarEmail($id){
+        $status = PedidosStatus::find($id);
+        $status->RelationPedido1->RelationCliente->notify(new AlteracaoStatus($status));
+         return response()->json(['success' => true]);
+    }
 
     public function ListaFiltro(Request $request){
         $dados = Pedidos::WhereNotNull('transacao_pagarme')->get();

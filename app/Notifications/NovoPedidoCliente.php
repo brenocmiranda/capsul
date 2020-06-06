@@ -51,7 +51,7 @@ class NovoPedidoCliente extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {   
         return (new MailMessage)
-            ->from($this->emails->email_remetente, $this->emails->nome_remetente)
+            ->from($this->emails->email, $this->emails->nome_remetente)
             ->subject('A gente recebeu o seu pedido :)')
             ->view('system.emails.pedido', ['geral' => $this->geral, 'pedido' => $this->pedido, 'emails' => $this->emails]);    
     }

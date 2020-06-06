@@ -16,6 +16,7 @@ Route::group(['prefix' => ''], function(){
     Route::get('perfil', 'UsuariosCtrl@Perfil')->name('perfil')->middleware('auth');
     Route::post('salvarPerfil', 'UsuariosCtrl@SalvarPerfil')->name('salvar.perfil')->middleware('auth');
     Route::get('activities', 'UsuariosCtrl@Atividades')->name('atividades')->middleware('auth');
+    Route::get('notifications', 'UsuariosCtrl@Notificacoes')->name('notificacoes')->middleware('auth');
     
     // Checkout
     Route::group(['prefix' => 'checkout'], function (){
@@ -70,6 +71,7 @@ Route::group(['prefix' => 'pedidos'], function (){
         Route::get('imprimir/{id}', 'PedidosCtrl@Imprimir')->name('pedidos.imprimir'); 
         Route::get('declaracao/{id}', 'PedidosCtrl@Declaracao')->name('pedidos.declaracao'); 
         Route::get('cancelar/{id}', 'PedidosCtrl@CancelarTransacao')->name('cancelar.transacao'); 
+        Route::get('reenviar/email/{id}', 'PedidosCtrl@ReenviarEmail')->name('reenviar.email'); 
     });
 
     // Carrinhos abandonados

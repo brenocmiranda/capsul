@@ -331,7 +331,7 @@
 		}
 	</style>
 
-	<table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+	<table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border: 1px solid #eaeef2;border-radius: 10px;">
 		<tr>
 			<td align="center">
 				<table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
@@ -365,9 +365,20 @@
 											</div>
 										</div>
 
+										
+
 										<p> {{$status->RelationStatus1->descricao}} </p>
 
-										<p> Abraços, <br> {{$geral->nome_loja}}.
+										@if($status->id_status == 7 || $status->id_status == 8)
+										<p>
+											<b>Código de rastreio: </b> 
+											<a href="{{$status->RelationPedido1->RelationRastreamento->link_rastreamento}}" target="_blank">
+												{{$status->RelationPedido1->RelationRastreamento->cod_rastreamento}}
+											</a>
+										</p>
+										@endif
+
+										<p> Abraços, <br> {{$geral->nome_loja}}.</p>
 										</td>
 									</tr>
 								</table>
