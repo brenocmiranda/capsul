@@ -1,5 +1,4 @@
 <!-- General JS Scripts -->
-<<<<<<< HEAD
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
@@ -9,17 +8,6 @@
 <script src="http://jqueryvalidation.org/files/dist/jquery.validate.js"></script>
 <script src="https://assets.pagar.me/checkout/1.1.0/checkout.js"></script>
 <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-=======
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-  <script src="https://assets.pagar.me/pagarme-js/4.8/pagarme.min.js"></script>
-  <script src="https://jqueryvalidation.org/files/dist/jquery.validate.js"></script>
-  <script src="https://assets.pagar.me/checkout/1.1.0/checkout.js"></script>
-  <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
->>>>>>> 3c865e39c8d27d2703dbe19c11e6450827ece873
 
 <!-- Template JS File -->
 <script src="{{ asset('public/js/moment-business.js') }}"></script>
