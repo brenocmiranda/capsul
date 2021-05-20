@@ -54,7 +54,7 @@ class AlteracaoStatus extends Notification implements ShouldQueue
                     ->view('system.emails.status', ['geral' => $this->geral, 'status' => $this->status]);
     }
 
-    /**
+     /**
      * Get the array representation of the notification.
      *
      * @param  mixed  $notifiable

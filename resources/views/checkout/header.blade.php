@@ -1,5 +1,5 @@
 <!-- Card 1 -->
-<div class="col-2 my-3" id="myTab">
+<div class="col-lg-2 col-md-2 col-12 my-3" id="myTab">
 	<ul class="nav nav-pills flex-column" role="tablist">
 	  <li class="nav-item shadow rounded my-2 bg-white">
 	  	@if(Request::segment(2) == "continuar")

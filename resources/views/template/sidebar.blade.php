@@ -149,7 +149,7 @@
       </ul> 
       
       <div class="mt-2 mb-2 p-3 hide-sidebar-mini">
-        <a href="{{ route('logout') }}" class="btn btn-primary btn-lg btn-block btn-icon-split">
+        <a href="javascript:void(0)" class="logout btn btn-primary btn-lg btn-block btn-icon-split">
           <i class="fas fa-sign-out-alt"></i> Logout
         </a>
       </div>

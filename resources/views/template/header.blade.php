@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>@yield('title') &#183 {{ env('APP_NAME') }} </title>
 
   <!-- Icons -->
@@ -21,6 +22,7 @@
   <link rel="stylesheet" href="{{ asset('public/css/components.css') }}">
   <link rel="stylesheet" href="{{ asset('public/css/datatables.css') }}">
   <link rel="stylesheet" href="{{ asset('public/modules/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('public/css/jquery.toast.css') }}">
 </head>
 
 <body>

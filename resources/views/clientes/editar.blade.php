@@ -136,10 +136,10 @@ Editar cliente
                             @foreach($enderecos as $key => $endereco)
                             <div class="card" id="card-{{$key+2}}">
                                 <div class="card-header py-0">
-                                    <h5 class="section-title d-flex">
-                                        <input type="text" name="nomeEndereco[]" class="border-0" placeholder="Nome do seu endereço" value="{{$endereco->nome}}">
+                                    <h5 class="section-title d-flex my-2 align-items-center">
+                                        <input type="text" name="nomeEndereco[]" class="border-0 mb-0" placeholder="Nome do seu endereço" value="Casa">
                                     </h5>
-                                    <a href="javascript:void(0)" onclick="removeCard({{$key+2}})" class="ml-auto" title="Remover endereço">
+                                    <a href="javascript:void(0)" onclick="removeCard(2)" class="ml-auto" title="Remover endereço">
                                         <i class="mdi mdi-close mdi-24px"></i>
                                     </a>
                                 </div>

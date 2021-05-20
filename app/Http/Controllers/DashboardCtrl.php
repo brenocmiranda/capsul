@@ -23,13 +23,8 @@ class DashboardCtrl extends Controller
     public function Lista(){
         if (Auth::check()){
             $pedidos = Pedidos::all();
-            $pedidos_aguardando = Pedidos::all();
-            $pedidos_aprovados = Pedidos::all();
-            $pedidos_entregues = Pedidos::all();
-            $pedidos_valor = Pedidos::whereNotNull('transacao_pagarme')->sum('valor_compra');
             $clientes = Clientes::all();
-
-            return view('system.dashboard')->with('pedidos', $pedidos)->with('pedidos_aguardando', $pedidos_aguardando)->with('pedidos_aprovados', $pedidos_aprovados)->with('pedidos_entregues', $pedidos_entregues)->with('pedidos_valor', $pedidos_valor)->with('clientes', $clientes);
+            return view('system.dashboard')->with('pedidos', $pedidos)->with('clientes', $clientes);
         }else{
             return redirect()->route('login');
         }

@@ -25,7 +25,7 @@
 							</div>
 						</div>
 						<div class="col-6">
-							<div class="row h-100 align-items-center justify-content-end">
+							<div class="d-flex h-100 align-items-center justify-content-end">
 								<img src="https://dka575ofm4ao0.cloudfront.net/pages-transactional_logos/retina/1949/PagarMe_Logo_PRINCIPAL-02.png" height="30" alt="PagarME" class="mb-2">
 							</div>
 						</div>
@@ -47,7 +47,7 @@
 				<div class="row">
 					<div class="row col-12 col-sm-12 col-md-11 mx-md-auto m-0">
 						@include('checkout.header')
-						<div class="col-12 col-sm-12 col-md-10 row">
+						<div class="col-12 col-sm-12 col-md-10 row mx-auto p-0">
 							<div class="col-12 col-sm-12 col-md-7 my-3">
 								<div class="tab-content">
 									@include('checkout.card1')

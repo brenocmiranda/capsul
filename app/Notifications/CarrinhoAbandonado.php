@@ -88,4 +88,5 @@ class CarrinhoAbandonado extends Notification implements ShouldQueue
             'pedido' => $this,
         ];
     }
+
 }

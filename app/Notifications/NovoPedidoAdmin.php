@@ -65,13 +65,15 @@ class NovoPedidoAdmin extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'message' => 'Novo pedido de nº'.$this->pedido->codigo.'"',
+            'titulo' => 'Novo pedido recebido',
+            'subtitulo' => 'Novo pedido recebido #'.$this->pedido->codigo.'.',
+            'message' => 'Veja mais detalhes do pedido <a href="javascript:void(0)" class="dropdown-item dropdown-item-unread" data-url="'.route('pedidos.detalhes', $this->pedido->id).'" id="'.$this->id.'" onClick="read(this)">',
             'date' => $this->pedido->created_at->subMinutes(2)->diffForHumans(),
             'icon' => 'mdi mdi-dolly mdi-18px',
             'link' => route('pedidos.detalhes', $this->pedido->id)
         ];
     }
-
+    
     /**
      * Get the array representation of the notification.
      *
@@ -81,7 +83,9 @@ class NovoPedidoAdmin extends Notification implements ShouldQueue
     public function toDatabase($notifiable)
     {    
         return [
-            'message' => 'Novo pedido de nº '.$this->pedido->codigo.'!',
+            'titulo' => 'Novo pedido recebido',
+            'subtitulo' => 'Novo pedido recebido #'.$this->pedido->codigo.'.',
+            'message' => 'Veja mais detalhes do pedido <a href="javascript:void(0)" class="dropdown-item dropdown-item-unread" data-url="'.route('pedidos.detalhes', $this->pedido->id).'" id="'.$this->id.'" onClick="read(this)">',
             'date' => $this->pedido->created_at->subMinutes(2)->diffForHumans(),
             'icon' => 'mdi mdi-dolly mdi-18px',
             'link' => route('pedidos.detalhes', $this->pedido->id)

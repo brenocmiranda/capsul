@@ -79,4 +79,5 @@ class AvaliacaoProduto extends Notification implements ShouldQueue
             'pedido' => $this->status->RelationPedido1,
         ];
     }
+
 }

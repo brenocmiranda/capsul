@@ -53,7 +53,7 @@ class CadastroUser extends Notification implements ShouldQueue
                 ->subject('Ebaa! Suas credênciais de acesso')
                 ->view('system.emails.cadastro', ['geral' => $this->geral, 'usuario' => $this->usuario]);
     }
-
+    
     /**
      * Get the array representation of the notification.
      *

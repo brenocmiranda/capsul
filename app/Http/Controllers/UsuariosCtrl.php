@@ -17,6 +17,7 @@ use App\Usuarios;
 use App\Imagens;
 use App\Notificacoes;
 use App\ConfigGeral;
+use App\ConfigEmails;
 
 class UsuariosCtrl extends Controller
 {
@@ -234,15 +235,48 @@ class UsuariosCtrl extends Controller
 	}
 
 
-	// Todas as notificações do usuário
+	/*
+	// Notificações para todos usuários
     public function Notificacoes(){
-        $user = Usuarios::find(Auth::id());
-		foreach ($user->notifications as $notification) {
-		    $dados = $notification->type;
+        $emails = ConfigEmails::find(1);
+		foreach ($emails->notifications as $notification) {
+			if($notification->view_at == null){
+				$dados[] = $notification;
+				$emails->unreadNotifications()->update(['view_at' => now()]);
+			}
 		}
-		return $dados;
+		if(isset($dados)){
+			return $dados;
+		}else{
+			return response()->json(['success' => false]);
+		}
     }
-
-	
-
+    // Notificações para todos usuários
+    public function NotificacoesAll(){
+        $emails = ConfigEmails::find(1);
+		foreach ($emails->unreadNotifications as $notification) {
+			$dados[] = $notification;
+		}
+		if(isset($dados)){
+			return $dados;
+		}else{
+			return false;
+		}
+    }
+    // Notificações leitura
+    public function NotificacoesRead($id){
+        $emails = ConfigEmails::find(1);
+		foreach($emails->notifications as $notification) {
+			if($notification->notifiable_id == $id){
+				$notification->markAsRead();
+			}
+		}
+		return response()->json(['success' => true]);
+    }
+    // Notificações leitura de todas
+    public function NotificacoesReadAll(){
+        $emails = ConfigEmails::find(1);
+		$emails->unreadNotifications->markAsRead();
+		return response()->json(['success' => true]);
+    }*/
 }		

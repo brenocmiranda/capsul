@@ -17,7 +17,7 @@ Visão Geral
         </div>
       </div>
     </div>
-
+    <input type="hidden" id="pedidos" value="{{ $pedidos ?? '' }}"/>
     <div class="section-body">
       <div class="col-12">
         <div class="row">
@@ -81,15 +81,56 @@ Visão Geral
 
 <script type="text/javascript">
  $(document).ready(function (){
-
+  var pedidos = $('#pedidos').val()
+  console.log({pedidos})
+  if(pedidos != '')
+    pedidos = JSON.parse(pedidos)
+  let data = new Date();
+  let dias = 30
+  let vendas_dias = {
+    labels: [],
+    data: []
+  }
+  let vendas_mes = {
+    labels: [],
+    data: []
+  }
+  let receitas_mes = {
+    labels: [],
+    data: []
+  }
+  do{
+    let pedidos_dia = pedidos.filter(item => item.created_at.toISOString().slice(0,10) == data.toISOString().slice(0,10)).length
+    if(pedidos_dia > 0){
+      vendas_dias.labels.push(data.toLocaleDateString('pt-BR').slice(0, 5))
+      vendas_dias.data.push(pedidos_dia)
+    }
+    data.setDate(data.getDate()-1)
+    dia--
+  }while(dias > 0)
+  let meses = 11
+  do{
+    let pedidos_mes = pedidos.filter(item => item.created_at.toISOString().slice(0,7) == data.toISOString().slice(0,7))
+    if(pedidos_mes.length > 0){
+      vendas_mes.labels.push(data.toLocaleDateString('pt-BR').slice(0, 5))
+      vendas_mes.data.push(pedidos_mes.reduce((acum, item) => {return acum + item.valor_compra;}, [0]))
+    }
+    pedidos_mes = pedidos_mes.filter(item => item.transacao_pagarme)
+    if(pedidos_mes.length > 0){
+      receitas_mes.labels.push(data.toLocaleDateString('pt-BR').slice(3, 10))
+      receitas_mes.data.push(pedidos_mes.reduce((acum, item) => {return acum + item.valor_compra;}, [0]))
+    }
+    data.setDate(data.getDate()-1)
+    dia--
+  }while(mes >= 0)
   var ctx = document.getElementById('myChart').getContext('2d');
   var myChart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      labels: vendas_dias.labels,
       datasets: [{
         label: '',
-        data: [12, 5, 3, 14, 5, 13],
+        data: vendas_dias.data,
         backgroundColor: [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',
@@ -123,10 +164,10 @@ Visão Geral
   var myChart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      labels: vendas_mes.labels,
       datasets: [{
         label: '',
-        data: [12, 19, 3, 54, 2, 3],
+        data: vendas_mes.data,
         backgroundColor: [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',
@@ -161,10 +202,10 @@ Visão Geral
   var myChart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      labels: receitas_mes.labels,
       datasets: [{
         label: '',
-        data: [12, 19, 13, 65, 2, 2],
+        data: receitas_mes.data,
         backgroundColor: [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',
